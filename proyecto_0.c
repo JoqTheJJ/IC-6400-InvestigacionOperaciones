@@ -13,14 +13,21 @@
 
 #include <gtk/gtk.h>
 #include <cairo.h>
+#include <ctype.h>
+#include <pthread.h>
 
 typedef struct {
     const char *window_id;  // Nombre de la ventana
     const char *button_id;  // Nombre del botón de salida
 } NewWindow;
 
+pthread_t thread1;
+pthread_t thread2;
+pthread_t thread3;
+pthread_t thread4;
+
 // Initialize pending.c program
-static void initialize_pending(){
+static void *initialize_pending(void *arg){
 
     const char *filename = "pending.c";
     const char *compile_cmd = "make pending";
@@ -30,6 +37,7 @@ static void initialize_pending(){
 
     //printf("\nRunning file: %s\n", filename);
     system("./pending");
+    pthread_exit(NULL);
 
 }
 
@@ -45,23 +53,23 @@ static void option_clicked(GtkButton *btn, gpointer user_data) {
 
     //printf("El nombre del botón es: %s\n", id_string);
     //printf("El id del botón es: %d\n", id);
-    
+     
 
     switch(id){
         case 1:
-            initialize_pending();
+            pthread_create(&thread1, NULL, initialize_pending, NULL);
             break;
 
         case 2:
-            initialize_pending();
+            pthread_create(&thread2, NULL, initialize_pending, NULL);
             break;
 
         case 3:
-            initialize_pending();
+            pthread_create(&thread3, NULL, initialize_pending, NULL);
             break;
 
         case 4:
-            initialize_pending();
+            pthread_create(&thread4, NULL, initialize_pending, NULL);
             break;
 
         default:
