@@ -10,6 +10,7 @@
                 es escogido.
 */
 
+
 #include <gtk/gtk.h>
 #include <cairo.h>
 
@@ -18,27 +19,58 @@ typedef struct {
     const char *button_id;  // Nombre del botón de salida
 } NewWindow;
 
+// Initialize pending.c program
+static void initialize_pending(){
+
+    const char *filename = "pending.c";
+    const char *compile_cmd = "make pending";
+
+    //printf("Compiling file using: %s\n", compile_cmd);
+    system(compile_cmd);
+
+    //printf("\nRunning file: %s\n", filename);
+    system("./pending");
+
+}
+
 // Crear ventana cuando se presiona un botón
 static void option_clicked(GtkButton *btn, gpointer user_data) {
-    
-    if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn))) return;
-
-    const NewWindow *ids = (const NewWindow *)user_data;
-
-    GtkBuilder *builder = gtk_builder_new_from_file("interfaz.glade");
-
-    GtkWidget *window = GTK_WIDGET(gtk_builder_get_object(builder, ids->window_id));
-
-    if (ids->button_id && *ids->button_id) {
-        GtkWidget *close = GTK_WIDGET(gtk_builder_get_object(builder, ids->button_id));
-        if (close) g_signal_connect_swapped(close, "clicked", G_CALLBACK(gtk_widget_destroy), window);
+    int is_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+    if (!is_active) {
+        return;
     }
 
-    gtk_widget_show_all(window);
-    gtk_window_present(GTK_WINDOW(window));
+    const char* id_string = ((const NewWindow *)user_data)->window_id;
+    int id = id_string[6] - 48; //Ascii to integer
 
-    g_object_unref(builder);
+    //printf("El nombre del botón es: %s\n", id_string);
+    //printf("El id del botón es: %d\n", id);
+    
+
+    switch(id){
+        case 1:
+            initialize_pending();
+            break;
+
+        case 2:
+            initialize_pending();
+            break;
+
+        case 3:
+            initialize_pending();
+            break;
+
+        case 4:
+            initialize_pending();
+            break;
+
+        default:
+            //printf("Id invalido");
+    }
 }
+    
+
+
 
 int main(int argc, char *argv[]) {
     GtkBuilder *builder;        // Utilizado para obtener los objetos de glade
@@ -52,7 +84,6 @@ int main(int argc, char *argv[]) {
 
 
     gtk_init(&argc, &argv);
-
     // Cargar la interfaz de Glade
     builder = gtk_builder_new_from_file("interfaz.glade");
 
