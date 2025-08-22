@@ -1,46 +1,50 @@
 /*
-                Proyecto 0: Menú de Programas de Programación Dinámica
-                Hecha por: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
-                Fecha: Viernes 22 de agosto del 2025
+                Project 0: Dynamic Programming Menu
+                Made by: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
+                Date: Friday, August 22, 2025
 
-                Esta sección contiene el programa pending.
+                This section contains the pending program which is a placeholder
+                for future implementatios of different dynamic programming
+                algorythms. The program is very simple and only consists of a simple
+                message and an exit button that terminates it.
+
 */
 
 #include <gtk/gtk.h>
 #include <cairo.h>
 
 typedef struct {
-    const char *window_id;  // Nombre de la ventana
-    const char *button_id;  // Nombre del botón de salida
+    const char *window_id;  // Window name
+    const char *button_id;  // Exit button name
 } NewWindow;
 
 
-
+//Main pending program
 int main(int argc, char *argv[]) {
 
-    GtkBuilder *builder;        // Utilizado para obtener los objetos de glade
-    GtkWidget *ventana;         // La ventana
-    GtkWidget *boton_salida;    // Botón para terminar el programa
+    GtkBuilder *builder;        // Used to obtain the objects from glade
+    GtkWidget *ventana;         // Window
+    GtkWidget *boton_salida;    // Exit button
 
 
     gtk_init(&argc, &argv);
-    // Cargar la interfaz de Glade
+    // Load glade interface
     builder = gtk_builder_new_from_file("pending.glade");
 
 
 
-    // La ventana
+    // Window
     ventana = GTK_WIDGET(gtk_builder_get_object(builder, "window1"));
     g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-    // El bóton de terminación del programa
+    // Termination button
     boton_salida = GTK_WIDGET(gtk_builder_get_object(builder, "terminate-1"));
     g_signal_connect(boton_salida, "clicked", G_CALLBACK(gtk_main_quit), NULL);
     
-    // Mostrar ventana
+    // Show window
     gtk_widget_show_all(ventana);
 
-    // Correr GTK
+    // Run GTK
     gtk_main();
 
     return 0;

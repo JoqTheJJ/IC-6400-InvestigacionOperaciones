@@ -1,13 +1,13 @@
 /*
-                Proyecto 0: Menú de Programas de Programación Dinámica
-                Hecha por: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
-                Fecha: Viernes 22 de agosto del 2025
+                Project 0: Dynamic Programming Menu
+                Made by: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
+                Date: Friday, August 22, 2025
 
-                Esta sección contiene el main, donde se indica lo que tiene que hacer
-                cada objeto mostrado en la interfaz. Esto involucra los botones de radio
-                del menú y los botones de salida de cada programa y del programa general.
-                Además, hay una función que abre una ventana cada vez que un botón de radio
-                es escogido.
+                This section contains the main of a multiple algorythms program, where
+                each element in the interface shows what the corresponding algorythm does.
+                This involves the dario buttons in the menu that redirect to the
+                corresponding programs and their own interfaces.
+
 */
 
 
@@ -17,10 +17,11 @@
 #include <pthread.h>
 
 typedef struct {
-    const char *window_id;  // Nombre de la ventana
-    const char *button_id;  // Nombre del botón de salida
+    const char *window_id;  // Window name
+    const char *button_id;  // Exit button name
 } NewWindow;
 
+//Threads used for allocating other programs
 pthread_t thread1;
 pthread_t thread2;
 pthread_t thread3;
@@ -28,6 +29,11 @@ pthread_t thread4;
 
 // Initialize pending.c program
 static void *initialize_pending(void *arg){
+    /*
+    Initializes the pending.c program that consists of a button to exit
+    and a "Coming Soon" message for other algorythms of lineal programming
+    later to be programmed
+    */
 
     const char *filename = "pending.c";
     const char *compile_cmd = "make pending";
@@ -41,7 +47,7 @@ static void *initialize_pending(void *arg){
 
 }
 
-// Crear ventana cuando se presiona un botón
+// Detect button pressed
 static void option_clicked(GtkButton *btn, gpointer user_data) {
     int is_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
     if (!is_active) {
@@ -51,10 +57,9 @@ static void option_clicked(GtkButton *btn, gpointer user_data) {
     const char* id_string = ((const NewWindow *)user_data)->window_id;
     int id = id_string[6] - 48; //Ascii to integer
 
-    //printf("El nombre del botón es: %s\n", id_string);
-    //printf("El id del botón es: %d\n", id);
-     
 
+     
+    // Open the corresponding program to the button pressed
     switch(id){
         case 1:
             pthread_create(&thread1, NULL, initialize_pending, NULL);
@@ -73,7 +78,7 @@ static void option_clicked(GtkButton *btn, gpointer user_data) {
             break;
 
         default:
-            //printf("Id invalido");
+            //printf("Invalid Id");
     }
 }
     
@@ -81,10 +86,10 @@ static void option_clicked(GtkButton *btn, gpointer user_data) {
 
 
 int main(int argc, char *argv[]) {
-    GtkBuilder *builder;        // Utilizado para obtener los objetos de glade
-    GtkWidget *ventana;         // La ventana
-    GtkWidget *boton_salida;    // Botón para terminar el programa
-    // Botones de radio
+    GtkBuilder *builder;        // Used to obtain the objects from glade
+    GtkWidget *ventana;         // Window
+    GtkWidget *boton_salida;    // Exit button
+    // Radio buttons
     GtkWidget *radio1;
     GtkWidget *radio2;
     GtkWidget *radio3;
@@ -92,9 +97,10 @@ int main(int argc, char *argv[]) {
 
 
     gtk_init(&argc, &argv);
-    // Cargar la interfaz de Glade
+    // Load glade interface
     builder = gtk_builder_new_from_file("interfaz.glade");
 
+    // Programs ids
     static NewWindow ids[] = {
         { "window1", "terminate-1", },
         { "window2", "terminate-2", },
@@ -102,34 +108,34 @@ int main(int argc, char *argv[]) {
         { "window4", "terminate-4", },
     };
 
-    // Botones de radio
+    // Radio buttons
     radio1 = GTK_WIDGET(gtk_builder_get_object(builder, "option-1"));
     radio2 = GTK_WIDGET(gtk_builder_get_object(builder, "option-2"));
     radio3 = GTK_WIDGET(gtk_builder_get_object(builder, "option-3"));
     radio4 = GTK_WIDGET(gtk_builder_get_object(builder, "option-4"));
-    // Conección de clicks en cada botón
+    // Click-connection for each button
     g_signal_connect(radio1, "clicked", G_CALLBACK(option_clicked), &ids[0]);
     g_signal_connect(radio2, "clicked", G_CALLBACK(option_clicked), &ids[1]);
     g_signal_connect(radio3, "clicked", G_CALLBACK(option_clicked), &ids[2]);
     g_signal_connect(radio4, "clicked", G_CALLBACK(option_clicked), &ids[3]);
 
-    // La ventana
+    // Window Initialize
     ventana = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
     g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     
-    // El bóton de terminación del programa
+    // Exit button
     boton_salida = GTK_WIDGET(gtk_builder_get_object(builder, "terminate"));
     g_signal_connect(boton_salida, "clicked", G_CALLBACK(gtk_main_quit), NULL);
     
-    // Mostrar ventana
+    // Show window
     gtk_widget_show_all(ventana);
-    // Que la ventana utilize toda la pantalla
+    // Maximize window
     gtk_window_maximize(GTK_WINDOW(ventana));
 
-    // Correr GTK
+    // Run GTK
     gtk_main();
 
-    // Limpiar la memoria
+    // Clean memory
     g_object_unref(builder);
 
     return 0;
