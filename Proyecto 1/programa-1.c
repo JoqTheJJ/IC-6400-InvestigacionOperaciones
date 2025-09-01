@@ -471,6 +471,198 @@ void set_panel(GtkPaned *panel, GParamSpec *pspec, gpointer user_data) {
 }
 
 
+// - - - - - UPLOADING A FILE - - - - -
+
+// It checks wether a string contains at least one ASCII digit
+static gboolean has_ascii_digit(const gchar *s) {
+    if (!s) return FALSE;
+    for (const gchar *p = s; *p; ++p)
+        if (g_ascii_isdigit(*p)) return TRUE;
+    return FALSE;
+}
+
+// Checks if its part of the matrix (it's a number or an infinity symbol)
+static gboolean is_value_token_strict(const gchar *t) {
+    if (!t) return FALSE;
+    gchar *s = g_strdup(t);
+    g_strstrip(s);
+
+    gboolean ok = FALSE;
+    if (*s) {
+        // Checks if there's only an infinity symbol
+        if (g_strcmp0(s, "∞") == 0) {
+            ok = TRUE;
+        } else if (has_ascii_digit(s)) {
+            char *endp = NULL;
+            g_ascii_strtod(s, &endp);
+            ok = (endp != s && *endp == '\0');
+        }
+    }
+    g_free(s);
+    return ok;
+}
+
+// Checks if the symbol for infinity is used so that it doesn't also use things like Inf or I
+static gboolean is_infinity_symbol_only(const gchar *t) {
+    if (!t) return FALSE;
+    gchar *s = g_strdup(t);
+    g_strstrip(s);
+    gboolean r = (g_strcmp0(s, "∞") == 0);
+    g_free(s);
+    return r;
+}
+
+// Splits a line into tokens on runs of whitespace after trimming the ends
+static gchar** split_ws(const gchar *line) {
+    if (!line) return g_new0(gchar*, 1);
+    gchar *t = g_strdup(line);
+    g_strstrip(t);
+    gchar **v = g_regex_split_simple("\\s+", t, 0, 0);
+    g_free(t);
+    return v;
+}
+
+// Blocks a specific handler while setting a text to avoid infinite loops
+static void set_text_blocked(GtkEntry *entry, const gchar *text, GCallback handler,
+                             gpointer handler_data) {
+    g_signal_handlers_block_by_func(entry, handler, handler_data);
+    gtk_entry_set_text(entry, text);
+    g_signal_handlers_unblock_by_func(entry, handler, handler_data);
+}
+
+// Opening a file and seeing the table in the interface
+static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
+    Matrix *ui = (Matrix*)user_data;
+
+    gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(btn));
+    if (!filename) return;
+
+    // Read the file
+    gchar *contents = NULL; gsize len = 0; GError *err = NULL;
+    if (!g_file_get_contents(filename, &contents, &len, &err)) {
+        GtkWidget *d = gtk_message_dialog_new(
+            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+            "Could not read file:\n%s\n\nError: %s",
+            filename, err ? err->message : "unknown");
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        if (err) g_error_free(err);
+        g_free(filename);
+        return;
+    }
+
+    // Reads only the lines that aren't empty
+    gchar **lines = g_strsplit(contents, "\n", -1);
+    GPtrArray *rows = g_ptr_array_new_with_free_func(g_free);
+    for (guint k = 0; lines[k]; ++k) {
+        gchar *t = g_strdup(lines[k]);
+        g_strstrip(t);
+        if (*t) g_ptr_array_add(rows, t); else g_free(t);
+    }
+    if (rows->len == 0) {
+        g_strfreev(lines); g_free(contents); g_free(filename);
+        g_ptr_array_free(rows, TRUE);
+        return;
+    }
+
+    // Always treat the first line as header
+    gchar **head = split_ws(rows->pdata[0]);
+    guint data0 = 1u;
+
+    // The matrix size is the number of data rows since it's a square matrix
+    guint n = rows->len - data0;
+    if (n == 0) {
+        GtkWidget *d = gtk_message_dialog_new(
+            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+            "No data rows after the header.");
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        g_strfreev(head);
+        g_strfreev(lines); g_free(contents); g_free(filename);
+        g_ptr_array_free(rows, TRUE);
+        return;
+    }
+
+    // Build the table
+    rebuild_matrix_ui(ui, (gint)n);
+    ui->invalid_count = 0;
+
+    GPtrArray *row_names = g_ptr_array_new_with_free_func(g_free);
+
+    // Parse each data row: the last n tokens are values and the rest is the row name
+    for (guint r = 0; r < n; ++r) {
+        gchar **tok = split_ws(rows->pdata[data0 + r]);
+        guint tokc = g_strv_length(tok);
+        // At least 1 name token + n value tokens are needed
+        if (tokc < n + 1) {
+            GtkWidget *d = gtk_message_dialog_new(
+                GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+                "Row %u has %u value(s); expected %u.",
+                r+1, (tokc>0?tokc-1:0), n);
+            gtk_dialog_run(GTK_DIALOG(d));
+            gtk_widget_destroy(d);
+            g_strfreev(tok);
+            continue;
+        }
+        // The first value index
+        guint vstart = tokc - n;
+
+        // Set the row names
+        gchar *saved = tok[vstart];
+        tok[vstart] = NULL;
+        gchar *rname = g_strjoinv(" ", tok);
+        tok[vstart] = saved;
+        g_ptr_array_add(row_names, rname);
+
+        // Fill in the cells
+        for (guint j = 0; j < n; ++j) {
+            GtkWidget *cell = GTK_WIDGET(g_ptr_array_index(ui->cells, r * n + j));
+            // The diagonals stay fixed as 0
+            if (r == j) continue;
+            const gchar *vstr = tok[vstart + j];
+            if (is_infinity_symbol_only(vstr))
+                gtk_entry_set_text(GTK_ENTRY(cell), "∞");
+            else
+                gtk_entry_set_text(GTK_ENTRY(cell), vstr);
+        }
+
+        g_strfreev(tok);
+    }
+
+    // Column and row names
+    // Use the header only if there are exactly n tokens. If not, use the row names
+    guint headc = g_strv_length(head);
+    gboolean use_header = (headc == n);
+
+    for (guint i = 0; i < n; ++i) {
+        const gchar *final_name = use_header
+            ? head[i]
+            : (const gchar*)row_names->pdata[i];
+
+        GtkEntry *ch = GTK_ENTRY(g_ptr_array_index(ui->col_headers, i));
+        GtkEntry *rh = GTK_ENTRY(g_ptr_array_index(ui->row_headers, i));
+
+        set_text_blocked(ch, final_name, G_CALLBACK(on_col_header_changed), ui);
+        set_text_blocked(rh, final_name, G_CALLBACK(on_row_header_changed), ui);
+    }
+
+    // Cleanup
+    g_strfreev(head);
+    g_ptr_array_free(row_names, TRUE);
+    g_strfreev(lines);
+    g_free(contents);
+    g_free(filename);
+    g_ptr_array_free(rows, TRUE);
+    }
+// - - - - - END OF UPLOADING A FILE - - - - -
+
+
 //Main for program 1
 int main(int argc, char *argv[]) {
     GtkBuilder *builder;        // Used to obtain the objects from glade
@@ -479,6 +671,7 @@ int main(int argc, char *argv[]) {
     GtkWidget *panel;           // Panel used to divide the menu and the table created
     GtkWidget *boton_nodos;     // Spin button where user enters amount of nodes
     GtkWidget *boton_guardar;   // Button to save the table in a text file
+    GtkWidget *boton_cargar;    // Button to upload a .txt file so that it can be read
 
 
     gtk_init(&argc, &argv);
@@ -516,6 +709,17 @@ int main(int argc, char *argv[]) {
     // Save file button
     boton_guardar = GTK_WIDGET(gtk_builder_get_object(builder, "file-saved"));
     g_signal_connect(boton_guardar, "clicked", G_CALLBACK(save_file), ui);
+
+    // File chooser button
+    boton_cargar = GTK_WIDGET(gtk_builder_get_object(builder, "file-chosen"));
+    // Makes it an "Open" chooser and filters to only show .txt
+    gtk_file_chooser_set_action(GTK_FILE_CHOOSER(boton_cargar), GTK_FILE_CHOOSER_ACTION_OPEN);
+    GtkFileFilter *flt = gtk_file_filter_new();
+    gtk_file_filter_set_name(flt, "Text files");
+    gtk_file_filter_add_pattern(flt, "*.txt");
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(boton_cargar), flt);
+    // When a file is picked
+    g_signal_connect(boton_cargar, "file-set", G_CALLBACK(file_chosen), ui);
 
     // Termination button
     boton_salida = GTK_WIDGET(gtk_builder_get_object(builder, "exit"));
