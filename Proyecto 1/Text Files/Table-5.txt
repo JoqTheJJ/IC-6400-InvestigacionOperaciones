@@ -1,0 +1,6 @@
+            New York Vegas Miami San Antonio Washington
+New York           0     ∞    16          17          5
+Vegas              2     0     ∞           2          3
+Miami             15     1     0           6          ∞
+San Antonio        ∞     9     5           0     11.467
+Washington         9   2.4   8.2           ∞          0

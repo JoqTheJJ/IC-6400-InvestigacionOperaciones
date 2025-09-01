@@ -14,6 +14,7 @@
 #include <gtk/gtk.h>
 #include <cairo.h>
 #include <math.h>
+#include <glib/gstdio.h> 
 
 // Structure to create the new window
 typedef struct {
@@ -21,6 +22,7 @@ typedef struct {
     const char *button_id;  // Exit button name
 } NewWindow;
 
+// - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix
 typedef struct {
     GtkBuilder *builder;
@@ -28,7 +30,8 @@ typedef struct {
     GPtrArray  *row_headers;   // Names of the rows
     GPtrArray  *col_headers;   // Names of the columns
     GPtrArray  *cells;         // Cells for numbers
-    gint        n;
+    gint        n;             // Size of table
+    gint        invalid_count; // Amount of invalid cells
 } Matrix;
 
 // Calculate the default names of columns and rows
@@ -71,40 +74,71 @@ static gboolean is_blank(const gchar *s) {
     return TRUE;
 }
 
-// Check if the values entered are correct
-static gboolean on_cell_focus_out(GtkWidget *entry, GdkEvent *e, gpointer user_data) {
+// returns TRUE if cell is valid; updates CSS, tooltip, and invalid_count
+static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
+    // diagonal is fixed and valid
+    gpointer prow = g_object_get_data(G_OBJECT(entry), "row");
+    gpointer pcol = g_object_get_data(G_OBJECT(entry), "col");
+    int i = prow ? (GPOINTER_TO_INT(prow)-1) : -1;
+    int j = pcol ? (GPOINTER_TO_INT(pcol)-1) : -1;
+    if (i >= 0 && j >= 0 && i == j) {
+        // ensure it's not counted
+        if (g_object_get_data(G_OBJECT(entry), "invalid")) {
+            g_object_set_data(G_OBJECT(entry), "invalid", NULL);
+            ui->invalid_count = MAX(0, ui->invalid_count - 1);
+        }
+        return TRUE;
+    }
+
     const gchar *txt = gtk_entry_get_text(GTK_ENTRY(entry));
     GtkStyleContext *ctx = gtk_widget_get_style_context(entry);
 
-    // If the cell is empty
+    gboolean now_invalid = FALSE;
+
     if (is_blank(txt)) {
-        // Cell turns red
-        gtk_style_context_add_class(ctx, "entry-error");
-        // Tooltip shows up
-        gtk_widget_set_tooltip_text(entry, "Invalid value. Enter a number or 'i'/'inf' for ∞.");
-        return FALSE;
+        now_invalid = TRUE;
+    } else if (is_inf_text(txt)) {
+        // normalize display but it is valid
+        if (g_strcmp0(txt, "∞") != 0)
+            gtk_entry_set_text(GTK_ENTRY(entry), "∞");
+        now_invalid = FALSE;
+    } else {
+        char *endp = NULL;
+        g_ascii_strtod(txt, &endp);
+        now_invalid = (endp == txt || *endp != '\0');
     }
 
-    // If any of the infinity words are entered
-    if (is_inf_text(txt)) {
-        gtk_entry_set_text(GTK_ENTRY(entry), "∞");
-        gtk_style_context_remove_class(ctx, "entry-error");
-        gtk_widget_set_tooltip_text(entry, NULL);
-        return FALSE;
+    // previous state
+    gboolean was_invalid = g_object_get_data(G_OBJECT(entry), "invalid") != NULL;
+
+    // update count if state changed
+    if (now_invalid && !was_invalid) {
+        ui->invalid_count++;
+        g_object_set_data(G_OBJECT(entry), "invalid", GINT_TO_POINTER(1));
+    } else if (!now_invalid && was_invalid) {
+        ui->invalid_count = MAX(0, ui->invalid_count - 1);
+        g_object_set_data(G_OBJECT(entry), "invalid", NULL);
     }
 
-    // If another value is entered
-    char *endp = NULL;
-    gdouble v = g_ascii_strtod(txt, &endp);
-    if (endp == txt || *endp != '\0') {
-        // Cell turns red
+    // style & tooltip
+    if (now_invalid) {
         gtk_style_context_add_class(ctx, "entry-error");
         gtk_widget_set_tooltip_text(entry, "Invalid value. Enter a number or 'i'/'inf' for ∞.");
     } else {
-        // Its a valid entry
         gtk_style_context_remove_class(ctx, "entry-error");
-        gtk_widget_set_tooltip_text(entry, "Enter a number or 'i'/'inf' for ∞.");
+        gtk_widget_set_tooltip_text(entry, NULL);
     }
+
+    return !now_invalid;
+}
+
+// wrappers for signals
+static void on_cell_changed(GtkEditable *editable, gpointer user_data) {
+    mark_cell_validity(GTK_WIDGET(editable), (Matrix*)user_data);
+}
+
+static gboolean on_cell_focus_out(GtkWidget *entry, GdkEvent *e, gpointer user_data) {
+    mark_cell_validity(entry, (Matrix*)user_data);
     return FALSE;
 }
 
@@ -164,7 +198,10 @@ static GtkWidget* make_cell_entry(Matrix *ui, gint i, gint j) {
     // Amount of characters visible and centering them
     gtk_entry_set_width_chars(GTK_ENTRY(e), 6);
     gtk_entry_set_alignment(GTK_ENTRY(e), 0.5);
-    gtk_widget_set_hexpand(e, FALSE);
+
+    // Record the cell coordinates
+    g_object_set_data(G_OBJECT(e), "row", GINT_TO_POINTER(i+1));
+    g_object_set_data(G_OBJECT(e), "col", GINT_TO_POINTER(j+1));
 
     if (i == j) {
         // The diagonal values are locked on 0
@@ -176,14 +213,11 @@ static GtkWidget* make_cell_entry(Matrix *ui, gint i, gint j) {
         // The rest of the values start with the infinity symbol
         // The user can then change these values
         gtk_entry_set_text(GTK_ENTRY(e), "∞");
-        gtk_widget_set_tooltip_text(e, "Enter a number or i/inf/∞ for infinity");
+        mark_cell_validity(e, ui);
+        g_signal_connect(e, "changed", G_CALLBACK(on_cell_changed), ui);
         // If a value is changed, check if it's a valid entry
-        g_signal_connect(e, "focus-out-event", G_CALLBACK(on_cell_focus_out), NULL);
+        g_signal_connect(e, "focus-out-event", G_CALLBACK(on_cell_focus_out), ui);
     }
-
-    // Record the cell coordinates
-    g_object_set_data(G_OBJECT(e), "row", GINT_TO_POINTER(i));
-    g_object_set_data(G_OBJECT(e), "col", GINT_TO_POINTER(j));
     return e;
 }
 
@@ -253,6 +287,178 @@ static void on_spin_value_changed(GtkSpinButton *spin, gpointer user_data) {
     if (n < 1) n = 1;
     rebuild_matrix_ui(ui, n);
 }
+// - - - - - END OF TABLE IN THE INTERFACE - - - - -
+
+
+// - - - - - SAVING THE FILE - - - - -
+
+// Tkes care of extra spaces
+static gchar* trimmed_copy(const gchar *s) {
+    if (!s) return g_strdup("");
+    gchar *cpy = g_strdup(s);
+    return g_strstrip(cpy);
+}
+
+// Makes sure diagonals are 0s, infinities are the symbol ∞ and that the numbers
+// have no weird spaces
+static void cell_string_for_export(GtkEntry *entry, gint i, gint j, gchar **out) {
+    if (i == j) { *out = g_strdup("0"); return; }
+
+    const gchar *txt0 = gtk_entry_get_text(entry);
+    gchar *txt = trimmed_copy(txt0);
+    // Checks if a cell is blank
+    if (is_blank(txt)) { g_free(txt); *out = g_strdup(""); return; }
+    // Checks the infinity symbols
+    if (is_inf_text(txt)) { g_free(txt); *out = g_strdup("∞"); return; }
+
+    *out = txt;
+}
+
+// Helps align the numbers for each column
+static size_t ulen(const gchar *s) {
+    return g_utf8_strlen(s ? s : "", -1);
+}
+
+// So that the text table looks cleanly lined up with padding when needed
+static void fprint_padded(FILE *fp, const gchar *s, size_t width, gboolean right_align) {
+    size_t len = ulen(s);
+    size_t pad = (width > len) ? (width - len) : 0;
+    if (right_align) { for (size_t k=0;k<pad;k++) fputc(' ', fp); fputs(s, fp); }
+    else { fputs(s, fp); for (size_t k=0;k<pad;k++) fputc(' ', fp); }
+}
+
+// Save the table as a .txt file
+static void save_file(GtkButton *btn, gpointer user_data) {
+    Matrix *ui = (Matrix*)user_data;
+    const gint n = ui->n;
+
+    // Make sure there are no invalid values
+    GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(btn));
+    if (GTK_IS_WINDOW(toplevel)) {
+        GtkWidget *focus = gtk_window_get_focus(GTK_WINDOW(toplevel));
+        if (focus && GTK_IS_ENTRY(focus))
+            mark_cell_validity(focus, ui);
+    }
+    // The counter for how many invalid cells there are is checked
+    // If the number isn't 0, then a notification pops up indicating this
+    if (ui->invalid_count > 0) {
+        GtkWidget *d = gtk_message_dialog_new(
+            GTK_WINDOW(toplevel),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+            "There are invalid cells. Please fix highlighted entries before saving.");
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        return;
+    }
+
+    // The user gets asked where to save the file
+    GtkWidget *dialog = gtk_file_chooser_dialog_new(
+        "Save Table D(0) As:",
+        GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+        GTK_FILE_CHOOSER_ACTION_SAVE,
+        "_Cancel", GTK_RESPONSE_CANCEL,
+        "_Save",   GTK_RESPONSE_ACCEPT,
+        NULL);
+    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+    // Default name to save as
+    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "Table-D(0).txt");
+
+    // Apply a filter so only other .txt files can be seen
+    GtkFileFilter *flt = gtk_file_filter_new();
+    gtk_file_filter_set_name(flt, "Text files");
+    gtk_file_filter_add_pattern(flt, "*.txt");
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), flt);
+
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
+        gtk_widget_destroy(dialog);
+        return;
+    }
+    char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    gtk_widget_destroy(dialog);
+
+    // Figures out how wide each column needs to be so that it looks neat
+    size_t *W = g_new0(size_t, n + 1);
+
+    // Looks for the longest name
+    for (gint i = 0; i < n; ++i) {
+        GtkEntry *rh = GTK_ENTRY(g_ptr_array_index(ui->row_headers, i));
+        W[0] = MAX(W[0], ulen(gtk_entry_get_text(rh)));
+    }
+
+    // Looks for the longest name or value
+    for (gint j = 0; j < n; ++j) {
+        GtkEntry *ch = GTK_ENTRY(g_ptr_array_index(ui->col_headers, j));
+        W[j+1] = MAX(W[j+1], ulen(gtk_entry_get_text(ch)));
+        // Looks at each cell in the column
+        for (gint i = 0; i < n; ++i) {
+            GtkEntry *cell = GTK_ENTRY(g_ptr_array_index(ui->cells, i * n + j));
+            gchar *s = NULL;
+            cell_string_for_export(cell, i, j, &s);
+            W[j+1] = MAX(W[j+1], ulen(s));
+            g_free(s);
+        }
+    }
+    // Writes down the table
+    FILE *fp = g_fopen(filename, "w");
+    if (!fp) {
+        GtkWidget *d = gtk_message_dialog_new(
+            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR,
+            GTK_BUTTONS_CLOSE,
+            "Could not open file for writing:\n%s", filename);
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        g_free(filename);
+        g_free(W);
+        return;
+    }
+
+    // Prints an empty corner
+    fprint_padded(fp, "", W[0], FALSE);
+    fputc(' ', fp);
+    for (gint j = 0; j < n; ++j) {
+        const gchar *h = gtk_entry_get_text(GTK_ENTRY(g_ptr_array_index(ui->col_headers, j)));
+        // Prints each column name
+        fprint_padded(fp, h, W[j+1], FALSE);
+        if (j < n-1) fputc(' ', fp);
+    }
+    fputc('\n', fp);
+
+    // Prints each row
+    for (gint i = 0; i < n; ++i) {
+        const gchar *rname = gtk_entry_get_text(GTK_ENTRY(g_ptr_array_index(ui->row_headers, i)));
+        // Prints each row name
+        fprint_padded(fp, rname, W[0], FALSE);
+        fputc(' ', fp);
+        for (gint j = 0; j < n; ++j) {
+            GtkEntry *cell = GTK_ENTRY(g_ptr_array_index(ui->cells, i * n + j));
+            gchar *s = NULL;
+            cell_string_for_export(cell, i, j, &s);
+            // Right-align the numbers or ∞ so that it looks neater
+            fprint_padded(fp, s, W[j+1], TRUE);
+            if (j < n-1) fputc(' ', fp);
+            g_free(s);
+        }
+        fputc('\n', fp);
+    }
+
+    fclose(fp);
+    g_free(W);
+    g_free(filename);
+
+    // Message showing it was saved successfully
+    GtkWidget *done = gtk_message_dialog_new(
+        GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+        GTK_MESSAGE_INFO,
+        GTK_BUTTONS_CLOSE,
+        "Table D(0) saved successfully.");
+    gtk_dialog_run(GTK_DIALOG(done));
+    gtk_widget_destroy(done);
+}
+// - - - - - END OF SAVING THE FILE - - - - -
 
 // So that the panels created can't be moved around
 void set_panel(GtkPaned *panel, GParamSpec *pspec, gpointer user_data) {
@@ -272,6 +478,7 @@ int main(int argc, char *argv[]) {
     GtkWidget *boton_salida;    // Exit button
     GtkWidget *panel;           // Panel used to divide the menu and the table created
     GtkWidget *boton_nodos;     // Spin button where user enters amount of nodes
+    GtkWidget *boton_guardar;   // Button to save the table in a text file
 
 
     gtk_init(&argc, &argv);
@@ -292,6 +499,7 @@ int main(int argc, char *argv[]) {
     // Initialize values in the Matrix struct
     Matrix *ui = g_new0(Matrix, 1);
     ui->builder = builder;
+    ui->invalid_count = 0;
 
     // Window
     ventana = GTK_WIDGET(gtk_builder_get_object(builder, "program-1"));
@@ -304,6 +512,10 @@ int main(int argc, char *argv[]) {
     // Spin button
     boton_nodos = GTK_WIDGET(gtk_builder_get_object(builder, "amount-nodes"));
     g_signal_connect(boton_nodos, "value-changed", G_CALLBACK(on_spin_value_changed), ui);
+
+    // Save file button
+    boton_guardar = GTK_WIDGET(gtk_builder_get_object(builder, "file-saved"));
+    g_signal_connect(boton_guardar, "clicked", G_CALLBACK(save_file), ui);
 
     // Termination button
     boton_salida = GTK_WIDGET(gtk_builder_get_object(builder, "exit"));
