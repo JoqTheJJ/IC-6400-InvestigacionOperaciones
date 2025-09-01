@@ -18,7 +18,7 @@
 #include <ctype.h>
 
 
-
+/* ################################## FLOYD ################################## */
 
 void Floyd(int** D, int n){
 
@@ -46,7 +46,7 @@ void Floyd(int** D, int n){
 
     for (int node = 0; node < n; node++){
 
-        saveToTexFile(D, P, changes, n) //Save current state (before changes)
+        saveToTexFile(D, P, changes, n, node) //Save current state (before changes)
 
         for (int i = 0; i < n; i++){
             for (int j = 0; j < n; j++){
@@ -66,34 +66,96 @@ void Floyd(int** D, int n){
         }
     }
 
-    saveToTexFile(D, P, changes, n) //Save final state
-
-
+    saveToTexFile(D, P, changes, n, n) //Save final state
 
 
 }
 
 
-void saveToTexFile(int** D, int** P, int** changes, int n){
-    //saves (adds) it to a file
 
-    //text
-    for (int row = 0; row < n; row++){
-        //saveRow
-        for (int col = 0; col < n; col++){
+/* ################################## TEX ################################## */
 
-            if (change[i][j]){ //Checks if a change happened
-                //saveCell WITH color (changed)
+void frameStart(FILE* f, int frameType, int number, char character){
+    //Frame Type (title)
+    //0 - Table (char)(number)
+
+    fprintf(f, "\n\n\n\\begin{frame}\n");
+    fprintf(f, "\\frametitle{");
+
+    switch (frameType){
+    case 0:
+        fprintf(f, "Table %c$_{%d}$}\n", character, number);
+        break;
+
+    default:
+        fprintf(f, "Floyd}\n");
+        break;
+    }
+}
+
+void frameEnd(FILE* f){
+    fprintf(f, "\\end{frame}");
+}
+
+
+/* ################################## TEX ################################## */
+
+
+void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, int iteration){
+    
+    frameTable(D, changes, n, iteration, f, 'D');
+
+    frameTable(P, changes, n, iteration, f, 'P');
+
+
+}
+
+void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c){
+
+    frameStart(f, 0, iteration, c);
+
+
+    fprintf(f, "\\begin{center}\n");
+
+    fprintf(f, "    \\begin{tabular}{|c||");
+    for (int col = 0; col < size; col++){
+        fprintf(f, "c|");
+    }
+    fprintf(f, "}\n");
+
+
+
+    fprintf(f, "        \\hline\n");
+    fprintf(f, "        \\textbf{%c} ", name);
+    for (int col = 0; col < max; col++){
+        fprintf(f, "& \\textbf{%d} ", col);
+    }
+    fprintf(f, "\\\\\n        \\hline\n");
+    fprintf(f, "        \\hline\n");
+
+
+    for (int i = 0; i < size; ++i){
+        fprintf(f, "        \\textbf{%d}", line);
+        for (int j = 0; j < size; j++){
+            if (changes[i][j]){
+                fprintf(f, "& \\cellcolor{yellow}%d ", matrix[line][col]);
             } else {
-                //saveCell WITHOUT color (unchanged)
+                fprintf(f, "& %d ", matrix[line][col]);
             }
         }
+        fprintf(f, "\\\\\n        \\hline\n");
     }
-    //text
 
-    //new page
+    fprintf(f, "    \\end{tabular}\n");
+    fprintf(f, "\\end{center}\n\n\n");
+    frameEnd(f);
 }
 
+
+
+
+
+/* ################################## MAIN ################################## */
 
 int main(int argc, char *argv[]) {
 
