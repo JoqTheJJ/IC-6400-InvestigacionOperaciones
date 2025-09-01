@@ -1,0 +1,5 @@
+/* Cell turns red if value entered is incorrect */
+.entry-error {
+  background-color: #ff6666; /* light red */
+  color: white; /* optional */
+}
