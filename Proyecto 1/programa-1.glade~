@@ -39,7 +39,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="margin-top">20</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">15</property>
                 <property name="label" translatable="yes">Shortest Paths using the Floyd Algorithm</property>
                 <attributes>
                   <attribute name="font-desc" value="Serif Bold 15"/>
@@ -55,17 +55,20 @@
               <object class="GtkLabel" id="info">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">10</property>
                 <property name="label" translatable="yes">- This program consists of a way to obtain the shortest path
 between any pair of nodes in a graph with weighted
 distances.
 
 - This program will do this utilizing the Floyd Algorithm and
 then create a LATEX document with all the tables calculated
-to get to the result.</property>
+to get to the result.
+DIRECTIONS:
+- Enter either a number or the infinity symbol.
+- To express the infinite value, enter an I or i in the cell.
+- If the cell becomes red, you've entered the wrong value.</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans 11"/>
+                  <attribute name="font-desc" value="Sans 10"/>
                 </attributes>
               </object>
               <packing>
@@ -79,7 +82,7 @@ to get to the result.</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="margin-top">20</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">10</property>
                 <property name="label" translatable="yes">Insert the amount of nodes wanted (1=&lt;):</property>
               </object>
               <packing>
@@ -93,6 +96,7 @@ to get to the result.</property>
                 <property name="width-request">257</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Choose a number greater than 1 for the amount of nodes wanted</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">20</property>
                 <property name="adjustment">adjustment-nodes</property>
@@ -108,8 +112,8 @@ to get to the result.</property>
               <object class="GtkLabel" id="upload">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">20</property>
-                <property name="label" translatable="yes">Upload a .krb file:</property>
+                <property name="margin-bottom">10</property>
+                <property name="label" translatable="yes">Upload a .txt file:</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -122,6 +126,7 @@ to get to the result.</property>
                 <property name="width-request">257</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface as a Table D(0)</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">20</property>
                 <property name="title" translatable="yes"/>
@@ -136,7 +141,7 @@ to get to the result.</property>
               <object class="GtkLabel" id="save">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">10</property>
                 <property name="label" translatable="yes">Press the button to save your current work:</property>
               </object>
               <packing>
@@ -152,6 +157,7 @@ to get to the result.</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to save the current Table D(0) as a .txt file</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">20</property>
               </object>
@@ -165,7 +171,7 @@ to get to the result.</property>
               <object class="GtkLabel" id="create-file">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">10</property>
                 <property name="label" translatable="yes">Press the button to create the LATEX file:</property>
               </object>
               <packing>
@@ -181,6 +187,7 @@ to get to the result.</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to create .tex file with the Floyd Algorithm applied</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">20</property>
               </object>
@@ -197,6 +204,7 @@ to get to the result.</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to exit the program</property>
                 <property name="halign">center</property>
                 <property name="margin-top">10</property>
                 <property name="margin-bottom">20</property>

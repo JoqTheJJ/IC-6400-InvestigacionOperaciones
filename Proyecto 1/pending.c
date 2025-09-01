@@ -13,12 +13,6 @@
 #include <gtk/gtk.h>
 #include <cairo.h>
 
-typedef struct {
-    const char *window_id;  // Window name
-    const char *button_id;  // Exit button name
-} NewWindow;
-
-
 //Main pending program
 int main(int argc, char *argv[]) {
 
@@ -30,7 +24,6 @@ int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
     // Load glade interface
     builder = gtk_builder_new_from_file("pending.glade");
-
 
 
     // Window

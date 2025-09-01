@@ -16,12 +16,6 @@
 #include <math.h>
 #include <glib/gstdio.h> 
 
-// Structure to create the new window
-typedef struct {
-    const char *window_id;  // Window name
-    const char *button_id;  // Exit button name
-} NewWindow;
-
 // - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix
 typedef struct {

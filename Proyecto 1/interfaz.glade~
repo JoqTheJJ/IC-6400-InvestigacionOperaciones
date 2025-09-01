@@ -35,10 +35,10 @@
             <property name="halign">center</property>
             <property name="xpad">10</property>
             <property name="ypad">30</property>
-            <property name="label" translatable="yes">- This is the current interface, where a menu is desplayed that will have different options in the future.
+            <property name="label" translatable="yes">- A menu is displayed with different algorithms listed.
 
-- The user can choose one of the radio buttons and a screen will pop up. If the user hovers over an
-option they can view a basic description.</property>
+- The user can choose one of the radio buttons and a screen will pop up with a way to try out the algorithm chosen. If the user hovers over an
+option they can view a basic description of said algorithm.</property>
             <attributes>
               <attribute name="font-desc" value="Sans 12"/>
             </attributes>
@@ -176,162 +176,6 @@ n iterations (where n is the number of vertices), the matrix contains the shorte
             <property name="fill">True</property>
             <property name="padding">20</property>
             <property name="position">3</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkWindow" id="window1">
-    <property name="can-focus">False</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkLabel" id="instruction1">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="margin-top">30</property>
-            <property name="label" translatable="yes">Chosen program is not available.</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="terminate-1">
-            <property name="label" translatable="yes">End Program</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="halign">center</property>
-            <property name="margin-top">50</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">20</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkWindow" id="window2">
-    <property name="can-focus">False</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkLabel" id="instruction2">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="margin-top">30</property>
-            <property name="label" translatable="yes">Chosen program is not available.</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="terminate-2">
-            <property name="label" translatable="yes">End Program</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="halign">center</property>
-            <property name="margin-top">50</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">20</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkWindow" id="window3">
-    <property name="can-focus">False</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkLabel" id="instruction3">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="margin-top">30</property>
-            <property name="label" translatable="yes">Chosen program is not available.</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="terminate-3">
-            <property name="label" translatable="yes">End Program</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="halign">center</property>
-            <property name="margin-top">50</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">20</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkWindow" id="window4">
-    <property name="can-focus">False</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkLabel" id="instruction4">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="margin-top">30</property>
-            <property name="label" translatable="yes">Chosen program is not available.</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="terminate-4">
-            <property name="label" translatable="yes">End Program</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="halign">center</property>
-            <property name="margin-top">50</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">20</property>
-            <property name="position">1</property>
           </packing>
         </child>
       </object>
