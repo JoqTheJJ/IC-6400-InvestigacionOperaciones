@@ -18,58 +18,6 @@
 #include <ctype.h>
 
 
-/* ################################## FLOYD ################################## */
-
-void Floyd(int** D, int n){
-
-
-    int** P = malloc(sizeof(int*) * n); //Matrix P
-
-    for (int i = 0; i < n; i++){
-        P[i] = malloc(sizeof(int) * n);
-        for (int j = 0; j < n; j++){
-            P[i][j] = 0; // 0 state (No change done)
-        }
-    }
-
-    int** changes = malloc(sizeof(int*) * n); //Changes made to D/P
-
-    for (int i = 0; i < n; i++){
-        changes[i] = malloc(sizeof(int) * n);
-        for (int j = 0; j < n; j++){
-            changes[i][j] = 0; // 0 state (No change done)
-        }
-    }
-
-
-
-
-    for (int node = 0; node < n; node++){
-
-        saveToTexFile(D, P, changes, n, node) //Save current state (before changes)
-
-        for (int i = 0; i < n; i++){
-            for (int j = 0; j < n; j++){
-
-                changes[i][j] = 0; //No change done
-                sum = D[i][nodo] + D[nodo][j];
-
-                if (i != j && //No node to node
-                D[i][j] > sum){  //Direct distance is greater than going through the node
-
-                    D[i][j] =  sum;
-                    P[i][j] = node;
-                    changes[i][j] = 1; //Change registered
-
-                }
-            }
-        }
-    }
-
-    saveToTexFile(D, P, changes, n, n) //Save final state
-
-
-}
 
 
 
@@ -100,16 +48,6 @@ void frameEnd(FILE* f){
 
 /* ################################## TEX ################################## */
 
-
-void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, int iteration){
-    
-    frameTable(D, changes, n, iteration, f, 'D');
-
-    frameTable(P, changes, n, iteration, f, 'P');
-
-
-}
-
 void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c){
 
     frameStart(f, 0, iteration, c);
@@ -126,8 +64,8 @@ void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c
 
 
     fprintf(f, "        \\hline\n");
-    fprintf(f, "        \\textbf{%c} ", name);
-    for (int col = 0; col < max; col++){
+    fprintf(f, "        \\textbf{%c} ", c);
+    for (int col = 0; col < size; col++){
         fprintf(f, "& \\textbf{%d} ", col);
     }
     fprintf(f, "\\\\\n        \\hline\n");
@@ -135,12 +73,12 @@ void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c
 
 
     for (int i = 0; i < size; ++i){
-        fprintf(f, "        \\textbf{%d}", line);
+        fprintf(f, "        \\textbf{%d}", i);
         for (int j = 0; j < size; j++){
             if (changes[i][j]){
-                fprintf(f, "& \\cellcolor{yellow}%d ", matrix[line][col]);
+                fprintf(f, "& \\cellcolor{yellow}%d ", m[i][j]);
             } else {
-                fprintf(f, "& %d ", matrix[line][col]);
+                fprintf(f, "& %d ", m[i][j]);
             }
         }
         fprintf(f, "\\\\\n        \\hline\n");
@@ -151,13 +89,74 @@ void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c
     frameEnd(f);
 }
 
+void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, int iteration){
+    
+    frameTable(D, changes, n, iteration, f, 'D');
+
+    frameTable(P, changes, n, iteration, f, 'P');
+
+
+}
+
+/* ################################## FLOYD ################################## */
+
+void Floyd(int** D, int n, FILE* f){
+
+
+    int** P = malloc(sizeof(int*) * n); //Matrix P
+
+    for (int i = 0; i < n; i++){
+        P[i] = malloc(sizeof(int) * n);
+        for (int j = 0; j < n; j++){
+            P[i][j] = 0; // 0 state (No change done)
+        }
+    }
+
+    int** changes = malloc(sizeof(int*) * n); //Changes made to D/P
+
+    for (int i = 0; i < n; i++){
+        changes[i] = malloc(sizeof(int) * n);
+        for (int j = 0; j < n; j++){
+            changes[i][j] = 0; // 0 state (No change done)
+        }
+    }
 
 
 
+
+    for (int node = 0; node < n; node++){
+
+        saveToTexFile(D, P, changes, n, f, node); //Save current state (before changes)
+
+        for (int i = 0; i < n; i++){
+            int sum;
+            for (int j = 0; j < n; j++){
+
+                changes[i][j] = 0; //No change done
+                sum = D[i][node] + D[node][j];
+
+                if (i != j && //No node to node
+                D[i][j] > sum){  //Direct distance is greater than going through the node
+
+                    D[i][j] =  sum;
+                    P[i][j] = node;
+                    changes[i][j] = 1; //Change registered
+
+                }
+            }
+        }
+    }
+
+    saveToTexFile(D, P, changes, n, f, n); //Save final state
+
+
+}
 
 /* ################################## MAIN ################################## */
 
 int main(int argc, char *argv[]) {
+
+    srand(0);
 
     int nodes = 5;
 
@@ -166,14 +165,20 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < nodes; i++){
         matrixConnections[i] = malloc(sizeof(int) * nodes);
         for (int j = 0; j < nodes; j++){
-            matrixConnections[i][j] = 10;
+            matrixConnections[i][j] = rand() % 10 + 1;
         }
     }
 
+    //File
+    FILE* file;
+    file = fopen("programToLaTeX.tex", "w");
+    if (file == NULL) {
+        printf("Error: File null\n");
+        return 1;
+    }
 
 
-
-    Floyd(matrixConnections, nodes);
+    Floyd(matrixConnections, nodes, file);
 
 
 
@@ -182,7 +187,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < nodes; i++){
         free(matrixConnections[i]);
     }
-    free(matrixConnections)
+    free(matrixConnections);
 
     return 0;
 }
