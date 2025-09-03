@@ -17,7 +17,8 @@
 #include <cairo.h>
 #include <ctype.h>
 
-
+// Agregado por Meli
+#define INF 9999
 
 
 
@@ -90,12 +91,57 @@ void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c
 }
 
 void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, int iteration){
-    
+    // // Agregado por Meli
+    // fprintf(f, "\\documentclass[12pt]{article}");
+    //
+    // fprintf(f, "\n \\usepackage{tikz-network}");
+    //
+    // fprintf(f, "\n \\begin{document}");
+
     frameTable(D, changes, n, iteration, f, 'D');
 
     frameTable(P, changes, n, iteration, f, 'P');
 
+    // fprintf(f, "\n \\end{document}");
 
+
+}
+
+int finalGraph(FILE* f, int** D, int** P, int n) {
+    f = fopen("programToLaTeX.tex", "w");
+
+    fprintf(f, "\\begin{tikzpicture}\n");
+
+
+    if (f == NULL) {
+        printf("Error: File null\n");
+        return 1;
+    }
+    for (int i = 0; i < n; i++) {
+        // Create all the vertexes
+        // \Vertex[label=$v_1$]{A}  i//5
+        fprintf(f, " \\Vertex[x=%d, y=%d, size = 1, label=$c_%c$]{%c}\n", 2*(i%5), 2*(i), 'A'+ i, 'A'+ i);
+
+    }
+    for (int i = 0; i < n; i++) { //    We are on the row/city A+i
+        for (int j = 0; j < n; j++) { // Now we visit each associated city to A+i
+
+            if (i==j) continue;
+
+            if (P[i][j] == INF) continue;
+
+            fprintf(f, " \n \\Edge[bend=-30, label=$%d$, Direct](%c)(%c)", D[i][j] ,'A'+ i, 'A'+ j);
+            // This line draws the directed arrow, where:
+            // %d corresponds to the distance between cities
+            // %c corresponds to the cities
+
+        }
+    }
+    fprintf(f, "\n \\end{tikzpicture}\n");
+
+    fclose(f);
+
+    return 0;
 }
 
 /* ################################## FLOYD ################################## */
