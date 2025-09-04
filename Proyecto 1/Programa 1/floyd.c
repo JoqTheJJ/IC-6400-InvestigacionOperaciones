@@ -18,7 +18,7 @@
 #include <ctype.h>
 
 // Agregado por Meli
-#define INF 9999
+#define INF __INT_MAX__
 
 
 
@@ -28,15 +28,48 @@ void documentStart(FILE* f){
     fprintf(f, "\\documentclass{beamer}\n");
     //fprintf(f, "\\usetheme{Warsaw}\n");
     //fprintf(f, "\\usecolortheme{seahorse}\n");
+
+    //Packages
+    fprintf(f, "\\usepackage[graphicx]\n");
     fprintf(f, "\\usepackage{tikz-network}\n");
     fprintf(f, "\\usepackage[table]{xcolor}\n");
+
+    //Document information
     fprintf(f, "\\title{Graph Theory}\n");
+    fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo & Josu\\'e Soto}\n");
+    fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
+    fprintf(f, "\\date{2025}\n");
+
+    //begin
     fprintf(f, "\\begin{document}\n");
+    fprintf(f, "\\maketitle\n");
 }
 
 
 void introduction(FILE* f){
 
+
+    fprintf(f, "\\begin{frame}\n");
+    fprintf(f, "\\frametitle{Floyd's Algorithm}\n");
+    fprintf(f, "This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.\n");
+
+    fprintf(f, "Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.\n");
+
+    fprintf(f, "\\end{frame}\n");
+
+
+    fprintf(f, "\\begin{frame}\n");
+    fprintf(f, "\\frametitle{Robert W. Floyd (1936–2001)}\n");
+
+    fprintf(f, "\\begin{figure}\n");
+    fprintf(f, "\\centering\n");
+    fprintf(f, "\\includegraphics[width=0.25\textwidth]{floyd.jpg}\n");
+    fprintf(f, "\\caption{\\label{fig:floyd}Robert Floyd}\n");
+    fprintf(f, "\\end{figure}\n");
+    
+    fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n");
+    
+    fprintf(f, "\\end{frame}\n");
 }
 
 
@@ -92,8 +125,11 @@ void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c
     for (int i = 0; i < size; ++i){
         fprintf(f, "        \\textbf{%d}", i);
         for (int j = 0; j < size; j++){
-            if (changes[i][j]){
-                fprintf(f, "& \\cellcolor{yellow}%d ", m[i][j]);
+
+            if (m[i][j] == INF){
+                fprintf(f, "& \\infty ");
+            } else if (changes[i][j]){
+                fprintf(f, "& \\cellcolor[HTML]{D74894}%d ", m[i][j]);
             } else {
                 fprintf(f, "& %d ", m[i][j]);
             }
@@ -211,13 +247,11 @@ int initialGraph(FILE* f, int** D, int n) {
 
 /* ################################## FLOYD ################################## */
 
-void Floyd(int** D,int** P, int n, FILE* f){
+void Floyd(int** D, int** P, int n, FILE* f){
 
 
-    //int** P = malloc(sizeof(int*) * n); //Matrix P
 
     for (int i = 0; i < n; i++){
-        P[i] = malloc(sizeof(int) * n);
         for (int j = 0; j < n; j++){
             P[i][j] = 0; // 0 state (No change done)
         }
@@ -265,9 +299,7 @@ void Floyd(int** D,int** P, int n, FILE* f){
 
 /* ################################## MAIN ################################## */
 
-int main(int** matrix, int nodes) {
-
-
+int main(int* names, int** matrix, int nodes) {
 
     int** P = malloc(sizeof(int*) * nodes);
     for (int i = 0; i < nodes; i++){
