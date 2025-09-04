@@ -36,7 +36,7 @@ void documentStart(FILE* f){
 
     //Document information
     fprintf(f, "\\title{Graph Theory}\n");
-    fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo & Josu\\'e Soto}\n");
+    fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo \\& Josu\\'e Soto}\n");
     fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
     fprintf(f, "\\date{2025}\n\n");
 
@@ -49,19 +49,19 @@ void documentStart(FILE* f){
 void introduction(FILE* f){
 
 
-    fprintf(f, "\\begin{frame}\n");
+    fprintf(f, "\\begin{frame}\n\n");
     fprintf(f, "\\frametitle{Floyd's Algorithm}\n");
     fprintf(f, "This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.\n");
 
     fprintf(f, "Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.\n");
 
-    fprintf(f, "\\end{frame}\n");
+    fprintf(f, "\\end{frame}\n\n\n\n");
 
 
     fprintf(f, "\\begin{frame}\n");
     fprintf(f, "\\frametitle{Robert W. Floyd (1936–2001)}\n");
 
-    fprintf(f, "\\begin{figure}\n");
+    fprintf(f, "\\begin{figure}\n\n");
     fprintf(f, "\\centering\n");
     fprintf(f, "\\includegraphics[width=0.25\\textwidth]{floyd.jpg}\n");
     fprintf(f, "\\caption{\\label{fig:floyd}Robert Floyd}\n");
@@ -69,7 +69,7 @@ void introduction(FILE* f){
     
     fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n");
     
-    fprintf(f, "\\end{frame}\n");
+    fprintf(f, "\\end{frame}\n\n\n");
 }
 
 
@@ -82,7 +82,7 @@ void frameStart(FILE* f, int frameType, int number, char character){
 
     switch (frameType){
     case 0:
-        fprintf(f, "Table %c$_{%d}$}\n", character, number);
+        fprintf(f, "Table $%c_{%d}$}\n", character, number);
         break;
 
     default:
@@ -251,20 +251,18 @@ void Floyd(int** D, int** P, int n, FILE* f){
 
 
 
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
-            P[i][j] = 0; // 0 state (No change done)
-        }
-    }
-
     int** changes = malloc(sizeof(int*) * n); //Changes made to D/P
 
-    for (int i = 0; i < n; i++){
+    for (int i = 0; i < n; ++i){
         changes[i] = malloc(sizeof(int) * n);
-        for (int j = 0; j < n; j++){
+        for (int j = 0; j < n; ++j){
+            P[i][j] = 100; // 100 state (No change done)
             changes[i][j] = 0; // 0 state (No change done)
         }
     }
+
+    
+
 
 
 
