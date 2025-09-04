@@ -299,7 +299,7 @@ void Floyd(int** D, int** P, int n, FILE* f){
 
 /* ################################## MAIN ################################## */
 
-int main(int* names, int** matrix, int nodes) {
+int runFloyd(char** names, int** matrix, int nodes) {
 
     int** P = malloc(sizeof(int*) * nodes);
     for (int i = 0; i < nodes; i++){

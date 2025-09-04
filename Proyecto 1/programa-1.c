@@ -14,7 +14,8 @@
 #include <gtk/gtk.h>
 #include <cairo.h>
 #include <math.h>
-#include <glib/gstdio.h> 
+#include <glib/gstdio.h>
+#include  "Programa 1/floyd.c"
 
 // - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix
@@ -781,8 +782,12 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    // Calls Floyd Algorithm Function
+    int** matrix = (int**)md.values;
+    char** names = (char**)md.names;
+    int n = md.n ;
 
+    // Calls Floyd Algorithm Function
+    runFloyd(names, matrix, n);
     // Cleanup
     matrix_data_clear(&md);
 }
