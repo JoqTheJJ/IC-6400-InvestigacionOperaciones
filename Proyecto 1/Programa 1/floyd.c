@@ -13,8 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gtk/gtk.h>
-#include <cairo.h>
+// #include <gtk/gtk.h>
+// #include <cairo.h>
 #include <ctype.h>
 
 // Agregado por Meli
@@ -108,8 +108,11 @@ void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, int iteratio
 }
 
 int finalGraph(FILE* f, int** D, int** P, int n) {
-    f = fopen("programToLaTeX.tex", "w");
+    //f = fopen("programToLaTeX.tex", "w");
 
+    fprintf(f, "\\begin{frame}\n");
+    fprintf(f, "\\frametitle{Final Graph}\n");
+    fprintf(f, "\\begin{center}\n");
     fprintf(f, "\\begin{tikzpicture}\n");
 
 
@@ -120,7 +123,8 @@ int finalGraph(FILE* f, int** D, int** P, int n) {
     for (int i = 0; i < n; i++) {
         // Create all the vertexes
         // \Vertex[label=$v_1$]{A}  i//5
-        fprintf(f, " \\Vertex[x=%d, y=%d, size = 1, label=$c_%c$]{%c}\n", 2*(i%5), 2*(i), 'A'+ i, 'A'+ i);
+        fprintf(f, " \\Vertex[x=%d, y=%d, size=0.5, label=$c_%c$]{%c}\n", 2*(i%5), 2*(i/5), 'A'+i, 'A'+i);
+
 
     }
     for (int i = 0; i < n; i++) { //    We are on the row/city A+i
@@ -137,19 +141,64 @@ int finalGraph(FILE* f, int** D, int** P, int n) {
 
         }
     }
-    fprintf(f, "\n \\end{tikzpicture}\n");
-
-    fclose(f);
+    fprintf(f, "\\end{tikzpicture}\n");
+    fprintf(f, "\\end{center}\n");
+    fprintf(f, "\\end{frame}\n");
+    //fclose(f);
 
     return 0;
 }
 
+int initialGraph(FILE* f, int** D, int n) {
+    //f = fopen("programToLaTeX.tex", "w");
+
+    fprintf(f, "\\begin{frame}\n");
+    fprintf(f, "\\frametitle{Initial Graph}\n");
+    fprintf(f, "\\begin{center}\n");
+    fprintf(f, "\\begin{tikzpicture}\n");
+
+
+    if (f == NULL) {
+        printf("Error: File null\n");
+        return 1;
+    }
+    for (int i = 0; i < n; i++) {
+        // Create all the vertexes
+        // \Vertex[label=$v_1$]{A}  i//5
+        fprintf(f, " \\Vertex[x=%d, y=%d, size=0.5, label=$c_%c$]{%c}\n", 2*(i%5), 2*(i/5), 'A'+i, 'A'+i);
+
+
+    }
+    for (int i = 0; i < n; i++) { //    We are on the row/city A+i
+        for (int j = 0; j < n; j++) { // Now we visit each associated city to A+i
+
+            if (i==j) continue;
+
+            if (D[i][j] == INF) continue;
+
+            fprintf(f, " \n \\Edge[bend=-30, label=$%d$, Direct](%c)(%c)", D[i][j] ,'A'+ i, 'A'+ j);
+            // This line draws the directed arrow, where:
+            // %d corresponds to the distance between cities
+            // %c corresponds to the cities
+
+        }
+    }
+    fprintf(f, "\\end{tikzpicture}\n");
+    fprintf(f, "\\end{center}\n");
+    fprintf(f, "\\end{frame}\n");
+
+    //fclose(f);
+
+    return 0;
+}
+
+
 /* ################################## FLOYD ################################## */
 
-void Floyd(int** D, int n, FILE* f){
+void Floyd(int** D,int** P, int n, FILE* f){
 
 
-    int** P = malloc(sizeof(int*) * n); //Matrix P
+    //int** P = malloc(sizeof(int*) * n); //Matrix P
 
     for (int i = 0; i < n; i++){
         P[i] = malloc(sizeof(int) * n);
@@ -207,6 +256,8 @@ int main(int argc, char *argv[]) {
     int nodes = 5;
 
     int** matrixConnections = malloc(sizeof(int*) * nodes); //Matrix D[0]
+    int** P = malloc(sizeof(int*) * nodes);
+
 
     for (int i = 0; i < nodes; i++){
         matrixConnections[i] = malloc(sizeof(int) * nodes);
@@ -223,10 +274,22 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    fprintf(file, "\\documentclass{beamer}\n");
+    fprintf(file, "\\usepackage{tikz-network}\n");
+    fprintf(file, "\\usepackage[table]{xcolor}\n");
+    fprintf(file, "\\title{Graph Theory}\n");
+    fprintf(file, "\\begin{document}\n");
 
-    Floyd(matrixConnections, nodes, file);
 
 
+    initialGraph(file, matrixConnections, nodes);
+
+    Floyd(matrixConnections, P, nodes, file);
+
+    finalGraph(file, matrixConnections, P, nodes);
+
+    fprintf(file, "\\end{document}\n");
+    fclose(file);
 
 
     //Free memory
