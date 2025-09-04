@@ -24,6 +24,22 @@
 
 /* ################################## TEX ################################## */
 
+void documentStart(FILE* f){
+    fprintf(f, "\\documentclass{beamer}\n");
+    //fprintf(f, "\\usetheme{Warsaw}\n");
+    //fprintf(f, "\\usecolortheme{seahorse}\n");
+    fprintf(f, "\\usepackage{tikz-network}\n");
+    fprintf(f, "\\usepackage[table]{xcolor}\n");
+    fprintf(f, "\\title{Graph Theory}\n");
+    fprintf(f, "\\begin{document}\n");
+}
+
+
+void introduction(FILE* f){
+
+}
+
+
 void frameStart(FILE* f, int frameType, int number, char character){
     //Frame Type (title)
     //0 - Table (char)(number)
@@ -249,21 +265,13 @@ void Floyd(int** D,int** P, int n, FILE* f){
 
 /* ################################## MAIN ################################## */
 
-int main(int argc, char *argv[]) {
+int main(int** matrix, int nodes) {
 
-    srand(0);
 
-    int nodes = 5;
 
-    int** matrixConnections = malloc(sizeof(int*) * nodes); //Matrix D[0]
     int** P = malloc(sizeof(int*) * nodes);
-
-
     for (int i = 0; i < nodes; i++){
-        matrixConnections[i] = malloc(sizeof(int) * nodes);
-        for (int j = 0; j < nodes; j++){
-            matrixConnections[i][j] = rand() % 10 + 1;
-        }
+        P[i] = malloc(sizeof(int) * nodes);
     }
 
     //File
@@ -274,19 +282,16 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    fprintf(file, "\\documentclass{beamer}\n");
-    fprintf(file, "\\usepackage{tikz-network}\n");
-    fprintf(file, "\\usepackage[table]{xcolor}\n");
-    fprintf(file, "\\title{Graph Theory}\n");
-    fprintf(file, "\\begin{document}\n");
+    
 
+    documentStart(file);
+    introduction(file);
 
+    initialGraph(file, matrix, nodes);
 
-    initialGraph(file, matrixConnections, nodes);
+    Floyd(matrix, P, nodes, file);
 
-    Floyd(matrixConnections, P, nodes, file);
-
-    finalGraph(file, matrixConnections, P, nodes);
+    finalGraph(file, matrix, P, nodes);
 
     fprintf(file, "\\end{document}\n");
     fclose(file);
@@ -294,9 +299,24 @@ int main(int argc, char *argv[]) {
 
     //Free memory
     for (int i = 0; i < nodes; i++){
-        free(matrixConnections[i]);
+        free(matrix[i]);
+        free(P[i]);
     }
-    free(matrixConnections);
+    free(matrix);
+    free(P);
+
+
+
+
+
+
+
+
+    int responseCode = system("pdflatex programToLaTeX.tex");
+    if (responseCode == 0){
+        printf("\n\nLatex compiled without problems\n");
+        system("evince programToLaTeX.pdf");
+    }
 
     return 0;
 }
