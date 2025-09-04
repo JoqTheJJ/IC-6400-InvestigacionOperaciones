@@ -21,34 +21,22 @@ typedef struct {
     const char *button_id;  // Exit button name
 } NewWindow;
 
-//Threads used for allocating other programs
-pthread_t thread1;
-pthread_t thread2;
-pthread_t thread3;
-pthread_t thread4;
-
 // Initialize pending.c program
-static void *initialize_pending(void *arg){
+static void initialize_pending(){
     /*
     Initializes the pending.c program that consists of a button to exit
     and a "Coming Soon" message for other algorithms of lineal programming
     later to be programmed
     */
 
-    const char *filename = "pending.c";
-    const char *compile_cmd = "make pending";
-
-    //printf("Compiling file using: %s\n", compile_cmd);
-    system(compile_cmd);
-
     //printf("\nRunning file: %s\n", filename);
-    system("./pending");
+    system("./pending &");
     pthread_exit(NULL);
 
 }
 
 // Initialize pragrama-1.c program
-static void *initialize_program_1(void *arg){
+static void initialize_program_1(){
     /*
     Initializes the programa-1.c program that consists of a way to obtain
     the shortest path between any pair of nodes in a graph with weighted
@@ -57,14 +45,8 @@ static void *initialize_program_1(void *arg){
     the result.
     */
 
-    const char *filename = "programa-1.c";
-    const char *compile_cmd = "make programa-1";
-
-    //printf("Compiling file using: %s\n", compile_cmd);
-    system(compile_cmd);
-
     //printf("\nRunning file: %s\n", filename);
-    system("./programa-1");
+    system("./programa-1 &");
     pthread_exit(NULL);
 
 }
@@ -84,19 +66,19 @@ static void option_clicked(GtkButton *btn, gpointer user_data) {
     // Open the corresponding program to the button pressed
     switch(id){
         case 1:
-            pthread_create(&thread1, NULL, initialize_program_1, NULL);
+            initialize_program_1();
             break;
 
         case 2:
-            pthread_create(&thread2, NULL, initialize_pending, NULL);
+            initialize_pending();
             break;
 
         case 3:
-            pthread_create(&thread3, NULL, initialize_pending, NULL);
+            initialize_pending();
             break;
 
         case 4:
-            pthread_create(&thread4, NULL, initialize_pending, NULL);
+            initialize_pending();
             break;
 
         default:
