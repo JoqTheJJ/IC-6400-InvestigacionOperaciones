@@ -782,7 +782,7 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
     }
 
     // Calls Floyd Algorithm Function
-    
+
     // Cleanup
     matrix_data_clear(&md);
 }
@@ -803,14 +803,13 @@ int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
 
     // CSS - For the red cells
-    GtkCssProvider *provider = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(provider, "style.css", NULL);
+    GtkCssProvider *prov = gtk_css_provider_new();
+    gtk_css_provider_load_from_path(prov, "style.css", NULL);
     gtk_style_context_add_provider_for_screen(
         gdk_screen_get_default(),
-        GTK_STYLE_PROVIDER(provider),
-        GTK_STYLE_PROVIDER_PRIORITY_USER
-    );
-    g_object_unref(provider);
+        GTK_STYLE_PROVIDER(prov),
+        GTK_STYLE_PROVIDER_PRIORITY_USER);
+    g_object_unref(prov);
 
     // Load glade interface
     builder = gtk_builder_new_from_file("programa-1.glade");

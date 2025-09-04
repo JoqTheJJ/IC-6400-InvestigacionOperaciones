@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.40.0 -->
+<!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkAdjustment" id="adjustment-nodes">
@@ -38,11 +38,11 @@
               <object class="GtkLabel" id="title">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-top">20</property>
-                <property name="margin-bottom">15</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
                 <property name="label" translatable="yes">Shortest Paths using the Floyd Algorithm</property>
                 <attributes>
-                  <attribute name="font-desc" value="Serif Bold 15"/>
+                  <attribute name="font-desc" value="Serif Bold 14"/>
                   <attribute name="foreground" value="#d7d748489494"/>
                 </attributes>
               </object>
@@ -60,7 +60,6 @@
                 <property name="label" translatable="yes">- This program consists of a way to obtain the shortest path
 between any pair of nodes in a graph with weighted
 distances.
-
 - This program will do this utilizing the Floyd Algorithm and
 then create a LATEX document with all the tables calculated
 to get to the result.
@@ -69,7 +68,7 @@ DIRECTIONS:
 - To express the infinite value, enter an I or i in the cell.
 - If the cell becomes red, you've entered the wrong value.</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans 10"/>
+                  <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
               </object>
               <packing>
@@ -82,9 +81,12 @@ DIRECTIONS:
               <object class="GtkLabel" id="instruction-nodes">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-top">20</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">Insert the amount of nodes wanted (1=&lt;):</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -99,7 +101,7 @@ DIRECTIONS:
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Choose a number greater than 1 for the amount of nodes wanted</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">10</property>
                 <property name="adjustment">adjustment-nodes</property>
                 <property name="value">1</property>
               </object>
@@ -113,8 +115,11 @@ DIRECTIONS:
               <object class="GtkLabel" id="upload">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">Upload a .txt file:</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -129,7 +134,7 @@ DIRECTIONS:
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface as a Table D(0)</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">10</property>
                 <property name="title" translatable="yes"/>
               </object>
               <packing>
@@ -142,8 +147,11 @@ DIRECTIONS:
               <object class="GtkLabel" id="save">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">Press the button to save your current work:</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -160,7 +168,7 @@ DIRECTIONS:
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Press button to save the current Table D(0) as a .txt file</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">10</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -172,8 +180,11 @@ DIRECTIONS:
               <object class="GtkLabel" id="create-file">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">Press the button to create the LATEX file:</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -190,7 +201,7 @@ DIRECTIONS:
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Press button to create .tex file with the Floyd Algorithm applied</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -201,14 +212,14 @@ DIRECTIONS:
             <child>
               <object class="GtkButton" id="exit">
                 <property name="label" translatable="yes">Press button to exit this program</property>
-                <property name="height-request">50</property>
+                <property name="height-request">40</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Press button to exit the program</property>
                 <property name="halign">center</property>
                 <property name="margin-top">10</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-bottom">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>

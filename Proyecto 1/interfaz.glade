@@ -5,7 +5,8 @@
   <object class="GtkWindow" id="window">
     <property name="can-focus">False</property>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="menu-box">
+        <property name="name">menu-bg</property>
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
@@ -178,6 +179,9 @@ n iterations (where n is the number of vertices), the matrix contains the shorte
             <property name="position">3</property>
           </packing>
         </child>
+        <style>
+          <class name="menu-bg"/>
+        </style>
       </object>
     </child>
   </object>
