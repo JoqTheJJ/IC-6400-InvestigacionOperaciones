@@ -25,24 +25,24 @@
 /* ################################## TEX ################################## */
 
 void documentStart(FILE* f){
-    fprintf(f, "\\documentclass{beamer}\n");
+    fprintf(f, "\\documentclass{beamer}\n\n");
     //fprintf(f, "\\usetheme{Warsaw}\n");
     //fprintf(f, "\\usecolortheme{seahorse}\n");
 
     //Packages
-    fprintf(f, "\\usepackage[graphicx]\n");
+    fprintf(f, "\\usepackage{graphicx}\n");
     fprintf(f, "\\usepackage{tikz-network}\n");
-    fprintf(f, "\\usepackage[table]{xcolor}\n");
+    fprintf(f, "\\usepackage[table]{xcolor}\n\n");
 
     //Document information
     fprintf(f, "\\title{Graph Theory}\n");
     fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo & Josu\\'e Soto}\n");
     fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
-    fprintf(f, "\\date{2025}\n");
+    fprintf(f, "\\date{2025}\n\n");
 
     //begin
     fprintf(f, "\\begin{document}\n");
-    fprintf(f, "\\maketitle\n");
+    fprintf(f, "\\maketitle\n\n");
 }
 
 
@@ -63,7 +63,7 @@ void introduction(FILE* f){
 
     fprintf(f, "\\begin{figure}\n");
     fprintf(f, "\\centering\n");
-    fprintf(f, "\\includegraphics[width=0.25\textwidth]{floyd.jpg}\n");
+    fprintf(f, "\\includegraphics[width=0.25\\textwidth]{floyd.jpg}\n");
     fprintf(f, "\\caption{\\label{fig:floyd}Robert Floyd}\n");
     fprintf(f, "\\end{figure}\n");
     
@@ -92,7 +92,7 @@ void frameStart(FILE* f, int frameType, int number, char character){
 }
 
 void frameEnd(FILE* f){
-    fprintf(f, "\\end{frame}");
+    fprintf(f, "\\end{frame}\n\n\n");
 }
 
 
@@ -314,7 +314,6 @@ int runFloyd(char** names, int** matrix, int nodes) {
         return 1;
     }
 
-    
 
     documentStart(file);
     introduction(file);
@@ -336,12 +335,6 @@ int runFloyd(char** names, int** matrix, int nodes) {
     }
     free(matrix);
     free(P);
-
-
-
-
-
-
 
 
     int responseCode = system("pdflatex programToLaTeX.tex");

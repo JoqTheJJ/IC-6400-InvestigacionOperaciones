@@ -782,12 +782,34 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    int** matrix = (int**)md.values;
-    char** names = (char**)md.names;
-    int n = md.n ;
+
+     printf("Conversion salvaje 0\n");
+    int n = md.n;
+
+    printf("Conversion salvaje 1\n");
+    int** matrix = malloc(n * sizeof(int*));
+    for (int i = 0; i < n; i++) {
+        matrix[i] = malloc(n * sizeof(int));
+        for (int j = 0; j < n; j++) {
+            double v = g_array_index(md.values, double, i*n + j);
+            matrix[i][j] = (int) v;
+        }
+    }
+
+
+    printf("Conversion salvaje 2\n");
+    char **names = (char **) md.names->pdata;
+
+   
+    printf("Conversion salvaje 3\n");
+    // double *raw_values = (double *) matrix->values->data; // acceso directo
+
 
     // Calls Floyd Algorithm Function
     runFloyd(names, matrix, n);
+    printf("Post floyd");
+
+
     // Cleanup
     matrix_data_clear(&md);
 }
