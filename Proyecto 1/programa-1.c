@@ -28,6 +28,12 @@ typedef struct {
     gint        invalid_count; // Amount of invalid cells
 } Matrix;
 
+typedef struct {
+    gint        n;        // dimension
+    GPtrArray  *names;    // n items
+    GArray     *values;   // n*n doubles, row-major. INFINITY for "∞".
+} MatrixData;
+
 // Calculate the default names of columns and rows
 static gchar *alpha_label(gint idx) {
     // 0 is "A", 1 is "B", ..., 25 is "Z", 26 is "AA" ...
@@ -656,6 +662,132 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
     }
 // - - - - - END OF UPLOADING A FILE - - - - -
 
+// - - - - - CREATING MATRIX FOR CODE - - - - -
+
+// Initializes the structs values
+static void matrix_data_init(MatrixData *md, gint n) {
+    md->n      = n;
+    md->names  = g_ptr_array_new_with_free_func(g_free);
+    md->values = g_array_sized_new(FALSE, TRUE, sizeof(double), n*n);
+}
+
+// Cleanup of the data matrix
+static void matrix_data_clear(MatrixData *md) {
+    if (!md) return;
+    if (md->names)  g_ptr_array_free(md->names, TRUE);
+    if (md->values) g_array_free(md->values, TRUE);
+    md->n = 0; md->names = NULL; md->values = NULL;
+}
+
+// Cleans up spaces so that there aren't any extra lying around
+static inline gchar *trimdup(const gchar *s) {
+    if (!s) return g_strdup("");
+    gsize len = g_utf8_strlen(s, -1);
+    const gchar *b = s; while (*b && g_ascii_isspace(*b)) b++;
+    const gchar *e = s + strlen(s); while (e>b && g_ascii_isspace(e[-1])) e--;
+    return g_strndup(b, (gsize)(e-b));
+}
+
+static gboolean parse_number_or_inf(const gchar *txt, double *out) {
+    // Accept: "∞"
+    if (!txt) return FALSE;
+    gchar *t = trimdup(txt);
+    for (gchar *p = t; *p; ++p) *p = g_ascii_tolower(*p);
+
+    gboolean is_inf = (g_strcmp0(t, "∞") == 0);
+    if (is_inf) { *out = (double)__INT_MAX__;
+        g_free(t);
+        return TRUE;
+    }
+
+    gchar *endp = NULL;
+    double v = g_ascii_strtod(t, &endp);
+    gboolean ok = (endp && *endp == '\0');
+    if (ok) *out = v;
+    g_free(t);
+    return ok;
+}
+
+// Collecting the matrix info from the UI
+gboolean collect_matrix_from_ui(Matrix *ui, MatrixData *out, GError **err) {
+    g_return_val_if_fail(ui && out, FALSE);
+    const gint n = ui->n;
+    matrix_data_init(out, n);
+
+    // Collects the row and column names
+    for (gint j = 0; j < n; ++j) {
+        const gchar *h = gtk_entry_get_text(GTK_ENTRY(g_ptr_array_index(ui->col_headers, j)));
+        g_ptr_array_add(out->names, trimdup(h));
+    }
+
+    // Collects the cell values
+    for (gint i = 0; i < n; ++i) {
+        for (gint j = 0; j < n; ++j) {
+            GtkEntry *cell = GTK_ENTRY(g_ptr_array_index(ui->cells, i*n + j));
+            gchar *s = NULL;
+            cell_string_for_export(cell, i, j, &s);
+            double v;
+            if (!parse_number_or_inf(s, &v)) {
+                g_free(s);
+                matrix_data_clear(out);
+                g_set_error(err, G_FILE_ERROR, G_FILE_ERROR_INVAL,
+                            "Invalid number at (%d,%d): “%s”", i, j, s ? s : "");
+                return FALSE;
+            }
+            g_array_append_val(out->values, v);
+            g_free(s);
+        }
+    }
+    return TRUE;
+}
+
+// Create a matrix for the Floyd algorithm code
+static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
+    Matrix *ui = (Matrix*)user_data;
+
+    // Checking no cells have invalid entries
+    GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(btn));
+    if (GTK_IS_WINDOW(toplevel)) {
+        GtkWidget *focus = gtk_window_get_focus(GTK_WINDOW(toplevel));
+        if (focus && GTK_IS_ENTRY(focus)) {
+            // Validates all cells have the correct info
+            mark_cell_validity(focus, ui);
+        }
+    }
+    // Error message when there are invalid cells
+    if (ui->invalid_count > 0) {
+        GtkWidget *d = gtk_message_dialog_new(
+            GTK_WINDOW(toplevel),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+            "There are invalid cells. Please fix highlighted entries.");
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        return;
+    }
+
+    // Collect matrix and names
+    MatrixData md = {0};
+    GError *err = NULL;
+    if (!collect_matrix_from_ui(ui, &md, &err)) {
+        GtkWidget *d = gtk_message_dialog_new(
+            GTK_WINDOW(toplevel),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+            "Couldn't build the matrix:\n%s", err ? err->message : "Unknown error");
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        if (err) g_clear_error(&err);
+        return;
+    }
+
+    // Calls Floyd Algorithm Function
+    
+    // Cleanup
+    matrix_data_clear(&md);
+}
+
+// - - - - - END OF CREATING MATRIX FOR CODE - - - - -
 
 //Main for program 1
 int main(int argc, char *argv[]) {
@@ -666,7 +798,7 @@ int main(int argc, char *argv[]) {
     GtkWidget *boton_nodos;     // Spin button where user enters amount of nodes
     GtkWidget *boton_guardar;   // Button to save the table in a text file
     GtkWidget *boton_cargar;    // Button to upload a .txt file so that it can be read
-
+    GtkWidget *boton_crear_file;
 
     gtk_init(&argc, &argv);
 
@@ -714,6 +846,10 @@ int main(int argc, char *argv[]) {
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(boton_cargar), flt);
     // When a file is picked
     g_signal_connect(boton_cargar, "file-set", G_CALLBACK(file_chosen), ui);
+
+    // Create LATEX file button
+    boton_crear_file = GTK_WIDGET(gtk_builder_get_object(builder, "latex-file"));
+    g_signal_connect(boton_crear_file, "clicked", G_CALLBACK(latex_file_clicked), ui);
 
     // Termination button
     boton_salida = GTK_WIDGET(gtk_builder_get_object(builder, "exit"));
