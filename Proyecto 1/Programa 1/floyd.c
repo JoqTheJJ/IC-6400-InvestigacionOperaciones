@@ -62,8 +62,10 @@ void introduction(FILE* f){
     fprintf(f, "\\frametitle{Robert W. Floyd (1936–2001)}\n");
 
     fprintf(f, "\\begin{figure}\n\n");
-    fprintf(f, "\\centering\n");
+    //fprintf(f, "\\centering\n");
     fprintf(f, "\\includegraphics[width=0.25\\textwidth]{floyd.jpg}\n");
+
+
     fprintf(f, "\\caption{\\label{fig:floyd}Robert Floyd}\n");
     fprintf(f, "\\end{figure}\n");
     
@@ -98,7 +100,7 @@ void frameEnd(FILE* f){
 
 /* ################################## TEX ################################## */
 
-void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c){
+void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c, char** names){
 
     frameStart(f, 0, iteration, c);
 
@@ -116,20 +118,20 @@ void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c
     fprintf(f, "        \\hline\n");
     fprintf(f, "        \\textbf{%c} ", c);
     for (int col = 0; col < size; col++){
-        fprintf(f, "& \\textbf{%d} ", col);
+        fprintf(f, "& \\textbf{%s} ", names[col]);
     }
     fprintf(f, "\\\\\n        \\hline\n");
     fprintf(f, "        \\hline\n");
 
 
     for (int i = 0; i < size; ++i){
-        fprintf(f, "        \\textbf{%d}", i);
+        fprintf(f, "        \\textbf{%s}", names[i]);
         for (int j = 0; j < size; j++){
 
             if (m[i][j] == INF){
-                fprintf(f, "& \\infty ");
+                fprintf(f, "& $\\infty$ ");
             } else if (changes[i][j]){
-                fprintf(f, "& \\cellcolor[HTML]{D74894}%d ", m[i][j]);
+                fprintf(f, "& \\cellcolor[HTML]{D74894}$%d$ ", m[i][j]);
             } else {
                 fprintf(f, "& %d ", m[i][j]);
             }
@@ -142,24 +144,14 @@ void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c
     frameEnd(f);
 }
 
-void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, int iteration){
-    // // Agregado por Meli
-    // fprintf(f, "\\documentclass[12pt]{article}");
-    //
-    // fprintf(f, "\n \\usepackage{tikz-network}");
-    //
-    // fprintf(f, "\n \\begin{document}");
+void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, char** names, int iteration){
 
-    frameTable(D, changes, n, iteration, f, 'D');
-
-    frameTable(P, changes, n, iteration, f, 'P');
-
-    // fprintf(f, "\n \\end{document}");
-
+    frameTable(D, changes, n, iteration, f, 'D', names);
+    frameTable(P, changes, n, iteration, f, 'P', names);
 
 }
 
-int finalGraph(FILE* f, int** D, int** P, int n) {
+int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
     //f = fopen("programToLaTeX.tex", "w");
 
     fprintf(f, "\\begin{frame}\n");
@@ -175,7 +167,8 @@ int finalGraph(FILE* f, int** D, int** P, int n) {
     for (int i = 0; i < n; i++) {
         // Create all the vertexes
         // \Vertex[label=$v_1$]{A}  i//5
-        fprintf(f, " \\Vertex[x=%d, y=%d, size=0.5, label=$c_%c$]{%c}\n", 2*(i%5), 2*(i/5), 'A'+i, 'A'+i);
+        char* currentCity = names[i];
+        fprintf(f, " \\Vertex[x=%d, y=%d, color=pink, size=0.5, label=$%s$]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
 
 
     }
@@ -184,7 +177,7 @@ int finalGraph(FILE* f, int** D, int** P, int n) {
 
             if (i==j) continue;
 
-            if (P[i][j] == INF) continue;
+            if (D[i][j] == INF) continue;
 
             fprintf(f, " \n \\Edge[bend=-30, label=$%d$, Direct](%c)(%c)", D[i][j] ,'A'+ i, 'A'+ j);
             // This line draws the directed arrow, where:
@@ -201,7 +194,7 @@ int finalGraph(FILE* f, int** D, int** P, int n) {
     return 0;
 }
 
-int initialGraph(FILE* f, int** D, int n) {
+int initialGraph(FILE* f, int** D, int n, char** names) {
     //f = fopen("programToLaTeX.tex", "w");
 
     fprintf(f, "\\begin{frame}\n");
@@ -217,7 +210,8 @@ int initialGraph(FILE* f, int** D, int n) {
     for (int i = 0; i < n; i++) {
         // Create all the vertexes
         // \Vertex[label=$v_1$]{A}  i//5
-        fprintf(f, " \\Vertex[x=%d, y=%d, size=0.5, label=$c_%c$]{%c}\n", 2*(i%5), 2*(i/5), 'A'+i, 'A'+i);
+        char* currentCity = names[i];
+        fprintf(f, " \\Vertex[x=%d, y=%d, color=pink, size=0.5, label=$%s$]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
 
 
     }
@@ -247,7 +241,7 @@ int initialGraph(FILE* f, int** D, int n) {
 
 /* ################################## FLOYD ################################## */
 
-void Floyd(int** D, int** P, int n, FILE* f){
+void Floyd(int** D, int** P, int n, char** names, FILE* f){
 
 
 
@@ -256,7 +250,7 @@ void Floyd(int** D, int** P, int n, FILE* f){
     for (int i = 0; i < n; ++i){
         changes[i] = malloc(sizeof(int) * n);
         for (int j = 0; j < n; ++j){
-            P[i][j] = 100; // 100 state (No change done)
+            P[i][j] = 0; // 100 state (No change done)
             changes[i][j] = 0; // 0 state (No change done)
         }
     }
@@ -269,20 +263,26 @@ void Floyd(int** D, int** P, int n, FILE* f){
 
     for (int node = 0; node < n; node++){
 
-        saveToTexFile(D, P, changes, n, f, node); //Save current state (before changes)
+        saveToTexFile(D, P, changes, n, f, names, node); //Save current state (before changes)
 
         for (int i = 0; i < n; i++){
             int sum;
             for (int j = 0; j < n; j++){
 
                 changes[i][j] = 0; //No change done
-                sum = D[i][node] + D[node][j];
+
+                if(D[i][node] == INF || D[node][j] == INF){
+                    sum = INF;
+                } else {
+                    sum = D[i][node] + D[node][j];
+                }
+                
 
                 if (i != j && //No node to node
                 D[i][j] > sum){  //Direct distance is greater than going through the node
 
                     D[i][j] =  sum;
-                    P[i][j] = node;
+                    P[i][j] = node+1;
                     changes[i][j] = 1; //Change registered
 
                 }
@@ -290,7 +290,7 @@ void Floyd(int** D, int** P, int n, FILE* f){
         }
     }
 
-    saveToTexFile(D, P, changes, n, f, n); //Save final state
+    saveToTexFile(D, P, changes, n, f, names, n); //Save final state
 
 
 }
@@ -316,11 +316,11 @@ int runFloyd(char** names, int** matrix, int nodes) {
     documentStart(file);
     introduction(file);
 
-    initialGraph(file, matrix, nodes);
+    initialGraph(file, matrix, nodes, names);
 
-    Floyd(matrix, P, nodes, file);
+    Floyd(matrix, P, nodes, names, file);
 
-    finalGraph(file, matrix, P, nodes);
+    finalGraph(file, matrix, P, nodes, names);
 
     fprintf(file, "\\end{document}\n");
     fclose(file);
@@ -338,7 +338,7 @@ int runFloyd(char** names, int** matrix, int nodes) {
     int responseCode = system("pdflatex programToLaTeX.tex");
     if (responseCode == 0){
         printf("\n\nLatex compiled without problems\n");
-        system("evince programToLaTeX.pdf");
+        system("evince --presentation programToLaTeX.pdf &");
     }
 
     return 0;
