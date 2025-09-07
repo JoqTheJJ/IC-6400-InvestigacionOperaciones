@@ -22,6 +22,7 @@
 #include <ctype.h>
 
 #define INF __INT_MAX__
+#define PI 3.14159265358979323846
 
 
 
@@ -198,11 +199,22 @@ int initialGraph(FILE* f, int** D, int n, char** names) {
         printf("Error: File null\n");
         return 1;
     }
+
+    float angleIncrement = (2*PI/n); //radians
+    float angle = 0;
+    float xRadius = 5;
+    float yRadius = 5;
+    printf("<###> Got here #1");
     for (int i = 0; i < n; i++) {
         // Create all the vertexes
         // \Vertex[label=$v_1$]{A}  i//5
+        float x = (xRadius*cos(angle));
+        float y = (yRadius*sin(angle));
+        angle += angleIncrement;
+
         char* currentCity = names[i];
-        fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label=$%s$]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
+        fprintf(f, " \\Vertex[x=%f, y=%f, color=LightPink, size=0.5, label=$%s$]{%c}\n", x, y, currentCity, 'A'+i);
+
 
 
     }
@@ -213,7 +225,7 @@ int initialGraph(FILE* f, int** D, int n, char** names) {
 
             if (D[i][j] == INF) continue;
 
-            fprintf(f, " \n \\Edge[bend=-30, label=$%d$, Direct](%c)(%c)", D[i][j] ,'A'+ i, 'A'+ j);
+            fprintf(f, " \n \\Edge[bend=-10, label=$%d$, Direct](%c)(%c)", D[i][j] ,'A'+ i, 'A'+ j);
             // This line draws the directed arrow, where:
             // %d corresponds to the distance between cities
             // %c corresponds to the cities
