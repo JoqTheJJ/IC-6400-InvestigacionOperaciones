@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkAdjustment" id="adjustment-nodes">
@@ -231,7 +231,7 @@ DIRECTIONS:
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="pixbuf">Programa 1/500px-KatFL_Ranger_Kirby_artwork (1).png</property>
+                <property name="pixbuf">Programa_1/500px-KatFL_Ranger_Kirby_artwork (1).png</property>
               </object>
               <packing>
                 <property name="expand">False</property>

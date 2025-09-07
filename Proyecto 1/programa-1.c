@@ -15,7 +15,7 @@
 #include <cairo.h>
 #include <math.h>
 #include <glib/gstdio.h>
-#include  "Programa 1/floyd.c"
+#include  "Programa_1/floyd.c"
 
 // - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix
@@ -783,10 +783,8 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
     }
 
 
-     printf("Conversion salvaje 0\n");
     int n = md.n;
 
-    printf("Conversion salvaje 1\n");
     int** matrix = malloc(n * sizeof(int*));
     for (int i = 0; i < n; i++) {
         matrix[i] = malloc(n * sizeof(int));
@@ -797,18 +795,16 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
     }
 
 
-    printf("Conversion salvaje 2\n");
     char **names = (char **) md.names->pdata;
 
    
-    printf("Conversion salvaje 3\n");
     // double *raw_values = (double *) matrix->values->data; // acceso directo
 
 
     // Calls Floyd Algorithm Function
+    //loading screen starts here
     runFloyd(names, matrix, n);
-    printf("Post floyd");
-
+    //loading screen ends here
 
     // Cleanup
     matrix_data_clear(&md);
