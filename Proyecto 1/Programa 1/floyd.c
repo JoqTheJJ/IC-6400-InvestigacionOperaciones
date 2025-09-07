@@ -51,16 +51,12 @@ void documentStart(FILE* f){
 
 void introduction(FILE* f){
 
-
-    //fprintf(f, "\\begin{frame}\n\n");
     fprintf(f, "\\section{Floyd's Algorithm}\n");
     fprintf(f, "This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.\n");
 
     fprintf(f, "Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.\n");
-    //fprintf(f, "\\end{frame}\n\n\n\n");
 
 
-    //fprintf(f, "\\begin{frame}\n");
     fprintf(f, "\\section{Robert W. Floyd (1936–2001)}\n");
 
     fprintf(f, "\\begin{figure}\n");
@@ -71,16 +67,13 @@ void introduction(FILE* f){
     fprintf(f, "\\end{figure}\n\n");
     
     fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n\n\n");
-    
-    //fprintf(f, "\\end{frame}\n\n\n");
 }
 
 
 void texStart(FILE* f, int titleType, int number, char character){
-    //Frame Type (title)
+    //Title Type (title)
     //0 - Table (char)(number)
 
-    //fprintf(f, "\n\n\n\\begin{frame}\n");
     fprintf(f, "\\section{");
 
     switch (titleType){
@@ -95,7 +88,8 @@ void texStart(FILE* f, int titleType, int number, char character){
 }
 
 void texEnd(FILE* f){
-    //fprintf(f, "\\end{frame}\n\n\n");
+    //Code executes here after each section if needed
+    // (Not needed anymore)
 }
 
 
@@ -153,9 +147,7 @@ void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, char** names
 }
 
 int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
-    //f = fopen("programToLaTeX.tex", "w");
 
-    //fprintf(f, "\\begin{frame}\n");
     fprintf(f, "\\section{Final Graph}\n");
     fprintf(f, "\\begin{center}\n");
     fprintf(f, "\\begin{tikzpicture}\n");
@@ -189,16 +181,11 @@ int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
     }
     fprintf(f, "\\end{tikzpicture}\n");
     fprintf(f, "\\end{center}\n");
-    //fprintf(f, "\\end{frame}\n");
-    //fclose(f);
 
     return 0;
 }
 
 int initialGraph(FILE* f, int** D, int n, char** names) {
-    //f = fopen("programToLaTeX.tex", "w");
-
-    //fprintf(f, "\\begin{frame}\n");
     fprintf(f, "\\section{Initial Graph}\n");
     fprintf(f, "\\begin{center}\n");
     fprintf(f, "\\begin{tikzpicture}\n");
@@ -232,9 +219,6 @@ int initialGraph(FILE* f, int** D, int n, char** names) {
     }
     fprintf(f, "\\end{tikzpicture}\n");
     fprintf(f, "\\end{center}\n");
-    //fprintf(f, "\\end{frame}\n");
-
-    //fclose(f);
 
     return 0;
 }
