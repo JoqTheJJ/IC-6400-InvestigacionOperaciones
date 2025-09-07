@@ -25,64 +25,65 @@
 /* ################################## TEX ################################## */
 
 void documentStart(FILE* f){
-    fprintf(f, "\\documentclass{beamer}\n\n");
-    //fprintf(f, "\\usetheme{Warsaw}\n");
-    //fprintf(f, "\\usecolortheme{seahorse}\n");
+    fprintf(f, "\\documentclass{article}\n\n");
 
     //Packages
+    fprintf(f, "\\PassOptionsToPackage{table,svgnames}{xcolor}");
     fprintf(f, "\\usepackage{graphicx}\n");
     fprintf(f, "\\usepackage{tikz-network}\n");
-    fprintf(f, "\\usepackage[table]{xcolor}\n\n");
+    fprintf(f, "\\usepackage{xcolor}\n\n");
 
     //Document information
+    fprintf(f, "\\begin{document}\n");
+
     fprintf(f, "\\title{Graph Theory}\n");
     fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo \\& Josu\\'e Soto}\n");
-    fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
+    //fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
     fprintf(f, "\\date{2025}\n\n");
 
     //begin
-    fprintf(f, "\\begin{document}\n");
+    fprintf(f, "\\definecolor{KirbyPink}{HTML}{D74894}\n");
+    fprintf(f, "\\definecolor{LightPink}{HTML}{FFBFBF}\n\n");
     fprintf(f, "\\maketitle\n\n");
+    fprintf(f, "\\newpage\n\n\n");
 }
 
 
 void introduction(FILE* f){
 
 
-    fprintf(f, "\\begin{frame}\n\n");
-    fprintf(f, "\\frametitle{Floyd's Algorithm}\n");
+    //fprintf(f, "\\begin{frame}\n\n");
+    fprintf(f, "\\section{Floyd's Algorithm}\n");
     fprintf(f, "This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.\n");
 
     fprintf(f, "Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.\n");
+    //fprintf(f, "\\end{frame}\n\n\n\n");
 
-    fprintf(f, "\\end{frame}\n\n\n\n");
 
+    //fprintf(f, "\\begin{frame}\n");
+    fprintf(f, "\\section{Robert W. Floyd (1936–2001)}\n");
 
-    fprintf(f, "\\begin{frame}\n");
-    fprintf(f, "\\frametitle{Robert W. Floyd (1936–2001)}\n");
-
-    fprintf(f, "\\begin{figure}\n\n");
-    //fprintf(f, "\\centering\n");
+    fprintf(f, "\\begin{figure}\n");
+    fprintf(f, "\\begin{center}\n");
     fprintf(f, "\\includegraphics[width=0.25\\textwidth]{floyd.jpg}\n");
-
-
     fprintf(f, "\\caption{\\label{fig:floyd}Robert Floyd}\n");
-    fprintf(f, "\\end{figure}\n");
+    fprintf(f, "\\end{center}\n");
+    fprintf(f, "\\end{figure}\n\n");
     
-    fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n");
+    fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n\n\n");
     
-    fprintf(f, "\\end{frame}\n\n\n");
+    //fprintf(f, "\\end{frame}\n\n\n");
 }
 
 
-void frameStart(FILE* f, int frameType, int number, char character){
+void texStart(FILE* f, int titleType, int number, char character){
     //Frame Type (title)
     //0 - Table (char)(number)
 
-    fprintf(f, "\n\n\n\\begin{frame}\n");
-    fprintf(f, "\\frametitle{");
+    //fprintf(f, "\n\n\n\\begin{frame}\n");
+    fprintf(f, "\\section{");
 
-    switch (frameType){
+    switch (titleType){
     case 0:
         fprintf(f, "Table $%c_{%d}$}\n", character, number);
         break;
@@ -93,16 +94,16 @@ void frameStart(FILE* f, int frameType, int number, char character){
     }
 }
 
-void frameEnd(FILE* f){
-    fprintf(f, "\\end{frame}\n\n\n");
+void texEnd(FILE* f){
+    //fprintf(f, "\\end{frame}\n\n\n");
 }
 
 
 /* ################################## TEX ################################## */
 
-void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c, char** names){
+void texTable(int** m, int** changes, int size, int iteration, FILE* f, char c, char** names){
 
-    frameStart(f, 0, iteration, c);
+    texStart(f, 0, iteration, c);
 
 
     fprintf(f, "\\begin{center}\n");
@@ -141,21 +142,21 @@ void frameTable(int** m, int** changes, int size, int iteration, FILE* f, char c
 
     fprintf(f, "    \\end{tabular}\n");
     fprintf(f, "\\end{center}\n\n\n");
-    frameEnd(f);
+    texEnd(f);
 }
 
 void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, char** names, int iteration){
 
-    frameTable(D, changes, n, iteration, f, 'D', names);
-    frameTable(P, changes, n, iteration, f, 'P', names);
+    texTable(D, changes, n, iteration, f, 'D', names);
+    texTable(P, changes, n, iteration, f, 'P', names);
 
 }
 
 int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
     //f = fopen("programToLaTeX.tex", "w");
 
-    fprintf(f, "\\begin{frame}\n");
-    fprintf(f, "\\frametitle{Final Graph}\n");
+    //fprintf(f, "\\begin{frame}\n");
+    fprintf(f, "\\section{Final Graph}\n");
     fprintf(f, "\\begin{center}\n");
     fprintf(f, "\\begin{tikzpicture}\n");
 
@@ -168,7 +169,7 @@ int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
         // Create all the vertexes
         // \Vertex[label=$v_1$]{A}  i//5
         char* currentCity = names[i];
-        fprintf(f, " \\Vertex[x=%d, y=%d, color=pink, size=0.5, label=$%s$]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
+        fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label=$%s$]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
 
 
     }
@@ -188,7 +189,7 @@ int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
     }
     fprintf(f, "\\end{tikzpicture}\n");
     fprintf(f, "\\end{center}\n");
-    fprintf(f, "\\end{frame}\n");
+    //fprintf(f, "\\end{frame}\n");
     //fclose(f);
 
     return 0;
@@ -197,8 +198,8 @@ int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
 int initialGraph(FILE* f, int** D, int n, char** names) {
     //f = fopen("programToLaTeX.tex", "w");
 
-    fprintf(f, "\\begin{frame}\n");
-    fprintf(f, "\\frametitle{Initial Graph}\n");
+    //fprintf(f, "\\begin{frame}\n");
+    fprintf(f, "\\section{Initial Graph}\n");
     fprintf(f, "\\begin{center}\n");
     fprintf(f, "\\begin{tikzpicture}\n");
 
@@ -211,7 +212,7 @@ int initialGraph(FILE* f, int** D, int n, char** names) {
         // Create all the vertexes
         // \Vertex[label=$v_1$]{A}  i//5
         char* currentCity = names[i];
-        fprintf(f, " \\Vertex[x=%d, y=%d, color=pink, size=0.5, label=$%s$]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
+        fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label=$%s$]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
 
 
     }
@@ -231,7 +232,7 @@ int initialGraph(FILE* f, int** D, int n, char** names) {
     }
     fprintf(f, "\\end{tikzpicture}\n");
     fprintf(f, "\\end{center}\n");
-    fprintf(f, "\\end{frame}\n");
+    //fprintf(f, "\\end{frame}\n");
 
     //fclose(f);
 
