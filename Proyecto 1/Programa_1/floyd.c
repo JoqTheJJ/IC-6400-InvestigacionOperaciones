@@ -204,7 +204,6 @@ int initialGraph(FILE* f, int** D, int n, char** names) {
     float angle = 0;
     float xRadius = 5;
     float yRadius = 5;
-    printf("<###> Got here #1");
     for (int i = 0; i < n; i++) {
         // Create all the vertexes
         // \Vertex[label=$v_1$]{A}  i//5
