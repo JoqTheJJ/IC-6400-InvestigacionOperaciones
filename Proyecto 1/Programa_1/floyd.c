@@ -291,7 +291,7 @@ int runFloyd(char** names, int** matrix, int nodes) {
 
     //File
     FILE* file;
-    file = fopen("programToLaTeX.tex", "w");
+    file = fopen("Programa_1/programToLaTeX.tex", "w");
     if (file == NULL) {
         printf("Error: File null\n");
         return 1;
@@ -320,7 +320,7 @@ int runFloyd(char** names, int** matrix, int nodes) {
     free(P);
 
 
-    int responseCode = system("pdflatex programToLaTeX.tex");
+    int responseCode = system("pdflatex Programa_1/programToLaTeX.tex");
     if (responseCode == 0){
         printf("\n\nLatex compiled without problems\n");
         system("evince --presentation programToLaTeX.pdf &");
