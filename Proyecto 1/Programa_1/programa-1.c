@@ -15,7 +15,7 @@
 #include <cairo.h>
 #include <math.h>
 #include <glib/gstdio.h>
-#include  "Programa_1/floyd.c"
+#include  "floyd.c"
 
 // - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix

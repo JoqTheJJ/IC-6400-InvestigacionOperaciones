@@ -231,7 +231,7 @@ DIRECTIONS:
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="pixbuf">Programa_1/500px-KatFL_Ranger_Kirby_artwork (1).png</property>
+                <property name="pixbuf">KirbyRanger.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>

@@ -3,21 +3,24 @@
                 Made by: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
                 Date: Friday, September 12, 2025
 
-                Here goes the description
-
+                This section contains the program used to calculate the shortest
+                path between any pair of nodes in a graph with weighted distances.
+                This program will do this utilizing the Floyd Algorithm and then
+                create a LATEX document with all the tables calculated to get to
+                the result.
 */
 
 
+#include <errno.h>
+#include <unistd.h>
+#include <limits.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// #include <gtk/gtk.h>
-// #include <cairo.h>
 #include <ctype.h>
 
-// Agregado por Meli
 #define INF __INT_MAX__
 
 
@@ -291,7 +294,7 @@ int runFloyd(char** names, int** matrix, int nodes) {
 
     //File
     FILE* file;
-    file = fopen("Programa_1/programToLaTeX.tex", "w");
+    file = fopen("programToLaTeX.tex", "w");
     if (file == NULL) {
         printf("Error: File null\n");
         return 1;
@@ -320,7 +323,7 @@ int runFloyd(char** names, int** matrix, int nodes) {
     free(P);
 
 
-    int responseCode = system("pdflatex Programa_1/programToLaTeX.tex");
+    int responseCode = system("pdflatex programToLaTeX.tex");
     if (responseCode == 0){
         printf("\n\nLatex compiled without problems\n");
         system("evince --presentation programToLaTeX.pdf &");

@@ -45,7 +45,7 @@ static void initialize_program_1(){
     */
 
     //printf("\nRunning file: %s\n", filename);
-    system("./programa-1 &");
+    system("(cd Programa_1 && ./programa-1 &)");
 
 }
 
