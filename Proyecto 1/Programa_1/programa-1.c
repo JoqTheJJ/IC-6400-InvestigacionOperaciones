@@ -75,6 +75,19 @@ static gboolean is_blank(const gchar *s) {
     return TRUE;
 }
 
+// Checks its only positive integers only
+static gboolean integer_digits_only(const char *s_in) {
+    if (!s_in) return FALSE;
+    gchar *s = g_strdup(s_in);
+    g_strstrip(s);
+    if (*s == '\0') { g_free(s); return FALSE; }
+    for (const char *p = s; *p; ++p) {
+        if (!g_ascii_isdigit((guchar)*p)) { g_free(s); return FALSE; }
+    }
+    g_free(s);
+    return TRUE;
+}
+
 // returns TRUE if cell is valid; updates CSS, tooltip, and invalid_count
 static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
     // diagonal is fixed and valid
@@ -83,7 +96,6 @@ static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
     int i = prow ? (GPOINTER_TO_INT(prow)-1) : -1;
     int j = pcol ? (GPOINTER_TO_INT(pcol)-1) : -1;
     if (i >= 0 && j >= 0 && i == j) {
-        // ensure it's not counted
         if (g_object_get_data(G_OBJECT(entry), "invalid")) {
             g_object_set_data(G_OBJECT(entry), "invalid", NULL);
             ui->invalid_count = MAX(0, ui->invalid_count - 1);
@@ -99,20 +111,19 @@ static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
     if (is_blank(txt)) {
         now_invalid = TRUE;
     } else if (is_inf_text(txt)) {
-        // normalize display but it is valid
+        // normalize to the single glyph if needed
         if (g_strcmp0(txt, "∞") != 0)
             gtk_entry_set_text(GTK_ENTRY(entry), "∞");
         now_invalid = FALSE;
     } else {
-        char *endp = NULL;
-        g_ascii_strtod(txt, &endp);
-        now_invalid = (endp == txt || *endp != '\0');
+        // ONLY allow non-negative integer with digits-only
+        now_invalid = !integer_digits_only(txt);
     }
 
     // previous state
     gboolean was_invalid = g_object_get_data(G_OBJECT(entry), "invalid") != NULL;
 
-    // update count if state changed
+    // update counters/state
     if (now_invalid && !was_invalid) {
         ui->invalid_count++;
         g_object_set_data(G_OBJECT(entry), "invalid", GINT_TO_POINTER(1));
@@ -124,7 +135,8 @@ static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
     // style & tooltip
     if (now_invalid) {
         gtk_style_context_add_class(ctx, "entry-error");
-        gtk_widget_set_tooltip_text(entry, "Invalid value. Enter a number or 'i'/'inf' for ∞.");
+        gtk_widget_set_tooltip_text(entry,
+            "Invalid value. Enter a whole number (0,1,2,…) or 'i'/'inf' for ∞.");
     } else {
         gtk_style_context_remove_class(ctx, "entry-error");
         gtk_widget_set_tooltip_text(entry, NULL);
@@ -482,7 +494,7 @@ static gboolean has_ascii_digit(const gchar *s) {
     return FALSE;
 }
 
-// Checks if its part of the matrix (it's a number or an infinity symbol)
+// Checks if it's either the infinity symbol or a positive integer (digits only)
 static gboolean is_value_token_strict(const gchar *t) {
     if (!t) return FALSE;
     gchar *s = g_strdup(t);
@@ -490,15 +502,21 @@ static gboolean is_value_token_strict(const gchar *t) {
 
     gboolean ok = FALSE;
     if (*s) {
-        // Checks if there's only an infinity symbol
+        // Infinity symbol allowed
         if (g_strcmp0(s, "∞") == 0) {
             ok = TRUE;
-        } else if (has_ascii_digit(s)) {
-            char *endp = NULL;
-            g_ascii_strtod(s, &endp);
-            ok = (endp != s && *endp == '\0');
+        } else {
+            // Check all characters are digits
+            ok = TRUE;
+            for (const char *p = s; *p; p++) {
+                if (!g_ascii_isdigit(*p)) {
+                    ok = FALSE;
+                    break;
+                }
+            }
         }
     }
+
     g_free(s);
     return ok;
 }
@@ -881,13 +899,19 @@ int main(int argc, char *argv[]) {
     gint n0 = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(boton_nodos));
     if (n0 < 1) n0 = 1;
     rebuild_matrix_ui(ui, n0);
-    
-    // Show window
-    gtk_widget_show_all(ventana);
 
     // Maximize window
-    gtk_window_maximize(GTK_WINDOW(ventana));
+    GdkDisplay *display = gdk_display_get_default();
+    GdkMonitor *monitor = gdk_display_get_primary_monitor(display);
+    GdkRectangle geometry;
+    gdk_monitor_get_geometry(monitor, &geometry);
 
+    gtk_window_set_default_size(GTK_WINDOW(ventana),
+                                geometry.width,
+                                geometry.height);
+
+    // Show window
+    gtk_widget_show_all(ventana);
     // Run GTK
     gtk_main();
 

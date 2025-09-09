@@ -137,10 +137,18 @@ int main(int argc, char *argv[]) {
     boton_salida = GTK_WIDGET(gtk_builder_get_object(builder, "terminate"));
     g_signal_connect(boton_salida, "clicked", G_CALLBACK(gtk_main_quit), NULL);
     
+    // Maximize window
+    GdkDisplay *display = gdk_display_get_default();
+    GdkMonitor *monitor = gdk_display_get_primary_monitor(display);
+    GdkRectangle geometry;
+    gdk_monitor_get_geometry(monitor, &geometry);
+
+    gtk_window_set_default_size(GTK_WINDOW(ventana),
+                                geometry.width,
+                                geometry.height);
+
     // Show window
     gtk_widget_show_all(ventana);
-    // Maximize window
-    gtk_window_maximize(GTK_WINDOW(ventana));
 
     // Run GTK
     gtk_main();

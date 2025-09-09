@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 #include <ctype.h>
 
@@ -165,7 +166,7 @@ int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
         // Create all the vertexes
         // \Vertex[label=$v_1$]{A}  i//5
         char* currentCity = names[i];
-        fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label=$%s$]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
+        fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label={%s}]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
 
 
     }
@@ -212,7 +213,7 @@ int initialGraph(FILE* f, int** D, int n, char** names) {
         angle += angleIncrement;
 
         char* currentCity = names[i];
-        fprintf(f, " \\Vertex[x=%f, y=%f, color=LightPink, size=0.5, label=$%s$]{%c}\n", x, y, currentCity, 'A'+i);
+        fprintf(f, " \\Vertex[x=%f, y=%f, color=LightPink, size=0.5, label={%s}]{%c}\n", x, y, currentCity, 'A'+i);
 
 
 
@@ -311,6 +312,8 @@ int runFloyd(char** names, int** matrix, int nodes) {
         return 1;
     }
 
+    // Force '.' as a decimal separator
+    setlocale(LC_NUMERIC, "C");
 
     documentStart(file);
     introduction(file);

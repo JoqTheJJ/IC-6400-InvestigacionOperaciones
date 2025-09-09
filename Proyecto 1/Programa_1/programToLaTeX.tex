@@ -34,87 +34,44 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \section{Initial Graph}
 \begin{center}
 \begin{tikzpicture}
- \Vertex[x=5.000000, y=0.000000, color=LightPink, size=0.5, label=$A$]{A}
- \Vertex[x=3.535534, y=3.535534, color=LightPink, size=0.5, label=$B$]{B}
- \Vertex[x=-0.000000, y=5.000000, color=LightPink, size=0.5, label=$C$]{C}
- \Vertex[x=-3.535534, y=3.535534, color=LightPink, size=0.5, label=$D$]{D}
- \Vertex[x=-5.000000, y=-0.000000, color=LightPink, size=0.5, label=$E$]{E}
- \Vertex[x=-3.535533, y=-3.535535, color=LightPink, size=0.5, label=$F$]{F}
- \Vertex[x=0.000000, y=-5.000000, color=LightPink, size=0.5, label=$G$]{G}
- \Vertex[x=3.535533, y=-3.535534, color=LightPink, size=0.5, label=$H$]{H}
+ \Vertex[x=5.000000, y=0.000000, color=LightPink, size=0.5, label={New York}]{A}
+ \Vertex[x=1.545085, y=4.755282, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Vertex[x=-4.045085, y=2.938926, color=LightPink, size=0.5, label={Miami}]{C}
+ \Vertex[x=-4.045084, y=-2.938927, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Vertex[x=1.545086, y=-4.755282, color=LightPink, size=0.5, label={Washington}]{E}
  
- \Edge[bend=-10, label=$5$, Direct](A)(C) 
- \Edge[bend=-10, label=$13$, Direct](A)(D) 
- \Edge[bend=-10, label=$1$, Direct](A)(E) 
- \Edge[bend=-10, label=$2$, Direct](A)(F) 
- \Edge[bend=-10, label=$5$, Direct](A)(G) 
- \Edge[bend=-10, label=$9$, Direct](A)(H) 
- \Edge[bend=-10, label=$10$, Direct](B)(A) 
- \Edge[bend=-10, label=$2$, Direct](B)(C) 
- \Edge[bend=-10, label=$6$, Direct](B)(E) 
- \Edge[bend=-10, label=$10$, Direct](B)(F) 
- \Edge[bend=-10, label=$4$, Direct](B)(G) 
- \Edge[bend=-10, label=$7$, Direct](B)(H) 
- \Edge[bend=-10, label=$3$, Direct](C)(A) 
- \Edge[bend=-10, label=$12$, Direct](C)(D) 
- \Edge[bend=-10, label=$3$, Direct](C)(E) 
- \Edge[bend=-10, label=$-5$, Direct](C)(F) 
- \Edge[bend=-10, label=$0$, Direct](C)(G) 
- \Edge[bend=-10, label=$6$, Direct](C)(H) 
- \Edge[bend=-10, label=$7$, Direct](D)(A) 
- \Edge[bend=-10, label=$13$, Direct](D)(C) 
- \Edge[bend=-10, label=$8$, Direct](D)(E) 
- \Edge[bend=-10, label=$16$, Direct](D)(F) 
- \Edge[bend=-10, label=$8$, Direct](D)(G) 
- \Edge[bend=-10, label=$5$, Direct](D)(H) 
- \Edge[bend=-10, label=$25$, Direct](E)(A) 
- \Edge[bend=-10, label=$13$, Direct](E)(B) 
- \Edge[bend=-10, label=$9$, Direct](E)(C) 
- \Edge[bend=-10, label=$10$, Direct](E)(D) 
- \Edge[bend=-10, label=$12$, Direct](E)(F) 
- \Edge[bend=-10, label=$1$, Direct](E)(G) 
- \Edge[bend=-10, label=$7$, Direct](E)(H) 
- \Edge[bend=-10, label=$3$, Direct](F)(A) 
- \Edge[bend=-10, label=$8$, Direct](F)(B) 
- \Edge[bend=-10, label=$1$, Direct](F)(C) 
- \Edge[bend=-10, label=$9$, Direct](F)(D) 
- \Edge[bend=-10, label=$2$, Direct](F)(E) 
- \Edge[bend=-10, label=$13$, Direct](F)(G) 
- \Edge[bend=-10, label=$-3$, Direct](F)(H) 
- \Edge[bend=-10, label=$11$, Direct](G)(A) 
- \Edge[bend=-10, label=$2$, Direct](G)(B) 
- \Edge[bend=-10, label=$5$, Direct](G)(C) 
- \Edge[bend=-10, label=$3$, Direct](G)(D) 
- \Edge[bend=-10, label=$9$, Direct](G)(E) 
- \Edge[bend=-10, label=$16$, Direct](G)(F) 
- \Edge[bend=-10, label=$9$, Direct](G)(H) 
- \Edge[bend=-10, label=$1$, Direct](H)(B) 
- \Edge[bend=-10, label=$2$, Direct](H)(C) 
- \Edge[bend=-10, label=$4$, Direct](H)(D) 
- \Edge[bend=-10, label=$12$, Direct](H)(G)\end{tikzpicture}
+ \Edge[bend=-10, label=$16$, Direct](A)(C) 
+ \Edge[bend=-10, label=$17$, Direct](A)(D) 
+ \Edge[bend=-10, label=$5$, Direct](A)(E) 
+ \Edge[bend=-10, label=$2$, Direct](B)(A) 
+ \Edge[bend=-10, label=$2$, Direct](B)(D) 
+ \Edge[bend=-10, label=$3$, Direct](B)(E) 
+ \Edge[bend=-10, label=$15$, Direct](C)(A) 
+ \Edge[bend=-10, label=$1$, Direct](C)(B) 
+ \Edge[bend=-10, label=$6$, Direct](C)(D) 
+ \Edge[bend=-10, label=$9$, Direct](D)(B) 
+ \Edge[bend=-10, label=$5$, Direct](D)(C) 
+ \Edge[bend=-10, label=$11$, Direct](D)(E) 
+ \Edge[bend=-10, label=$9$, Direct](E)(A) 
+ \Edge[bend=-10, label=$2$, Direct](E)(B) 
+ \Edge[bend=-10, label=$8$, Direct](E)(C)\end{tikzpicture}
 \end{center}
 \section{Table $D_{0}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & $\infty$ & 5 & 13 & 1 & 2 & 5 & 9 \\
+        \textbf{New York}& 0 & $\infty$ & 16 & 17 & 5 \\
         \hline
-        \textbf{B}& 10 & 0 & 2 & $\infty$ & 6 & 10 & 4 & 7 \\
+        \textbf{Vegas}& 2 & 0 & $\infty$ & 2 & 3 \\
         \hline
-        \textbf{C}& 3 & $\infty$ & 0 & 12 & 3 & -5 & 0 & 6 \\
+        \textbf{Miami}& 15 & 1 & 0 & 6 & $\infty$ \\
         \hline
-        \textbf{D}& 7 & $\infty$ & 13 & 0 & 8 & 16 & 8 & 5 \\
+        \textbf{San Antonio}& $\infty$ & 9 & 5 & 0 & 11 \\
         \hline
-        \textbf{E}& 25 & 13 & 9 & 10 & 0 & 12 & 1 & 7 \\
-        \hline
-        \textbf{F}& 3 & 8 & 1 & 9 & 2 & 0 & 13 & -3 \\
-        \hline
-        \textbf{G}& 11 & 2 & 5 & 3 & 9 & 16 & 0 & 9 \\
-        \hline
-        \textbf{H}& $\infty$ & 1 & 2 & 4 & $\infty$ & $\infty$ & 12 & 0 \\
+        \textbf{Washington}& 9 & 2 & 8 & $\infty$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -122,26 +79,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $P_{0}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{New York}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{B}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Vegas}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{C}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Miami}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{D}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{San Antonio}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{E}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        \hline
-        \textbf{F}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        \hline
-        \textbf{G}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        \hline
-        \textbf{H}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Washington}& 0 & 0 & 0 & 0 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -149,26 +100,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $D_{1}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & $\infty$ & 5 & 13 & 1 & 2 & 5 & 9 \\
+        \textbf{New York}& 0 & $\infty$ & 16 & 17 & 5 \\
         \hline
-        \textbf{B}& 10 & 0 & 2 & \cellcolor[HTML]{D74894}$23$ & 6 & 10 & 4 & 7 \\
+        \textbf{Vegas}& 2 & 0 & \cellcolor[HTML]{D74894}$18$ & 2 & 3 \\
         \hline
-        \textbf{C}& 3 & $\infty$ & 0 & 12 & 3 & -5 & 0 & 6 \\
+        \textbf{Miami}& 15 & 1 & 0 & 6 & \cellcolor[HTML]{D74894}$20$ \\
         \hline
-        \textbf{D}& 7 & $\infty$ & \cellcolor[HTML]{D74894}$12$ & 0 & 8 & \cellcolor[HTML]{D74894}$9$ & 8 & 5 \\
+        \textbf{San Antonio}& $\infty$ & 9 & 5 & 0 & 11 \\
         \hline
-        \textbf{E}& 25 & 13 & 9 & 10 & 0 & 12 & 1 & 7 \\
-        \hline
-        \textbf{F}& 3 & 8 & 1 & 9 & 2 & 0 & \cellcolor[HTML]{D74894}$8$ & -3 \\
-        \hline
-        \textbf{G}& 11 & 2 & 5 & 3 & 9 & \cellcolor[HTML]{D74894}$13$ & 0 & 9 \\
-        \hline
-        \textbf{H}& $\infty$ & 1 & 2 & 4 & $\infty$ & $\infty$ & 12 & 0 \\
+        \textbf{Washington}& 9 & 2 & 8 & \cellcolor[HTML]{D74894}$26$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -176,26 +121,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $P_{1}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{New York}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{B}& 0 & 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 & 0 & 0 & 0 \\
+        \textbf{Vegas}& 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 & 0 \\
         \hline
-        \textbf{C}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Miami}& 0 & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$1$ \\
         \hline
-        \textbf{D}& 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 & 0 \\
+        \textbf{San Antonio}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{E}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        \hline
-        \textbf{F}& 0 & 0 & 0 & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 \\
-        \hline
-        \textbf{G}& 0 & 0 & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 & 0 \\
-        \hline
-        \textbf{H}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Washington}& 0 & 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -203,26 +142,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $D_{2}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & $\infty$ & 5 & 13 & 1 & 2 & 5 & 9 \\
+        \textbf{New York}& 0 & $\infty$ & 16 & 17 & 5 \\
         \hline
-        \textbf{B}& 10 & 0 & 2 & 23 & 6 & 10 & 4 & 7 \\
+        \textbf{Vegas}& 2 & 0 & 18 & 2 & 3 \\
         \hline
-        \textbf{C}& 3 & $\infty$ & 0 & 12 & 3 & -5 & 0 & 6 \\
+        \textbf{Miami}& \cellcolor[HTML]{D74894}$3$ & 1 & 0 & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$4$ \\
         \hline
-        \textbf{D}& 7 & $\infty$ & 12 & 0 & 8 & 9 & 8 & 5 \\
+        \textbf{San Antonio}& \cellcolor[HTML]{D74894}$11$ & 9 & 5 & 0 & 11 \\
         \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$23$ & 13 & 9 & 10 & 0 & 12 & 1 & 7 \\
-        \hline
-        \textbf{F}& 3 & 8 & 1 & 9 & 2 & 0 & 8 & -3 \\
-        \hline
-        \textbf{G}& 11 & 2 & \cellcolor[HTML]{D74894}$4$ & 3 & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$12$ & 0 & 9 \\
-        \hline
-        \textbf{H}& \cellcolor[HTML]{D74894}$11$ & 1 & 2 & 4 & \cellcolor[HTML]{D74894}$7$ & \cellcolor[HTML]{D74894}$11$ & \cellcolor[HTML]{D74894}$5$ & 0 \\
+        \textbf{Washington}& \cellcolor[HTML]{D74894}$4$ & 2 & 8 & \cellcolor[HTML]{D74894}$4$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -230,26 +163,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $P_{2}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{New York}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{B}& 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+        \textbf{Vegas}& 0 & 0 & 1 & 0 & 0 \\
         \hline
-        \textbf{C}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Miami}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & \cellcolor[HTML]{D74894}$2$ & \cellcolor[HTML]{D74894}$2$ \\
         \hline
-        \textbf{D}& 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 \\
+        \textbf{San Antonio}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        \hline
-        \textbf{F}& 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
-        \hline
-        \textbf{G}& 0 & 0 & \cellcolor[HTML]{D74894}$2$ & 0 & \cellcolor[HTML]{D74894}$2$ & \cellcolor[HTML]{D74894}$2$ & 0 & 0 \\
-        \hline
-        \textbf{H}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$2$ & \cellcolor[HTML]{D74894}$2$ & \cellcolor[HTML]{D74894}$2$ & 0 \\
+        \textbf{Washington}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & \cellcolor[HTML]{D74894}$2$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -257,26 +184,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $D_{3}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & $\infty$ & 5 & 13 & 1 & \cellcolor[HTML]{D74894}$0$ & 5 & 9 \\
+        \textbf{New York}& 0 & \cellcolor[HTML]{D74894}$17$ & 16 & 17 & 5 \\
         \hline
-        \textbf{B}& \cellcolor[HTML]{D74894}$5$ & 0 & 2 & \cellcolor[HTML]{D74894}$14$ & \cellcolor[HTML]{D74894}$5$ & \cellcolor[HTML]{D74894}$-3$ & \cellcolor[HTML]{D74894}$2$ & 7 \\
+        \textbf{Vegas}& 2 & 0 & 18 & 2 & 3 \\
         \hline
-        \textbf{C}& 3 & $\infty$ & 0 & 12 & 3 & -5 & 0 & 6 \\
+        \textbf{Miami}& 3 & 1 & 0 & 3 & 4 \\
         \hline
-        \textbf{D}& 7 & $\infty$ & 12 & 0 & 8 & \cellcolor[HTML]{D74894}$7$ & 8 & 5 \\
+        \textbf{San Antonio}& \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$6$ & 5 & 0 & \cellcolor[HTML]{D74894}$9$ \\
         \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$12$ & 13 & 9 & 10 & 0 & \cellcolor[HTML]{D74894}$4$ & 1 & 7 \\
-        \hline
-        \textbf{F}& 3 & 8 & 1 & 9 & 2 & 0 & \cellcolor[HTML]{D74894}$1$ & -3 \\
-        \hline
-        \textbf{G}& \cellcolor[HTML]{D74894}$7$ & 2 & 4 & 3 & \cellcolor[HTML]{D74894}$7$ & \cellcolor[HTML]{D74894}$-1$ & 0 & 9 \\
-        \hline
-        \textbf{H}& \cellcolor[HTML]{D74894}$5$ & 1 & 2 & 4 & \cellcolor[HTML]{D74894}$5$ & \cellcolor[HTML]{D74894}$-3$ & \cellcolor[HTML]{D74894}$2$ & 0 \\
+        \textbf{Washington}& 4 & 2 & 8 & 4 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -284,26 +205,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $P_{3}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & 0 & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$3$ & 0 & 0 \\
+        \textbf{New York}& 0 & \cellcolor[HTML]{D74894}$3$ & 0 & 0 & 0 \\
         \hline
-        \textbf{B}& \cellcolor[HTML]{D74894}$3$ & 0 & 0 & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & 0 \\
+        \textbf{Vegas}& 0 & 0 & 1 & 0 & 0 \\
         \hline
-        \textbf{C}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Miami}& 2 & 0 & 0 & 2 & 2 \\
         \hline
-        \textbf{D}& 0 & 0 & 1 & 0 & 0 & \cellcolor[HTML]{D74894}$3$ & 0 & 0 \\
+        \textbf{San Antonio}& \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & 0 & 0 & \cellcolor[HTML]{D74894}$3$ \\
         \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$3$ & 0 & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$3$ & 0 & 0 \\
-        \hline
-        \textbf{F}& 0 & 0 & 0 & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$3$ & 0 \\
-        \hline
-        \textbf{G}& \cellcolor[HTML]{D74894}$3$ & 0 & 2 & 0 & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & 0 & 0 \\
-        \hline
-        \textbf{H}& \cellcolor[HTML]{D74894}$3$ & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & 0 \\
+        \textbf{Washington}& 2 & 0 & 0 & 2 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -311,26 +226,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $D_{4}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & $\infty$ & 5 & 13 & 1 & 0 & 5 & 9 \\
+        \textbf{New York}& 0 & 17 & 16 & 17 & 5 \\
         \hline
-        \textbf{B}& 5 & 0 & 2 & 14 & 5 & -3 & 2 & 7 \\
+        \textbf{Vegas}& 2 & 0 & \cellcolor[HTML]{D74894}$7$ & 2 & 3 \\
         \hline
-        \textbf{C}& 3 & $\infty$ & 0 & 12 & 3 & -5 & 0 & 6 \\
+        \textbf{Miami}& 3 & 1 & 0 & 3 & 4 \\
         \hline
-        \textbf{D}& 7 & $\infty$ & 12 & 0 & 8 & 7 & 8 & 5 \\
+        \textbf{San Antonio}& 8 & 6 & 5 & 0 & 9 \\
         \hline
-        \textbf{E}& 12 & 13 & 9 & 10 & 0 & 4 & 1 & 7 \\
-        \hline
-        \textbf{F}& 3 & 8 & 1 & 9 & 2 & 0 & 1 & -3 \\
-        \hline
-        \textbf{G}& 7 & 2 & 4 & 3 & 7 & -1 & 0 & \cellcolor[HTML]{D74894}$8$ \\
-        \hline
-        \textbf{H}& 5 & 1 & 2 & 4 & 5 & -3 & 2 & 0 \\
+        \textbf{Washington}& 4 & 2 & 8 & 4 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -338,26 +247,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $P_{4}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & 0 & 0 & 0 & 0 & 3 & 0 & 0 \\
+        \textbf{New York}& 0 & 3 & 0 & 0 & 0 \\
         \hline
-        \textbf{B}& 3 & 0 & 0 & 3 & 3 & 3 & 3 & 0 \\
+        \textbf{Vegas}& 0 & 0 & \cellcolor[HTML]{D74894}$4$ & 0 & 0 \\
         \hline
-        \textbf{C}& 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Miami}& 2 & 0 & 0 & 2 & 2 \\
         \hline
-        \textbf{D}& 0 & 0 & 1 & 0 & 0 & 3 & 0 & 0 \\
+        \textbf{San Antonio}& 3 & 3 & 0 & 0 & 3 \\
         \hline
-        \textbf{E}& 3 & 0 & 0 & 0 & 0 & 3 & 0 & 0 \\
-        \hline
-        \textbf{F}& 0 & 0 & 0 & 0 & 0 & 0 & 3 & 0 \\
-        \hline
-        \textbf{G}& 3 & 0 & 2 & 0 & 3 & 3 & 0 & \cellcolor[HTML]{D74894}$4$ \\
-        \hline
-        \textbf{H}& 3 & 0 & 0 & 0 & 3 & 3 & 3 & 0 \\
+        \textbf{Washington}& 2 & 0 & 0 & 2 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -365,26 +268,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $D_{5}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & \cellcolor[HTML]{D74894}$14$ & 5 & \cellcolor[HTML]{D74894}$11$ & 1 & 0 & \cellcolor[HTML]{D74894}$2$ & \cellcolor[HTML]{D74894}$8$ \\
+        \textbf{New York}& 0 & \cellcolor[HTML]{D74894}$7$ & \cellcolor[HTML]{D74894}$13$ & \cellcolor[HTML]{D74894}$9$ & 5 \\
         \hline
-        \textbf{B}& 5 & 0 & 2 & 14 & 5 & -3 & 2 & 7 \\
+        \textbf{Vegas}& 2 & 0 & 7 & 2 & 3 \\
         \hline
-        \textbf{C}& 3 & \cellcolor[HTML]{D74894}$16$ & 0 & 12 & 3 & -5 & 0 & 6 \\
+        \textbf{Miami}& 3 & 1 & 0 & 3 & 4 \\
         \hline
-        \textbf{D}& 7 & \cellcolor[HTML]{D74894}$21$ & 12 & 0 & 8 & 7 & 8 & 5 \\
+        \textbf{San Antonio}& 8 & 6 & 5 & 0 & 9 \\
         \hline
-        \textbf{E}& 12 & 13 & 9 & 10 & 0 & 4 & 1 & 7 \\
-        \hline
-        \textbf{F}& 3 & 8 & 1 & 9 & 2 & 0 & 1 & -3 \\
-        \hline
-        \textbf{G}& 7 & 2 & 4 & 3 & 7 & -1 & 0 & 8 \\
-        \hline
-        \textbf{H}& 5 & 1 & 2 & 4 & 5 & -3 & 2 & 0 \\
+        \textbf{Washington}& 4 & 2 & 8 & 4 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -392,188 +289,20 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 
 \section{Table $P_{5}$}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{A}& 0 & \cellcolor[HTML]{D74894}$5$ & 0 & \cellcolor[HTML]{D74894}$5$ & 0 & 3 & \cellcolor[HTML]{D74894}$5$ & \cellcolor[HTML]{D74894}$5$ \\
+        \textbf{New York}& 0 & \cellcolor[HTML]{D74894}$5$ & \cellcolor[HTML]{D74894}$5$ & \cellcolor[HTML]{D74894}$5$ & 0 \\
         \hline
-        \textbf{B}& 3 & 0 & 0 & 3 & 3 & 3 & 3 & 0 \\
+        \textbf{Vegas}& 0 & 0 & 4 & 0 & 0 \\
         \hline
-        \textbf{C}& 0 & \cellcolor[HTML]{D74894}$5$ & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Miami}& 2 & 0 & 0 & 2 & 2 \\
         \hline
-        \textbf{D}& 0 & \cellcolor[HTML]{D74894}$5$ & 1 & 0 & 0 & 3 & 0 & 0 \\
+        \textbf{San Antonio}& 3 & 3 & 0 & 0 & 3 \\
         \hline
-        \textbf{E}& 3 & 0 & 0 & 0 & 0 & 3 & 0 & 0 \\
-        \hline
-        \textbf{F}& 0 & 0 & 0 & 0 & 0 & 0 & 3 & 0 \\
-        \hline
-        \textbf{G}& 3 & 0 & 2 & 0 & 3 & 3 & 0 & 4 \\
-        \hline
-        \textbf{H}& 3 & 0 & 0 & 0 & 3 & 3 & 3 & 0 \\
-        \hline
-    \end{tabular}
-\end{center}
-
-
-\section{Table $D_{6}$}
-\begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
-        \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
-        \hline
-        \hline
-        \textbf{A}& 0 & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$1$ & \cellcolor[HTML]{D74894}$9$ & 1 & 0 & \cellcolor[HTML]{D74894}$1$ & \cellcolor[HTML]{D74894}$-3$ \\
-        \hline
-        \textbf{B}& \cellcolor[HTML]{D74894}$0$ & 0 & \cellcolor[HTML]{D74894}$-2$ & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$-1$ & -3 & \cellcolor[HTML]{D74894}$-2$ & \cellcolor[HTML]{D74894}$-6$ \\
-        \hline
-        \textbf{C}& \cellcolor[HTML]{D74894}$-2$ & \cellcolor[HTML]{D74894}$3$ & 0 & \cellcolor[HTML]{D74894}$4$ & \cellcolor[HTML]{D74894}$-3$ & -5 & \cellcolor[HTML]{D74894}$-4$ & \cellcolor[HTML]{D74894}$-8$ \\
-        \hline
-        \textbf{D}& 7 & \cellcolor[HTML]{D74894}$15$ & \cellcolor[HTML]{D74894}$8$ & 0 & 8 & 7 & 8 & \cellcolor[HTML]{D74894}$4$ \\
-        \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$7$ & \cellcolor[HTML]{D74894}$12$ & \cellcolor[HTML]{D74894}$5$ & 10 & 0 & 4 & 1 & \cellcolor[HTML]{D74894}$1$ \\
-        \hline
-        \textbf{F}& 3 & 8 & 1 & 9 & 2 & 0 & 1 & -3 \\
-        \hline
-        \textbf{G}& \cellcolor[HTML]{D74894}$2$ & 2 & \cellcolor[HTML]{D74894}$0$ & 3 & \cellcolor[HTML]{D74894}$1$ & -1 & 0 & \cellcolor[HTML]{D74894}$-4$ \\
-        \hline
-        \textbf{H}& \cellcolor[HTML]{D74894}$0$ & 1 & \cellcolor[HTML]{D74894}$-2$ & 4 & \cellcolor[HTML]{D74894}$-1$ & -3 & \cellcolor[HTML]{D74894}$-2$ & 0 \\
-        \hline
-    \end{tabular}
-\end{center}
-
-
-\section{Table $P_{6}$}
-\begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
-        \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
-        \hline
-        \hline
-        \textbf{A}& 0 & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & 0 & 3 & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ \\
-        \hline
-        \textbf{B}& \cellcolor[HTML]{D74894}$6$ & 0 & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & 3 & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ \\
-        \hline
-        \textbf{C}& \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & 0 & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & 0 & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ \\
-        \hline
-        \textbf{D}& 0 & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & 0 & 0 & 3 & 0 & \cellcolor[HTML]{D74894}$6$ \\
-        \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & \cellcolor[HTML]{D74894}$6$ & 0 & 0 & 3 & 0 & \cellcolor[HTML]{D74894}$6$ \\
-        \hline
-        \textbf{F}& 0 & 0 & 0 & 0 & 0 & 0 & 3 & 0 \\
-        \hline
-        \textbf{G}& \cellcolor[HTML]{D74894}$6$ & 0 & \cellcolor[HTML]{D74894}$6$ & 0 & \cellcolor[HTML]{D74894}$6$ & 3 & 0 & \cellcolor[HTML]{D74894}$6$ \\
-        \hline
-        \textbf{H}& \cellcolor[HTML]{D74894}$6$ & 0 & \cellcolor[HTML]{D74894}$6$ & 0 & \cellcolor[HTML]{D74894}$6$ & 3 & \cellcolor[HTML]{D74894}$6$ & 0 \\
-        \hline
-    \end{tabular}
-\end{center}
-
-
-\section{Table $D_{7}$}
-\begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
-        \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
-        \hline
-        \hline
-        \textbf{A}& 0 & \cellcolor[HTML]{D74894}$3$ & 1 & \cellcolor[HTML]{D74894}$4$ & 1 & 0 & 1 & -3 \\
-        \hline
-        \textbf{B}& 0 & 0 & -2 & \cellcolor[HTML]{D74894}$1$ & -1 & -3 & -2 & -6 \\
-        \hline
-        \textbf{C}& -2 & \cellcolor[HTML]{D74894}$-2$ & 0 & \cellcolor[HTML]{D74894}$-1$ & -3 & -5 & -4 & -8 \\
-        \hline
-        \textbf{D}& 7 & \cellcolor[HTML]{D74894}$10$ & 8 & 0 & 8 & 7 & 8 & 4 \\
-        \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$1$ & \cellcolor[HTML]{D74894}$4$ & 0 & \cellcolor[HTML]{D74894}$0$ & 1 & \cellcolor[HTML]{D74894}$-3$ \\
-        \hline
-        \textbf{F}& 3 & \cellcolor[HTML]{D74894}$3$ & 1 & \cellcolor[HTML]{D74894}$4$ & 2 & 0 & 1 & -3 \\
-        \hline
-        \textbf{G}& 2 & 2 & 0 & 3 & 1 & -1 & 0 & -4 \\
-        \hline
-        \textbf{H}& 0 & \cellcolor[HTML]{D74894}$0$ & -2 & \cellcolor[HTML]{D74894}$1$ & -1 & -3 & -2 & 0 \\
-        \hline
-    \end{tabular}
-\end{center}
-
-
-\section{Table $P_{7}$}
-\begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
-        \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
-        \hline
-        \hline
-        \textbf{A}& 0 & \cellcolor[HTML]{D74894}$7$ & 6 & \cellcolor[HTML]{D74894}$7$ & 0 & 3 & 6 & 6 \\
-        \hline
-        \textbf{B}& 6 & 0 & 6 & \cellcolor[HTML]{D74894}$7$ & 6 & 3 & 6 & 6 \\
-        \hline
-        \textbf{C}& 6 & \cellcolor[HTML]{D74894}$7$ & 0 & \cellcolor[HTML]{D74894}$7$ & 6 & 0 & 6 & 6 \\
-        \hline
-        \textbf{D}& 0 & \cellcolor[HTML]{D74894}$7$ & 6 & 0 & 0 & 3 & 0 & 6 \\
-        \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$7$ & \cellcolor[HTML]{D74894}$7$ & \cellcolor[HTML]{D74894}$7$ & \cellcolor[HTML]{D74894}$7$ & 0 & \cellcolor[HTML]{D74894}$7$ & 0 & \cellcolor[HTML]{D74894}$7$ \\
-        \hline
-        \textbf{F}& 0 & \cellcolor[HTML]{D74894}$7$ & 0 & \cellcolor[HTML]{D74894}$7$ & 0 & 0 & 3 & 0 \\
-        \hline
-        \textbf{G}& 6 & 0 & 6 & 0 & 6 & 3 & 0 & 6 \\
-        \hline
-        \textbf{H}& 6 & \cellcolor[HTML]{D74894}$7$ & 6 & \cellcolor[HTML]{D74894}$7$ & 6 & 3 & 6 & 0 \\
-        \hline
-    \end{tabular}
-\end{center}
-
-
-\section{Table $D_{8}$}
-\begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
-        \hline
-        \textbf{D} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
-        \hline
-        \hline
-        \textbf{A}& 0 & \cellcolor[HTML]{D74894}$-3$ & \cellcolor[HTML]{D74894}$-5$ & \cellcolor[HTML]{D74894}$-2$ & \cellcolor[HTML]{D74894}$-4$ & \cellcolor[HTML]{D74894}$-6$ & \cellcolor[HTML]{D74894}$-5$ & -3 \\
-        \hline
-        \textbf{B}& \cellcolor[HTML]{D74894}$-6$ & 0 & \cellcolor[HTML]{D74894}$-8$ & \cellcolor[HTML]{D74894}$-5$ & \cellcolor[HTML]{D74894}$-7$ & \cellcolor[HTML]{D74894}$-9$ & \cellcolor[HTML]{D74894}$-8$ & -6 \\
-        \hline
-        \textbf{C}& \cellcolor[HTML]{D74894}$-8$ & \cellcolor[HTML]{D74894}$-8$ & 0 & \cellcolor[HTML]{D74894}$-7$ & \cellcolor[HTML]{D74894}$-9$ & \cellcolor[HTML]{D74894}$-11$ & \cellcolor[HTML]{D74894}$-10$ & -8 \\
-        \hline
-        \textbf{D}& \cellcolor[HTML]{D74894}$4$ & \cellcolor[HTML]{D74894}$4$ & \cellcolor[HTML]{D74894}$2$ & 0 & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$1$ & \cellcolor[HTML]{D74894}$2$ & 4 \\
-        \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$-3$ & \cellcolor[HTML]{D74894}$-3$ & \cellcolor[HTML]{D74894}$-5$ & \cellcolor[HTML]{D74894}$-2$ & 0 & \cellcolor[HTML]{D74894}$-6$ & \cellcolor[HTML]{D74894}$-5$ & -3 \\
-        \hline
-        \textbf{F}& \cellcolor[HTML]{D74894}$-3$ & \cellcolor[HTML]{D74894}$-3$ & \cellcolor[HTML]{D74894}$-5$ & \cellcolor[HTML]{D74894}$-2$ & \cellcolor[HTML]{D74894}$-4$ & 0 & \cellcolor[HTML]{D74894}$-5$ & -3 \\
-        \hline
-        \textbf{G}& \cellcolor[HTML]{D74894}$-4$ & \cellcolor[HTML]{D74894}$-4$ & \cellcolor[HTML]{D74894}$-6$ & \cellcolor[HTML]{D74894}$-3$ & \cellcolor[HTML]{D74894}$-5$ & \cellcolor[HTML]{D74894}$-7$ & 0 & -4 \\
-        \hline
-        \textbf{H}& 0 & 0 & -2 & 1 & -1 & -3 & -2 & 0 \\
-        \hline
-    \end{tabular}
-\end{center}
-
-
-\section{Table $P_{8}$}
-\begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
-        \hline
-        \textbf{P} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} \\
-        \hline
-        \hline
-        \textbf{A}& 0 & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 6 \\
-        \hline
-        \textbf{B}& \cellcolor[HTML]{D74894}$8$ & 0 & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 6 \\
-        \hline
-        \textbf{C}& \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 0 & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 6 \\
-        \hline
-        \textbf{D}& \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 0 & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 6 \\
-        \hline
-        \textbf{E}& \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 0 & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 7 \\
-        \hline
-        \textbf{F}& \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 0 & \cellcolor[HTML]{D74894}$8$ & 0 \\
-        \hline
-        \textbf{G}& \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$8$ & 0 & 6 \\
-        \hline
-        \textbf{H}& 6 & 7 & 6 & 7 & 6 & 3 & 6 & 0 \\
+        \textbf{Washington}& 2 & 0 & 0 & 2 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -582,70 +311,31 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \section{Final Graph}
 \begin{center}
 \begin{tikzpicture}
- \Vertex[x=0, y=0, color=LightPink, size=0.5, label=$A$]{A}
- \Vertex[x=2, y=0, color=LightPink, size=0.5, label=$B$]{B}
- \Vertex[x=4, y=0, color=LightPink, size=0.5, label=$C$]{C}
- \Vertex[x=6, y=0, color=LightPink, size=0.5, label=$D$]{D}
- \Vertex[x=8, y=0, color=LightPink, size=0.5, label=$E$]{E}
- \Vertex[x=0, y=2, color=LightPink, size=0.5, label=$F$]{F}
- \Vertex[x=2, y=2, color=LightPink, size=0.5, label=$G$]{G}
- \Vertex[x=4, y=2, color=LightPink, size=0.5, label=$H$]{H}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Vertex[x=6, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Vertex[x=8, y=0, color=LightPink, size=0.5, label={Washington}]{E}
  
- \Edge[bend=-30, label=$-3$, Direct](A)(B) 
- \Edge[bend=-30, label=$-5$, Direct](A)(C) 
- \Edge[bend=-30, label=$-2$, Direct](A)(D) 
- \Edge[bend=-30, label=$-4$, Direct](A)(E) 
- \Edge[bend=-30, label=$-6$, Direct](A)(F) 
- \Edge[bend=-30, label=$-5$, Direct](A)(G) 
- \Edge[bend=-30, label=$-3$, Direct](A)(H) 
- \Edge[bend=-30, label=$-6$, Direct](B)(A) 
- \Edge[bend=-30, label=$-8$, Direct](B)(C) 
- \Edge[bend=-30, label=$-5$, Direct](B)(D) 
- \Edge[bend=-30, label=$-7$, Direct](B)(E) 
- \Edge[bend=-30, label=$-9$, Direct](B)(F) 
- \Edge[bend=-30, label=$-8$, Direct](B)(G) 
- \Edge[bend=-30, label=$-6$, Direct](B)(H) 
- \Edge[bend=-30, label=$-8$, Direct](C)(A) 
- \Edge[bend=-30, label=$-8$, Direct](C)(B) 
- \Edge[bend=-30, label=$-7$, Direct](C)(D) 
- \Edge[bend=-30, label=$-9$, Direct](C)(E) 
- \Edge[bend=-30, label=$-11$, Direct](C)(F) 
- \Edge[bend=-30, label=$-10$, Direct](C)(G) 
- \Edge[bend=-30, label=$-8$, Direct](C)(H) 
- \Edge[bend=-30, label=$4$, Direct](D)(A) 
- \Edge[bend=-30, label=$4$, Direct](D)(B) 
- \Edge[bend=-30, label=$2$, Direct](D)(C) 
- \Edge[bend=-30, label=$3$, Direct](D)(E) 
- \Edge[bend=-30, label=$1$, Direct](D)(F) 
- \Edge[bend=-30, label=$2$, Direct](D)(G) 
- \Edge[bend=-30, label=$4$, Direct](D)(H) 
- \Edge[bend=-30, label=$-3$, Direct](E)(A) 
- \Edge[bend=-30, label=$-3$, Direct](E)(B) 
- \Edge[bend=-30, label=$-5$, Direct](E)(C) 
- \Edge[bend=-30, label=$-2$, Direct](E)(D) 
- \Edge[bend=-30, label=$-6$, Direct](E)(F) 
- \Edge[bend=-30, label=$-5$, Direct](E)(G) 
- \Edge[bend=-30, label=$-3$, Direct](E)(H) 
- \Edge[bend=-30, label=$-3$, Direct](F)(A) 
- \Edge[bend=-30, label=$-3$, Direct](F)(B) 
- \Edge[bend=-30, label=$-5$, Direct](F)(C) 
- \Edge[bend=-30, label=$-2$, Direct](F)(D) 
- \Edge[bend=-30, label=$-4$, Direct](F)(E) 
- \Edge[bend=-30, label=$-5$, Direct](F)(G) 
- \Edge[bend=-30, label=$-3$, Direct](F)(H) 
- \Edge[bend=-30, label=$-4$, Direct](G)(A) 
- \Edge[bend=-30, label=$-4$, Direct](G)(B) 
- \Edge[bend=-30, label=$-6$, Direct](G)(C) 
- \Edge[bend=-30, label=$-3$, Direct](G)(D) 
- \Edge[bend=-30, label=$-5$, Direct](G)(E) 
- \Edge[bend=-30, label=$-7$, Direct](G)(F) 
- \Edge[bend=-30, label=$-4$, Direct](G)(H) 
- \Edge[bend=-30, label=$0$, Direct](H)(A) 
- \Edge[bend=-30, label=$0$, Direct](H)(B) 
- \Edge[bend=-30, label=$-2$, Direct](H)(C) 
- \Edge[bend=-30, label=$1$, Direct](H)(D) 
- \Edge[bend=-30, label=$-1$, Direct](H)(E) 
- \Edge[bend=-30, label=$-3$, Direct](H)(F) 
- \Edge[bend=-30, label=$-2$, Direct](H)(G)\end{tikzpicture}
+ \Edge[bend=-30, label=$7$, Direct](A)(B) 
+ \Edge[bend=-30, label=$13$, Direct](A)(C) 
+ \Edge[bend=-30, label=$9$, Direct](A)(D) 
+ \Edge[bend=-30, label=$5$, Direct](A)(E) 
+ \Edge[bend=-30, label=$2$, Direct](B)(A) 
+ \Edge[bend=-30, label=$7$, Direct](B)(C) 
+ \Edge[bend=-30, label=$2$, Direct](B)(D) 
+ \Edge[bend=-30, label=$3$, Direct](B)(E) 
+ \Edge[bend=-30, label=$3$, Direct](C)(A) 
+ \Edge[bend=-30, label=$1$, Direct](C)(B) 
+ \Edge[bend=-30, label=$3$, Direct](C)(D) 
+ \Edge[bend=-30, label=$4$, Direct](C)(E) 
+ \Edge[bend=-30, label=$8$, Direct](D)(A) 
+ \Edge[bend=-30, label=$6$, Direct](D)(B) 
+ \Edge[bend=-30, label=$5$, Direct](D)(C) 
+ \Edge[bend=-30, label=$9$, Direct](D)(E) 
+ \Edge[bend=-30, label=$4$, Direct](E)(A) 
+ \Edge[bend=-30, label=$2$, Direct](E)(B) 
+ \Edge[bend=-30, label=$8$, Direct](E)(C) 
+ \Edge[bend=-30, label=$4$, Direct](E)(D)\end{tikzpicture}
 \end{center}
 \end{document}
