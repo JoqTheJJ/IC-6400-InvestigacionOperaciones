@@ -1,6 +1,7 @@
 /*
                 Project 1: Calculating the Shortest Paths using the Floyd Algorithm
-                Made by: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
+                Made by: Carmen Hidalgo Paz, Melissa Carvajal Charpentier
+                y Josué Soto González
                 Date: Friday, September 12, 2025
 
                 This section contains the program used to calculate the shortest
