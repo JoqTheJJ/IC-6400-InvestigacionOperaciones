@@ -901,17 +901,11 @@ int main(int argc, char *argv[]) {
     rebuild_matrix_ui(ui, n0);
 
     // Maximize window
-    GdkDisplay *display = gdk_display_get_default();
-    GdkMonitor *monitor = gdk_display_get_primary_monitor(display);
-    GdkRectangle geometry;
-    gdk_monitor_get_geometry(monitor, &geometry);
-
-    gtk_window_set_default_size(GTK_WINDOW(ventana),
-                                geometry.width,
-                                geometry.height);
+    gtk_window_fullscreen(GTK_WINDOW(ventana));
 
     // Show window
     gtk_widget_show_all(ventana);
+
     // Run GTK
     gtk_main();
 
