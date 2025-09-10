@@ -1,6 +1,7 @@
 /*
                 Project 1: Dynamic Programming Menu with Floyd Algorithm
-                Made by: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
+                Made by: Carmen Hidalgo Paz, Melissa Carvajal Charpentier
+                y Josué Soto González
                 Date: Friday, September 12, 2025
 
                 This section contains the main of a multiple algorithms program, where
