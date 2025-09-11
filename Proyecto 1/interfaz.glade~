@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkWindow" id="window">
@@ -14,13 +14,15 @@
           <object class="GtkLabel" id="title">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes">Title</property>
             <property name="halign">center</property>
-            <property name="margin-top">50</property>
+            <property name="margin-top">10</property>
             <property name="xpad">10</property>
             <property name="ypad">40</property>
             <property name="label" translatable="yes">Menu for Different Dynamic Programming Programs</property>
             <attributes>
-              <attribute name="font-desc" value="Sans Bold Italic 20"/>
+              <attribute name="font-desc" value="Sans Bold Italic 25"/>
+              <attribute name="foreground" value="#ffffffffffff"/>
             </attributes>
           </object>
           <packing>
@@ -33,6 +35,7 @@
           <object class="GtkLabel" id="description">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes">Menu description</property>
             <property name="halign">center</property>
             <property name="xpad">10</property>
             <property name="ypad">30</property>
@@ -43,6 +46,9 @@ option they can view a basic description of said algorithm.</property>
             <attributes>
               <attribute name="font-desc" value="Sans 12"/>
             </attributes>
+            <style>
+              <class name="parchment"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -54,7 +60,8 @@ option they can view a basic description of said algorithm.</property>
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">30</property>
+            <property name="margin-left">135</property>
+            <property name="margin-right">135</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkRadioButton" id="option-5">
@@ -87,10 +94,13 @@ The algorithm then considers each vertex in turn as a possible intermediate poin
 By systematically applying this update rule for every possible intermediate vertex, Floyd’s Algorithm ensures that, after 
 n iterations (where n is the number of vertices), the matrix contains the shortest path distances between all pairs.</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">5</property>
                 <property name="active">True</property>
-                <property name="draw-indicator">True</property>
+                <property name="draw-indicator">False</property>
                 <property name="group">option-5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -106,10 +116,13 @@ n iterations (where n is the number of vertices), the matrix contains the shorte
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Description 2</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">5</property>
                 <property name="active">True</property>
-                <property name="draw-indicator">True</property>
+                <property name="draw-indicator">False</property>
                 <property name="group">option-5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -125,10 +138,13 @@ n iterations (where n is the number of vertices), the matrix contains the shorte
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Description 3</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">5</property>
                 <property name="active">True</property>
-                <property name="draw-indicator">True</property>
+                <property name="draw-indicator">False</property>
                 <property name="group">option-5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -145,8 +161,11 @@ n iterations (where n is the number of vertices), the matrix contains the shorte
                 <property name="tooltip-text" translatable="yes">Description 4</property>
                 <property name="halign">center</property>
                 <property name="active">True</property>
-                <property name="draw-indicator">True</property>
+                <property name="draw-indicator">False</property>
                 <property name="group">option-5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -170,7 +189,10 @@ n iterations (where n is the number of vertices), the matrix contains the shorte
             <property name="receives-default">True</property>
             <property name="tooltip-text" translatable="yes">Press the button to end the Program</property>
             <property name="halign">center</property>
-            <property name="margin-top">50</property>
+            <property name="margin-top">10</property>
+            <style>
+              <class name="stone"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>

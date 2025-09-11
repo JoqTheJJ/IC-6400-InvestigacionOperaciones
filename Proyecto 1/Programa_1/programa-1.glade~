@@ -39,10 +39,10 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="margin-top">10</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">3</property>
                 <property name="label" translatable="yes">Shortest Paths using the Floyd Algorithm</property>
                 <attributes>
-                  <attribute name="font-desc" value="Serif Bold 14"/>
+                  <attribute name="font-desc" value="Serif Bold 15"/>
                   <attribute name="foreground" value="#d7d748489494"/>
                 </attributes>
               </object>
@@ -56,7 +56,7 @@
               <object class="GtkLabel" id="info">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">10</property>
+                <property name="halign">center</property>
                 <property name="label" translatable="yes">- This program consists of a way to obtain the shortest path
 between any pair of nodes in a graph with weighted
 distances.
@@ -70,6 +70,9 @@ DIRECTIONS:
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
+                <style>
+                  <class name="parchment"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -81,12 +84,15 @@ DIRECTIONS:
               <object class="GtkLabel" id="instruction-nodes">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">5</property>
-                <property name="label" translatable="yes">Insert the amount of nodes wanted (1=&lt;):</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">    Insert the amount of nodes wanted (1=&lt;):    </property>
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -101,9 +107,12 @@ DIRECTIONS:
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Choose a number greater than 1 for the amount of nodes wanted</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">3</property>
                 <property name="adjustment">adjustment-nodes</property>
                 <property name="value">1</property>
+                <style>
+                  <class name="plank-color"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -115,11 +124,15 @@ DIRECTIONS:
               <object class="GtkLabel" id="upload">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">5</property>
-                <property name="label" translatable="yes">Upload a .txt file:</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">                           Upload a .txt file:                           </property>
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -134,8 +147,11 @@ DIRECTIONS:
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface as a Table D(0)</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">3</property>
                 <property name="title" translatable="yes"/>
+                <style>
+                  <class name="plank-color"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -147,11 +163,15 @@ DIRECTIONS:
               <object class="GtkLabel" id="save">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">5</property>
-                <property name="label" translatable="yes">Press the button to save your current work:</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">   Press the button to save your current work:   </property>
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -168,7 +188,10 @@ DIRECTIONS:
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Press button to save the current Table D(0) as a .txt file</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">10</property>
+                <property name="margin-bottom">3</property>
+                <style>
+                  <class name="plank-color"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -180,11 +203,15 @@ DIRECTIONS:
               <object class="GtkLabel" id="create-file">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">5</property>
-                <property name="label" translatable="yes">Press the button to create the LATEX file:</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">     Press the button to create the LATEX file:     </property>
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -201,7 +228,10 @@ DIRECTIONS:
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Press button to create .tex file with the Floyd Algorithm applied</property>
                 <property name="halign">center</property>
-                <property name="margin-bottom">5</property>
+                <property name="margin-bottom">3</property>
+                <style>
+                  <class name="plank-color"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -220,6 +250,9 @@ DIRECTIONS:
                 <property name="halign">center</property>
                 <property name="margin-top">10</property>
                 <property name="margin-bottom">5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -231,7 +264,7 @@ DIRECTIONS:
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="pixbuf">Programa_1/500px-KatFL_Ranger_Kirby_artwork (1).png</property>
+                <property name="pixbuf">KirbyRanger.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -247,5 +280,8 @@ DIRECTIONS:
         </child>
       </object>
     </child>
+    <style>
+      <class name="bg-1"/>
+    </style>
   </object>
 </interface>

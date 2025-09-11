@@ -901,6 +901,15 @@ int main(int argc, char *argv[]) {
     if (n0 < 1) n0 = 1;
     rebuild_matrix_ui(ui, n0);
 
+    GdkPixbuf *pix = gdk_pixbuf_new_from_file_at_scale(
+        "KirbyRanger.png",   // your image file
+        64,              // desired width
+        -1,              // height (-1 = auto to keep aspect ratio)
+        TRUE,            // preserve aspect ratio
+        NULL             // error
+    );
+    GtkWidget *img = gtk_image_new_from_pixbuf(pix);
+
     // Maximize window
     gtk_window_fullscreen(GTK_WINDOW(ventana));
 
@@ -915,6 +924,7 @@ int main(int argc, char *argv[]) {
     if (ui->col_headers) g_ptr_array_free(ui->col_headers, TRUE);
     if (ui->cells)       g_ptr_array_free(ui->cells, TRUE);
     g_free(ui);
+    g_object_unref(pix);
     g_object_unref(builder);
 
     return 0;
