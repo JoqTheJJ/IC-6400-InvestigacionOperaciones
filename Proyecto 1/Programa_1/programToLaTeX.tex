@@ -5,14 +5,42 @@
 \usepackage{xcolor}
 
 \begin{document}
-\title{Graph Theory - Operations Research}
-\author{Melissa Carvajal, Carmen Hidalgo \& Josu\'e Soto}
-\date{2025}
+\begin{titlepage}
+    \centering
+    % Logo
+    \includegraphics[width=0.6\textwidth]{logo-tec.png}\par\vspace{1cm}
 
+    % University and course
+    {\large Escuela de Ingeniería en Computación\par}
+    {\large Investigación de Operaciones\par}
+    \vspace{2cm}
+
+    % Title
+    {\Large Rutas Óptimas\par}
+    {\large Algoritmo de Floyd\par}
+    \vspace{2cm}
+
+    % Group and professor
+    {\large Grupo 40\par}
+    {\large Profesor: Francisco Torres Rojas\par}
+    \vspace{3cm}
+
+    % Student info
+    {\large Carmen Hidalgo Paz\par}
+    {\large Carné: 2020030538\par}
+    \vspace{1cm}
+    {\large Melissa Carvajal Charpentier\par}
+    {\large Carné: 2022197088\par}
+    \vspace{1cm}
+    {\large Josué Soto González\par}
+    {\large Carné: 2023207915\par}
+    \vspace{1cm}
+
+    % Date
+    {\large 12 de Septiembre del 2025\par}
+\end{titlepage}
 \definecolor{KirbyPink}{HTML}{D74894}
 \definecolor{LightPink}{HTML}{FFBFBF}
-
-\maketitle
 
 \newpage
 
@@ -21,13 +49,9 @@
 This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.
 Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.
 \section{Robert W. Floyd (1936–2001)}
-\begin{figure}
 \begin{center}
 \includegraphics[width=0.25\textwidth]{floyd.jpg}
-\caption{\label{fig:floyd}Robert Floyd}
 \end{center}
-\end{figure}
-
 Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.
 
 
