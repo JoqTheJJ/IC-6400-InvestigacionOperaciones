@@ -34,42 +34,44 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \section{Initial Graph}
 \begin{center}
 \begin{tikzpicture}
- \Vertex[x=5.000000, y=0.000000, color=LightPink, size=0.5, label={v1}]{A}
- \Vertex[x=1.545085, y=4.755282, color=LightPink, size=0.5, label={v2}]{B}
- \Vertex[x=-4.045085, y=2.938926, color=LightPink, size=0.5, label={v3}]{C}
- \Vertex[x=-4.045084, y=-2.938927, color=LightPink, size=0.5, label={v4}]{D}
- \Vertex[x=1.545086, y=-4.755282, color=LightPink, size=0.5, label={v5}]{E}
+ \Vertex[x=5.000000, y=0.000000, color=LightPink, size=0.5, label={New York}]{A}
+ \Vertex[x=1.545085, y=4.755282, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Vertex[x=-4.045085, y=2.938926, color=LightPink, size=0.5, label={Miami}]{C}
+ \Vertex[x=-4.045084, y=-2.938927, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Vertex[x=1.545086, y=-4.755282, color=LightPink, size=0.5, label={Washington}]{E}
  
- \Edge[bend=-10, label=$6$, Direct](A)(B) 
- \Edge[bend=-10, label=$4$, Direct](A)(D) 
- \Edge[bend=-10, label=$7$, Direct](A)(E) 
- \Edge[bend=-10, label=$9$, Direct](B)(A) 
- \Edge[bend=-10, label=$7$, Direct](B)(C) 
- \Edge[bend=-10, label=$5$, Direct](C)(B) 
- \Edge[bend=-10, label=$14$, Direct](C)(E) 
- \Edge[bend=-10, label=$8$, Direct](D)(A) 
- \Edge[bend=-10, label=$1$, Direct](D)(B) 
- \Edge[bend=-10, label=$15$, Direct](D)(E) 
- \Edge[bend=-10, label=$2$, Direct](E)(A) 
- \Edge[bend=-10, label=$2$, Direct](E)(C) 
- \Edge[bend=-10, label=$19$, Direct](E)(D)\end{tikzpicture}
+ \Edge[bend=-10, label=$16$, Direct](A)(C) 
+ \Edge[bend=-10, label=$17$, Direct](A)(D) 
+ \Edge[bend=-10, label=$5$, Direct](A)(E) 
+ \Edge[bend=-10, label=$2$, Direct](B)(A) 
+ \Edge[bend=-10, label=$2$, Direct](B)(D) 
+ \Edge[bend=-10, label=$3$, Direct](B)(E) 
+ \Edge[bend=-10, label=$15$, Direct](C)(A) 
+ \Edge[bend=-10, label=$1$, Direct](C)(B) 
+ \Edge[bend=-10, label=$6$, Direct](C)(D) 
+ \Edge[bend=-10, label=$9$, Direct](D)(B) 
+ \Edge[bend=-10, label=$5$, Direct](D)(C) 
+ \Edge[bend=-10, label=$11$, Direct](D)(E) 
+ \Edge[bend=-10, label=$9$, Direct](E)(A) 
+ \Edge[bend=-10, label=$2$, Direct](E)(B) 
+ \Edge[bend=-10, label=$8$, Direct](E)(C)\end{tikzpicture}
 \end{center}
 \section{Table $D_{0}$}
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & 6 & $\infty$ & 4 & 7 \\
+        \textbf{New York}& 0 & $\infty$ & 16 & 17 & 5 \\
         \hline
-        \textbf{v2}& 9 & 0 & 7 & $\infty$ & $\infty$ \\
+        \textbf{Vegas}& 2 & 0 & $\infty$ & 2 & 3 \\
         \hline
-        \textbf{v3}& $\infty$ & 5 & 0 & $\infty$ & 14 \\
+        \textbf{Miami}& 15 & 1 & 0 & 6 & $\infty$ \\
         \hline
-        \textbf{v4}& 8 & 1 & $\infty$ & 0 & 15 \\
+        \textbf{San Antonio}& $\infty$ & 9 & 5 & 0 & 11 \\
         \hline
-        \textbf{v5}& 2 & $\infty$ & 2 & 19 & 0 \\
+        \textbf{Washington}& 9 & 2 & 8 & $\infty$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -79,18 +81,18 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & 0 & 0 & 0 & 0 \\
+        \textbf{New York}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{v2}& 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Vegas}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{v3}& 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Miami}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{v4}& 0 & 0 & 0 & 0 & 0 \\
+        \textbf{San Antonio}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{v5}& 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Washington}& 0 & 0 & 0 & 0 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -100,18 +102,18 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & 6 & $\infty$ & 4 & 7 \\
+        \textbf{New York}& 0 & $\infty$ & 16 & 17 & 5 \\
         \hline
-        \textbf{v2}& 9 & 0 & 7 & \cellcolor[HTML]{D74894}$13$ & \cellcolor[HTML]{D74894}$16$ \\
+        \textbf{Vegas}& 2 & 0 & \cellcolor[HTML]{D74894}$18$ & 2 & 3 \\
         \hline
-        \textbf{v3}& $\infty$ & 5 & 0 & $\infty$ & 14 \\
+        \textbf{Miami}& 15 & 1 & 0 & 6 & \cellcolor[HTML]{D74894}$20$ \\
         \hline
-        \textbf{v4}& 8 & 1 & $\infty$ & 0 & 15 \\
+        \textbf{San Antonio}& $\infty$ & 9 & 5 & 0 & 11 \\
         \hline
-        \textbf{v5}& 2 & \cellcolor[HTML]{D74894}$8$ & 2 & \cellcolor[HTML]{D74894}$6$ & 0 \\
+        \textbf{Washington}& 9 & 2 & 8 & \cellcolor[HTML]{D74894}$26$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -121,18 +123,18 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & 0 & 0 & 0 & 0 \\
+        \textbf{New York}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{v2}& 0 & 0 & 0 & \cellcolor[HTML]{D74894}$1$ & \cellcolor[HTML]{D74894}$1$ \\
+        \textbf{Vegas}& 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 & 0 \\
         \hline
-        \textbf{v3}& 0 & 0 & 0 & 0 & 0 \\
+        \textbf{Miami}& 0 & 0 & 0 & 0 & \cellcolor[HTML]{D74894}$1$ \\
         \hline
-        \textbf{v4}& 0 & 0 & 0 & 0 & 0 \\
+        \textbf{San Antonio}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{v5}& 0 & \cellcolor[HTML]{D74894}$1$ & 0 & \cellcolor[HTML]{D74894}$1$ & 0 \\
+        \textbf{Washington}& 0 & 0 & 0 & \cellcolor[HTML]{D74894}$1$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -142,18 +144,18 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & 6 & \cellcolor[HTML]{D74894}$13$ & 4 & 7 \\
+        \textbf{New York}& 0 & $\infty$ & 16 & 17 & 5 \\
         \hline
-        \textbf{v2}& 9 & 0 & 7 & 13 & 16 \\
+        \textbf{Vegas}& 2 & 0 & 18 & 2 & 3 \\
         \hline
-        \textbf{v3}& \cellcolor[HTML]{D74894}$14$ & 5 & 0 & \cellcolor[HTML]{D74894}$18$ & 14 \\
+        \textbf{Miami}& \cellcolor[HTML]{D74894}$3$ & 1 & 0 & \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$4$ \\
         \hline
-        \textbf{v4}& 8 & 1 & \cellcolor[HTML]{D74894}$8$ & 0 & 15 \\
+        \textbf{San Antonio}& \cellcolor[HTML]{D74894}$11$ & 9 & 5 & 0 & 11 \\
         \hline
-        \textbf{v5}& 2 & 8 & 2 & 6 & 0 \\
+        \textbf{Washington}& \cellcolor[HTML]{D74894}$4$ & 2 & 8 & \cellcolor[HTML]{D74894}$4$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -163,18 +165,18 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & 0 & \cellcolor[HTML]{D74894}$2$ & 0 & 0 \\
+        \textbf{New York}& 0 & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{v2}& 0 & 0 & 0 & 1 & 1 \\
+        \textbf{Vegas}& 0 & 0 & 1 & 0 & 0 \\
         \hline
-        \textbf{v3}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & \cellcolor[HTML]{D74894}$2$ & 0 \\
+        \textbf{Miami}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & \cellcolor[HTML]{D74894}$2$ & \cellcolor[HTML]{D74894}$2$ \\
         \hline
-        \textbf{v4}& 0 & 0 & \cellcolor[HTML]{D74894}$2$ & 0 & 0 \\
+        \textbf{San Antonio}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & 0 & 0 \\
         \hline
-        \textbf{v5}& 0 & 1 & 0 & 1 & 0 \\
+        \textbf{Washington}& \cellcolor[HTML]{D74894}$2$ & 0 & 0 & \cellcolor[HTML]{D74894}$2$ & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -184,18 +186,18 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & 6 & 13 & 4 & 7 \\
+        \textbf{New York}& 0 & \cellcolor[HTML]{D74894}$17$ & 16 & 17 & 5 \\
         \hline
-        \textbf{v2}& 9 & 0 & 7 & 13 & 16 \\
+        \textbf{Vegas}& 2 & 0 & 18 & 2 & 3 \\
         \hline
-        \textbf{v3}& 14 & 5 & 0 & 18 & 14 \\
+        \textbf{Miami}& 3 & 1 & 0 & 3 & 4 \\
         \hline
-        \textbf{v4}& 8 & 1 & 8 & 0 & 15 \\
+        \textbf{San Antonio}& \cellcolor[HTML]{D74894}$8$ & \cellcolor[HTML]{D74894}$6$ & 5 & 0 & \cellcolor[HTML]{D74894}$9$ \\
         \hline
-        \textbf{v5}& 2 & \cellcolor[HTML]{D74894}$7$ & 2 & 6 & 0 \\
+        \textbf{Washington}& 4 & 2 & 8 & 4 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -205,18 +207,18 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & 0 & 2 & 0 & 0 \\
+        \textbf{New York}& 0 & \cellcolor[HTML]{D74894}$3$ & 0 & 0 & 0 \\
         \hline
-        \textbf{v2}& 0 & 0 & 0 & 1 & 1 \\
+        \textbf{Vegas}& 0 & 0 & 1 & 0 & 0 \\
         \hline
-        \textbf{v3}& 2 & 0 & 0 & 2 & 0 \\
+        \textbf{Miami}& 2 & 0 & 0 & 2 & 2 \\
         \hline
-        \textbf{v4}& 0 & 0 & 2 & 0 & 0 \\
+        \textbf{San Antonio}& \cellcolor[HTML]{D74894}$3$ & \cellcolor[HTML]{D74894}$3$ & 0 & 0 & \cellcolor[HTML]{D74894}$3$ \\
         \hline
-        \textbf{v5}& 0 & \cellcolor[HTML]{D74894}$3$ & 0 & 1 & 0 \\
+        \textbf{Washington}& 2 & 0 & 0 & 2 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -226,18 +228,18 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{D} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & \cellcolor[HTML]{D74894}$5$ & \cellcolor[HTML]{D74894}$12$ & 4 & 7 \\
+        \textbf{New York}& 0 & 17 & 16 & 17 & 5 \\
         \hline
-        \textbf{v2}& 9 & 0 & 7 & 13 & 16 \\
+        \textbf{Vegas}& 2 & 0 & \cellcolor[HTML]{D74894}$7$ & 2 & 3 \\
         \hline
-        \textbf{v3}& 14 & 5 & 0 & 18 & 14 \\
+        \textbf{Miami}& 3 & 1 & 0 & 3 & 4 \\
         \hline
-        \textbf{v4}& 8 & 1 & 8 & 0 & 15 \\
+        \textbf{San Antonio}& 8 & 6 & 5 & 0 & 9 \\
         \hline
-        \textbf{v5}& 2 & 7 & 2 & 6 & 0 \\
+        \textbf{Washington}& 4 & 2 & 8 & 4 & 0 \\
         \hline
     \end{tabular}
 \end{center}
@@ -247,9 +249,238 @@ Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. H
 \begin{center}
     \begin{tabular}{|c||c|c|c|c|c|}
         \hline
-        \textbf{P} & \textbf{v1} & \textbf{v2} & \textbf{v3} & \textbf{v4} & \textbf{v5} \\
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
         \hline
         \hline
-        \textbf{v1}& 0 & \cellcolor[HTML]{D74894}$4$ & \cellcolor[HTML]{D74894}$4$ & 0 & 0 \\
+        \textbf{New York}& 0 & 3 & 0 & 0 & 0 \\
         \hline
-        \textbf{v2}& 
+        \textbf{Vegas}& 0 & 0 & \cellcolor[HTML]{D74894}$4$ & 0 & 0 \\
+        \hline
+        \textbf{Miami}& 2 & 0 & 0 & 2 & 2 \\
+        \hline
+        \textbf{San Antonio}& 3 & 3 & 0 & 0 & 3 \\
+        \hline
+        \textbf{Washington}& 2 & 0 & 0 & 2 & 0 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+
+\section{Table $D_{5}$}
+\begin{center}
+    \begin{tabular}{|c||c|c|c|c|c|}
+        \hline
+        \textbf{D} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
+        \hline
+        \hline
+        \textbf{New York}& 0 & \cellcolor[HTML]{D74894}$7$ & \cellcolor[HTML]{D74894}$13$ & \cellcolor[HTML]{D74894}$9$ & 5 \\
+        \hline
+        \textbf{Vegas}& 2 & 0 & 7 & 2 & 3 \\
+        \hline
+        \textbf{Miami}& 3 & 1 & 0 & 3 & 4 \\
+        \hline
+        \textbf{San Antonio}& 8 & 6 & 5 & 0 & 9 \\
+        \hline
+        \textbf{Washington}& 4 & 2 & 8 & 4 & 0 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+
+\section{Table $P_{5}$}
+\begin{center}
+    \begin{tabular}{|c||c|c|c|c|c|}
+        \hline
+        \textbf{P} & \textbf{New York} & \textbf{Vegas} & \textbf{Miami} & \textbf{San Antonio} & \textbf{Washington} \\
+        \hline
+        \hline
+        \textbf{New York}& 0 & \cellcolor[HTML]{D74894}$5$ & \cellcolor[HTML]{D74894}$5$ & \cellcolor[HTML]{D74894}$5$ & 0 \\
+        \hline
+        \textbf{Vegas}& 0 & 0 & 4 & 0 & 0 \\
+        \hline
+        \textbf{Miami}& 2 & 0 & 0 & 2 & 2 \\
+        \hline
+        \textbf{San Antonio}& 3 & 3 & 0 & 0 & 3 \\
+        \hline
+        \textbf{Washington}& 2 & 0 & 0 & 2 & 0 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+
+\section*{Current city: New York}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Washington}]{E}
+ \Edge[label=$5$, Direct](A)(E)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Edge[label=$2$, Direct](E)(B)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Washington}]{E}
+ \Edge[label=$5$, Direct](A)(E)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Edge[label=$8$, Direct](E)(C)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Washington}]{E}
+ \Edge[label=$5$, Direct](A)(E)
+ \Vertex[x=4, y=0, color=LightBlue, size=0.5, label={Vegas}]{B}
+ \Edge[label=$2$, Direct](E)(B)
+ \Vertex[x=6, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Edge[label=$2$, Direct](B)(D)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={Washington}]{E}
+ \Edge[label=$5$, Direct](A)(E)
+\end{tikzpicture}
+\end{center}
+\section*{Current city: Vegas}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Edge[label=$2$, Direct](B)(A)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={San Antonio}]{D}
+ \Edge[label=$2$, Direct](B)(D)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Edge[label=$5$, Direct](D)(C)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Edge[label=$2$, Direct](B)(D)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={Washington}]{E}
+ \Edge[label=$3$, Direct](B)(E)
+\end{tikzpicture}
+\end{center}
+\section*{Current city: Miami}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Vegas}]{B}
+ \Edge[label=$1$, Direct](C)(B)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Edge[label=$2$, Direct](B)(A)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Edge[label=$1$, Direct](C)(B)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Vegas}]{B}
+ \Edge[label=$1$, Direct](C)(B)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Edge[label=$2$, Direct](B)(D)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Vegas}]{B}
+ \Edge[label=$1$, Direct](C)(B)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={Washington}]{E}
+ \Edge[label=$3$, Direct](B)(E)
+\end{tikzpicture}
+\end{center}
+\section*{Current city: San Antonio}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Miami}]{C}
+ \Edge[label=$5$, Direct](D)(C)
+ \Vertex[x=4, y=0, color=LightBlue, size=0.5, label={Vegas}]{B}
+ \Edge[label=$1$, Direct](C)(B)
+ \Vertex[x=6, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Edge[label=$2$, Direct](B)(A)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Miami}]{C}
+ \Edge[label=$5$, Direct](D)(C)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Edge[label=$1$, Direct](C)(B)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Edge[label=$5$, Direct](D)(C)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Miami}]{C}
+ \Edge[label=$5$, Direct](D)(C)
+ \Vertex[x=4, y=0, color=LightBlue, size=0.5, label={Vegas}]{B}
+ \Edge[label=$1$, Direct](C)(B)
+ \Vertex[x=6, y=0, color=LightPink, size=0.5, label={Washington}]{E}
+ \Edge[label=$3$, Direct](B)(E)
+\end{tikzpicture}
+\end{center}
+\section*{Current city: Washington}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Washington}]{E}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Vegas}]{B}
+ \Edge[label=$2$, Direct](E)(B)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={New York}]{A}
+ \Edge[label=$2$, Direct](B)(A)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Washington}]{E}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={Vegas}]{B}
+ \Edge[label=$2$, Direct](E)(B)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Washington}]{E}
+ \Vertex[x=2, y=0, color=LightPink, size=0.5, label={Miami}]{C}
+ \Edge[label=$8$, Direct](E)(C)
+\end{tikzpicture}
+\end{center}
+\begin{center}
+\begin{tikzpicture}
+ \Vertex[x=0, y=0, color=LightPink, size=0.5, label={Washington}]{E}
+ \Vertex[x=2, y=0, color=LightBlue, size=0.5, label={Vegas}]{B}
+ \Edge[label=$2$, Direct](E)(B)
+ \Vertex[x=4, y=0, color=LightPink, size=0.5, label={San Antonio}]{D}
+ \Edge[label=$2$, Direct](B)(D)
+\end{tikzpicture}
+\end{center}
+\end{document}

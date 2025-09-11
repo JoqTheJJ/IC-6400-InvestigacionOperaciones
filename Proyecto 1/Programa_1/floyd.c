@@ -151,50 +151,17 @@ void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, char** names
 
 }
 
-int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
-
-    fprintf(f, "\\section{Final Graph}\n");
-    fprintf(f, "\\begin{center}\n");
-    fprintf(f, "\\begin{tikzpicture}\n");
-
-
-    if (f == NULL) {
-        printf("Error: File null\n");
-        return 1;
-    }
-    for (int i = 0; i < n; i++) {
-        // Create all the vertexes
-        // \Vertex[label=$v_1$]{A}  i//5
-        char* currentCity = names[i];
-        fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label={%s}]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
-
-
-    }
-    for (int i = 0; i < n; i++) { //    We are on the row/city A+i
-        for (int j = 0; j < n; j++) { // Now we visit each associated city to A+i
-
-            if (i==j) continue;
-
-            if (D[i][j] == INF) continue;
-
-            fprintf(f, " \n \\Edge[bend=-30, label=$%d$, Direct](%c)(%c)", D[i][j] ,'A'+ i, 'A'+ j);
-            // This line draws the directed arrow, where:
-            // %d corresponds to the distance between cities
-            // %c corresponds to the cities
-
-        }
-    }
-    fprintf(f, "\\end{tikzpicture}\n");
-    fprintf(f, "\\end{center}\n");
-
-    return 0;
-}
+/* ################################## FINAL GRAPH ################################## */
 
 int findVertexes(int** P, int* vertexes, int current, int other, int next) {
     if (P[current][other] == 0) return next;
 
-    vertexes[next] = P[current][other];
-    return findVertexes(P, vertexes, current, P[current][other], next+1);
+    int midCity = P[current][other]-1;
+    printf("(%d)\n", midCity);
+
+    next = findVertexes(P, vertexes, current, midCity, next);
+    vertexes[next] = midCity;
+    return findVertexes(P, vertexes, midCity, other, next+1);
 }
 
 
@@ -208,14 +175,18 @@ int eachCity(FILE* f, int** D, int** P, int n, char** names) {
         char* currentCity = names[i];
         fprintf(f, "\\section*{Current city: %s}\n", currentCity);
 
+        printf("i: %d\n", i);
+
         for (int j = 0; j < n; j++) {
             if (i == j) continue;
             if (D[i][j] == INF) continue;
-            if (P[i][j] == 0) continue;
 
-            int *vertexes = calloc(n, sizeof(int));
+            printf("j: %d\n", j);
+
+            int *vertexes = malloc(n * sizeof(int));
             int count = findVertexes(P, vertexes, i, j, 0); // This function finds all intermediate nodes,
             // returns total of intermediate node
+            printf("Found cities!\n");
 
             fprintf(f, "\\begin{center}\n");
             fprintf(f, "\\begin{tikzpicture}\n");
@@ -226,8 +197,9 @@ int eachCity(FILE* f, int** D, int** P, int n, char** names) {
             int prev = i;
 
            // Draws intermediate nodes
-           // Prev is needed in order to know which was la previous node, so we can draw the edge
+           // Prev is needed in order to know which was the previous node, so we can draw the edge
             for (int k = 0; k < count; k++) {
+                printf("k: %d\n", k);
                 int v = vertexes[k];
                 fprintf(f, " \\Vertex[x=%d, y=%d, color=LightBlue, size=0.5, label={%s}]{%c}\n", 2*(k+1), 0, names[v], 'A' + v);
 
@@ -245,12 +217,13 @@ int eachCity(FILE* f, int** D, int** P, int n, char** names) {
 
             free(vertexes);
         }
+        printf("Final i: %d\n", i);
     }
 
     return 0;
 }
 
-
+/* ################################## INITIAL GRAPH ################################## */
 
 int initialGraph(FILE* f, int** D, int n, char** names) {
     fprintf(f, "\\section{Initial Graph}\n");
@@ -384,7 +357,6 @@ int runFloyd(char** names, int** matrix, int nodes) {
 
     Floyd(matrix, P, nodes, names, file);
 
-    finalGraph(file, matrix, P, nodes, names);
     eachCity(file, matrix, P, nodes, names);
 
     fprintf(file, "\\end{document}\n");
