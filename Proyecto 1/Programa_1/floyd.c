@@ -41,7 +41,7 @@ void documentStart(FILE* f){
     //Document information
     fprintf(f, "\\begin{document}\n");
 
-    fprintf(f, "\\title{Graph Theory}\n");
+    fprintf(f, "\\title{Graph Theory - Operations Research}\n");
     fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo \\& Josu\\'e Soto}\n");
     //fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
     fprintf(f, "\\date{2025}\n\n");
@@ -190,6 +190,68 @@ int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
     return 0;
 }
 
+int findVertexes(int** P, int* vertexes, int current, int other, int next) {
+    if (P[current][other] == 0) return next;
+
+    vertexes[next] = P[current][other];
+    return findVertexes(P, vertexes, current, P[current][other], next+1);
+}
+
+
+int eachCity(FILE* f, int** D, int** P, int n, char** names) {
+    if (f == NULL) {
+        printf("Error: File null\n");
+        return 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        char* currentCity = names[i];
+        fprintf(f, "\\section*{Current city: %s}\n", currentCity);
+
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
+            if (D[i][j] == INF) continue;
+            if (P[i][j] == 0) continue;
+
+            int *vertexes = calloc(n, sizeof(int));
+            int count = findVertexes(P, vertexes, i, j, 0); // This function finds all intermediate nodes,
+            // returns total of intermediate node
+
+            fprintf(f, "\\begin{center}\n");
+            fprintf(f, "\\begin{tikzpicture}\n");
+
+            // Current node
+            fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label={%s}]{%c}\n",0, 0, names[i], 'A' + i);
+
+            int prev = i;
+
+           // Draws intermediate nodes
+           // Prev is needed in order to know which was la previous node, so we can draw the edge
+            for (int k = 0; k < count; k++) {
+                int v = vertexes[k];
+                fprintf(f, " \\Vertex[x=%d, y=%d, color=LightBlue, size=0.5, label={%s}]{%c}\n", 2*(k+1), 0, names[v], 'A' + v);
+
+                fprintf(f, " \\Edge[label=$%d$, Direct](%c)(%c)\n", D[prev][v], 'A' + prev, 'A' + v);
+                prev = v;
+            }
+
+
+            fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label={%s}]{%c}\n", 2*(count+1), 0, names[j], 'A' + j);
+
+            fprintf(f, " \\Edge[label=$%d$, Direct](%c)(%c)\n", D[prev][j], 'A' + prev, 'A' + j);
+
+            fprintf(f, "\\end{tikzpicture}\n");
+            fprintf(f, "\\end{center}\n");
+
+            free(vertexes);
+        }
+    }
+
+    return 0;
+}
+
+
+
 int initialGraph(FILE* f, int** D, int n, char** names) {
     fprintf(f, "\\section{Initial Graph}\n");
     fprintf(f, "\\begin{center}\n");
@@ -323,6 +385,7 @@ int runFloyd(char** names, int** matrix, int nodes) {
     Floyd(matrix, P, nodes, names, file);
 
     finalGraph(file, matrix, P, nodes, names);
+    eachCity(file, matrix, P, nodes, names);
 
     fprintf(file, "\\end{document}\n");
     fclose(file);
