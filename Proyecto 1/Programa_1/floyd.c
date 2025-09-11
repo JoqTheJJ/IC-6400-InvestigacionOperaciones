@@ -29,6 +29,45 @@
 
 /* ################################## TEX ################################## */
 
+void makeTitle(FILE* f){
+    fprintf(f,
+        "\\begin{titlepage}\n"
+        "    \\centering\n"
+        "    %% Logo\n"
+        "    \\includegraphics[width=0.6\\textwidth]{logo-tec.png}\\par\\vspace{1cm}\n"
+        "\n"
+        "    %% University and course\n"
+        "    {\\large Escuela de Ingenier\\'ia en Computaci\\'on\\par}\n"
+        "    {\\large Investigaci\\'on de Operaciones\\par}\n"
+        "    \\vspace{2cm}\n"
+        "\n"
+        "    %% Title\n"
+        "    {\\Large Rutas \\'Optimas\\par}\n"
+        "    {\\large Algoritmo de Floyd\\par}\n"
+        "    \\vspace{2cm}\n"
+        "\n"
+        "    %% Group and professor\n"
+        "    {\\large Grupo 40\\par}\n"
+        "    {\\large Profesor: Francisco Torres Rojas\\par}\n"
+        "    \\vspace{3cm}\n"
+        "\n"
+        "    %% Student info\n"
+        "    {\\large Carmen Hidalgo Paz\\par}\n"
+        "    {\\large Carn\\'e: 2020030538\\par}\n"
+        "    \\vspace{1cm}\n"
+        "    {\\large Melissa Carvajal Charpentier\\par}\n"
+        "    {\\large Carn\\'e: 2022197088\\par}\n"
+        "    \\vspace{1cm}\n"
+        "    {\\large Josu\\'e Soto Gonz\\'alez\\par}\n"
+        "    {\\large Carn\\'e: 2023207915\\par}\n"
+        "    \\vspace{1cm}\n"
+        "\n"
+        "    %% Date\n"
+        "    {\\large 12 de Septiembre del 2025\\par}\n"
+        "\\end{titlepage}\n"
+    );
+}
+
 void documentStart(FILE* f){
     fprintf(f, "\\documentclass{article}\n\n");
 
@@ -41,18 +80,18 @@ void documentStart(FILE* f){
     //Document information
     fprintf(f, "\\begin{document}\n");
 
-    fprintf(f, "\\title{Graph Theory}\n");
-    fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo \\& Josu\\'e Soto}\n");
+    makeTitle(f);
+    //fprintf(f, "\\title{Graph Theory - Operations Research}\n");
+    //fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo \\& Josu\\'e Soto}\n");
     //fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
-    fprintf(f, "\\date{2025}\n\n");
+    //fprintf(f, "\\date{2025}\n\n");
 
     //begin
     fprintf(f, "\\definecolor{KirbyPink}{HTML}{D74894}\n");
     fprintf(f, "\\definecolor{LightPink}{HTML}{FFBFBF}\n\n");
-    fprintf(f, "\\maketitle\n\n");
+    //fprintf(f, "\\maketitle\n\n");
     fprintf(f, "\\newpage\n\n\n");
 }
-
 
 void introduction(FILE* f){
 
@@ -64,16 +103,15 @@ void introduction(FILE* f){
 
     fprintf(f, "\\section{Robert W. Floyd (1936–2001)}\n");
 
-    fprintf(f, "\\begin{figure}\n");
+    //fprintf(f, "\\begin{figure}\n");
     fprintf(f, "\\begin{center}\n");
     fprintf(f, "\\includegraphics[width=0.25\\textwidth]{floyd.jpg}\n");
-    fprintf(f, "\\caption{\\label{fig:floyd}Robert Floyd}\n");
+    //fprintf(f, "\\caption{\\label{fig:floyd}Robert Floyd}\n");
     fprintf(f, "\\end{center}\n");
-    fprintf(f, "\\end{figure}\n\n");
+    //fprintf(f, "\\end{figure}\n\n");
     
     fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n\n\n");
 }
-
 
 void texStart(FILE* f, int titleType, int number, char character){
     //Title Type (title)
@@ -151,44 +189,79 @@ void saveToTexFile(int** D, int** P, int** changes, int n, FILE* f, char** names
 
 }
 
-int finalGraph(FILE* f, int** D, int** P, int n, char** names) {
+/* ################################## FINAL GRAPH ################################## */
 
-    fprintf(f, "\\section{Final Graph}\n");
-    fprintf(f, "\\begin{center}\n");
-    fprintf(f, "\\begin{tikzpicture}\n");
+int findVertexes(int** P, int* vertexes, int current, int other, int next) {
+    if (P[current][other] == 0) return next;
+
+    int midCity = P[current][other]-1;
+    printf("(%d)\n", midCity);
+
+    next = findVertexes(P, vertexes, current, midCity, next);
+    vertexes[next] = midCity;
+    return findVertexes(P, vertexes, midCity, other, next+1);
+}
 
 
+int eachCity(FILE* f, int** D, int** P, int n, char** names) {
     if (f == NULL) {
         printf("Error: File null\n");
         return 1;
     }
+
     for (int i = 0; i < n; i++) {
-        // Create all the vertexes
-        // \Vertex[label=$v_1$]{A}  i//5
         char* currentCity = names[i];
-        fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label={%s}]{%c}\n", 2*(i%5), 2*(i/5), currentCity, 'A'+i);
+        fprintf(f, "\\section*{Current city: %s}\n", currentCity);
 
+        printf("i: %d\n", i);
 
-    }
-    for (int i = 0; i < n; i++) { //    We are on the row/city A+i
-        for (int j = 0; j < n; j++) { // Now we visit each associated city to A+i
-
-            if (i==j) continue;
-
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
             if (D[i][j] == INF) continue;
 
-            fprintf(f, " \n \\Edge[bend=-30, label=$%d$, Direct](%c)(%c)", D[i][j] ,'A'+ i, 'A'+ j);
-            // This line draws the directed arrow, where:
-            // %d corresponds to the distance between cities
-            // %c corresponds to the cities
+            printf("j: %d\n", j);
 
+            int *vertexes = malloc(n * sizeof(int));
+            int count = findVertexes(P, vertexes, i, j, 0); // This function finds all intermediate nodes,
+            // returns total of intermediate node
+            printf("Found cities!\n");
+
+            fprintf(f, "\\begin{center}\n");
+            fprintf(f, "\\begin{tikzpicture}\n");
+
+            // Current node
+            fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label={%s}]{%c}\n",0, 0, names[i], 'A' + i);
+
+            int prev = i;
+
+           // Draws intermediate nodes
+           // Prev is needed in order to know which was the previous node, so we can draw the edge
+            for (int k = 0; k < count; k++) {
+                printf("k: %d\n", k);
+                int v = vertexes[k];
+                fprintf(f, " \\Vertex[x=%d, y=%d, color=LightBlue, size=0.5, label={%s}]{%c}\n", 2*(k+1), 0, names[v], 'A' + v);
+
+                fprintf(f, " \\Edge[label=$%d$, Direct](%c)(%c)\n", D[prev][v], 'A' + prev, 'A' + v);
+                prev = v;
+            }
+
+
+            fprintf(f, " \\Vertex[x=%d, y=%d, color=LightPink, size=0.5, label={%s}]{%c}\n", 2*(count+1), 0, names[j], 'A' + j);
+
+            fprintf(f, " \\Edge[label=$%d$, Direct](%c)(%c)\n", D[prev][j], 'A' + prev, 'A' + j);
+
+            fprintf(f, "\\end{tikzpicture}\n");
+            fprintf(f, "\\end{center}\n");
+
+            free(vertexes);
         }
+        printf("Final i: %d\n", i);
     }
-    fprintf(f, "\\end{tikzpicture}\n");
-    fprintf(f, "\\end{center}\n");
 
     return 0;
 }
+
+/* ################################## INITIAL GRAPH ################################## */
 
 int initialGraph(FILE* f, int** D, int n, char** names) {
     fprintf(f, "\\section{Initial Graph}\n");
@@ -322,7 +395,7 @@ int runFloyd(char** names, int** matrix, int nodes) {
 
     Floyd(matrix, P, nodes, names, file);
 
-    finalGraph(file, matrix, P, nodes, names);
+    eachCity(file, matrix, P, nodes, names);
 
     fprintf(file, "\\end{document}\n");
     fclose(file);
