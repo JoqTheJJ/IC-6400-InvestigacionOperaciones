@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0 -->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkAdjustment" id="adjustment-nodes">
+    <property name="lower">1</property>
+    <property name="upper">26</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkWindow" id="program-1">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkPaned" id="panel">
+        <property name="visible">True</property>
+        <property name="can-focus">True</property>
+        <property name="position">800</property>
+        <child>
+          <object class="GtkScrolledWindow" id="scroll">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">False</property>
+            <property name="shrink">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="title">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">The Knapsack Problem</property>
+                <attributes>
+                  <attribute name="font-desc" value="Serif Bold 15"/>
+                  <attribute name="foreground" value="#d7d748489494"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="info">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">- This program consists of a way to obtain the shortest path
+between any pair of nodes in a graph with weighted
+distances.
+- This program will do this utilizing the Floyd Algorithm and
+then create a LATEX document with all the tables calculated
+to get to the result.
+DIRECTIONS:
+- Enter either a number or the infinity symbol.
+- To express the infinite value, enter an I or i in the cell.
+- If the cell becomes red, you've entered the wrong value.</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
+                <style>
+                  <class name="parchment"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="instruction-nodes">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">    Insert the amount of nodes wanted (1=&lt;):    </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="amount-nodes">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Choose a number greater than 1 for the amount of nodes wanted</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="adjustment">adjustment-nodes</property>
+                <property name="value">1</property>
+                <style>
+                  <class name="plank-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="upload">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">                           Upload a .txt file:                           </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFileChooserButton" id="file-chosen">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface as a Table D(0)</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="title" translatable="yes"/>
+                <style>
+                  <class name="plank-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="save">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">   Press the button to save your current work:   </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="file-saved">
+                <property name="label" translatable="yes">Save work</property>
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to save the current Table D(0) as a .txt file</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <style>
+                  <class name="plank-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="create-file">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">     Press the button to create the LATEX file:     </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="latex-file">
+                <property name="label" translatable="yes">Create LATEX file</property>
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to create .tex file with the Floyd Algorithm applied</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <style>
+                  <class name="plank-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="exit">
+                <property name="label" translatable="yes">Press button to exit this program</property>
+                <property name="height-request">40</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to exit the program</property>
+                <property name="halign">center</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">11</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">True</property>
+            <property name="shrink">True</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="bg-1"/>
+    </style>
+  </object>
+</interface>

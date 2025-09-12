@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0 -->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkWindow" id="window">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkBox" id="menu-box">
+        <property name="name">menu-bg</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="title">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes">Title</property>
+            <property name="halign">center</property>
+            <property name="margin-top">10</property>
+            <property name="xpad">10</property>
+            <property name="ypad">40</property>
+            <property name="label" translatable="yes">Menu for Different Dynamic Programming Programs</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans Bold Italic 25"/>
+              <attribute name="foreground" value="#ffffffffffff"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="description">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes">Menu description</property>
+            <property name="halign">center</property>
+            <property name="xpad">10</property>
+            <property name="ypad">30</property>
+            <property name="label" translatable="yes">- A menu is displayed with different algorithms listed.
+
+- The user can choose one of the radio buttons and a screen will pop up with a way to try out the algorithm chosen. If the user hovers over an
+option they can view a basic description of said algorithm.</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans 12"/>
+            </attributes>
+            <style>
+              <class name="parchment"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-left">135</property>
+            <property name="margin-right">135</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkRadioButton" id="option-5">
+                <property name="label" translatable="yes"> </property>
+                <property name="sensitive">False</property>
+                <property name="can-focus">False</property>
+                <property name="focus-on-click">False</property>
+                <property name="receives-default">False</property>
+                <property name="no-show-all">True</property>
+                <property name="double-buffered">False</property>
+                <property name="halign">center</property>
+                <property name="active">True</property>
+                <property name="draw-indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="option-1">
+                <property name="label" translatable="yes">Shortest paths with the Floyd Algorithm</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Floyd’s Algorithm is a dynamic programming method used to find the shortest paths between all pairs of vertices in a weighted graph.
+It works by gradually improving an initial distance matrix, which at first simply contains the direct edge weights between vertices (or infinity if no direct edge exists).
+The algorithm then considers each vertex in turn as a possible intermediate point along a path, checking if routing through that vertex yields a shorter distance between any pair of nodes.
+By systematically applying this update rule for every possible intermediate vertex, Floyd’s Algorithm ensures that, after 
+n iterations (where n is the number of vertices), the matrix contains the shortest path distances between all pairs.</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">5</property>
+                <property name="active">True</property>
+                <property name="draw-indicator">False</property>
+                <property name="group">option-5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="option-2">
+                <property name="label" translatable="yes">The Knapsack Problem</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Description 2</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">5</property>
+                <property name="active">True</property>
+                <property name="draw-indicator">False</property>
+                <property name="group">option-5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="option-3">
+                <property name="label" translatable="yes">TBA</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Description 3</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">5</property>
+                <property name="active">True</property>
+                <property name="draw-indicator">False</property>
+                <property name="group">option-5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="option-4">
+                <property name="label" translatable="yes">TBA</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Description 4</property>
+                <property name="halign">center</property>
+                <property name="active">True</property>
+                <property name="draw-indicator">False</property>
+                <property name="group">option-5</property>
+                <style>
+                  <class name="plank"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="terminate">
+            <property name="label" translatable="yes">Terminate Program</property>
+            <property name="height-request">50</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Press the button to end the Program</property>
+            <property name="halign">center</property>
+            <property name="margin-top">10</property>
+            <style>
+              <class name="stone"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">20</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <style>
+          <class name="menu-bg"/>
+        </style>
+      </object>
+    </child>
+  </object>
+</interface>
