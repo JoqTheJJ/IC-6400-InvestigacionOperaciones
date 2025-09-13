@@ -930,7 +930,7 @@ int main(int argc, char *argv[]) {
     ui->invalid_count = 0;
 
     // Window
-    ventana = GTK_WIDGET(gtk_builder_get_object(builder, "program-1"));
+    ventana = GTK_WIDGET(gtk_builder_get_object(builder, "program-2"));
     g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     // Division panel

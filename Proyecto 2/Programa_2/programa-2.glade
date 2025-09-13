@@ -13,7 +13,7 @@
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
-  <object class="GtkWindow" id="program-1">
+  <object class="GtkWindow" id="program-2">
     <property name="can-focus">False</property>
     <child>
       <object class="GtkPaned" id="panel">
@@ -191,7 +191,7 @@ DIRECTIONS:
                 <property name="width-request">257</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface as a Table D(0)</property>
+                <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface as a Table of Objects and the capacity of the Knapsack</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <property name="title" translatable="yes"/>
@@ -232,7 +232,7 @@ DIRECTIONS:
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="tooltip-text" translatable="yes">Press button to save the current Table D(0) as a .txt file</property>
+                <property name="tooltip-text" translatable="yes">Press button to save the current Table of objects and the Knapsack capacity as a .txt file</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <style>
@@ -272,7 +272,7 @@ DIRECTIONS:
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="tooltip-text" translatable="yes">Press button to create .tex file with the Floyd Algorithm applied</property>
+                <property name="tooltip-text" translatable="yes">Press button to create .tex file with the Knapsack Algorithm applied</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <style>
