@@ -2,14 +2,14 @@
 <!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <object class="GtkAdjustment" id="adjustment-nodes">
-    <property name="lower">1</property>
-    <property name="upper">50</property>
+  <object class="GtkAdjustment" id="adjustment-knapsack">
+    <property name="upper">20</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">20</property>
+  <object class="GtkAdjustment" id="adjustment-objects">
+    <property name="lower">1</property>
+    <property name="upper">50</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
@@ -19,7 +19,7 @@
       <object class="GtkPaned" id="panel">
         <property name="visible">True</property>
         <property name="can-focus">True</property>
-        <property name="position">800</property>
+        <property name="position">600</property>
         <child>
           <object class="GtkScrolledWindow" id="scroll">
             <property name="visible">True</property>
@@ -43,12 +43,11 @@
               <object class="GtkLabel" id="title">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">3</property>
+                <property name="margin-top">15</property>
                 <property name="label" translatable="yes">The Knapsack Problem</property>
                 <attributes>
-                  <attribute name="font-desc" value="Serif Bold 15"/>
-                  <attribute name="foreground" value="#d7d748489494"/>
+                  <attribute name="font-desc" value="Serif Bold 19"/>
+                  <attribute name="foreground" value="#0aa6f0fdf5c1"/>
                 </attributes>
               </object>
               <packing>
@@ -61,15 +60,14 @@
               <object class="GtkLabel" id="info">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="halign">center</property>
-                <property name="label" translatable="yes">- This program consists of a way to obtain the shortest path
-between any pair of nodes in a graph with weighted
-distances.
-- This program will do this utilizing the Floyd Algorithm and
-then create a LATEX document with all the tables calculated
-to get to the result.
+                <property name="margin-left">20</property>
+                <property name="margin-right">20</property>
+                <property name="label" translatable="yes">- This program consists of solving The Knapsack Problem with dynamic programming by defining a table that stores,
+for each possible capacity from 0 up to the maximum, the best total profit that can be achieved without exceeding
+that capacity. The program will then create a LATEX document with all the tables calculated to get to the result.
 DIRECTIONS:
-- Enter either a number or the infinity symbol.
+- Enter  a positive number for the Value and Cost columns.
+- Enter either a positive number or an infinity symbol for the Amount column.
 - To express the infinite value, enter an I or i in the cell.
 - If the cell becomes red, you've entered the wrong value.</property>
                 <attributes>
@@ -113,11 +111,11 @@ DIRECTIONS:
                 <property name="tooltip-text" translatable="yes">Choose a number greater than 1 for the amount of objects wanted</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
-                <property name="text" translatable="yes">1</property>
-                <property name="adjustment">adjustment1</property>
+                <property name="text" translatable="yes">0</property>
+                <property name="adjustment">adjustment-knapsack</property>
                 <property name="value">1</property>
                 <style>
-                  <class name="plank-color"/>
+                  <class name="sign-color"/>
                 </style>
               </object>
               <packing>
@@ -147,17 +145,17 @@ DIRECTIONS:
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="amount-nodes">
+              <object class="GtkSpinButton" id="amount-objects">
                 <property name="width-request">257</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Choose a number greater than 1 for the amount of objects wanted</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
-                <property name="adjustment">adjustment-nodes</property>
+                <property name="adjustment">adjustment-objects</property>
                 <property name="value">1</property>
                 <style>
-                  <class name="plank-color"/>
+                  <class name="sign-color"/>
                 </style>
               </object>
               <packing>
@@ -196,7 +194,7 @@ DIRECTIONS:
                 <property name="margin-bottom">3</property>
                 <property name="title" translatable="yes"/>
                 <style>
-                  <class name="plank-color"/>
+                  <class name="sign-color"/>
                 </style>
               </object>
               <packing>
@@ -236,7 +234,7 @@ DIRECTIONS:
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <style>
-                  <class name="plank-color"/>
+                  <class name="sign-color"/>
                 </style>
               </object>
               <packing>
@@ -276,7 +274,7 @@ DIRECTIONS:
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <style>
-                  <class name="plank-color"/>
+                  <class name="sign-color"/>
                 </style>
               </object>
               <packing>
@@ -297,7 +295,7 @@ DIRECTIONS:
                 <property name="margin-top">10</property>
                 <property name="margin-bottom">5</property>
                 <style>
-                  <class name="plank"/>
+                  <class name="sign"/>
                 </style>
               </object>
               <packing>
@@ -310,6 +308,7 @@ DIRECTIONS:
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bakcpack-map.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -326,7 +325,7 @@ DIRECTIONS:
       </object>
     </child>
     <style>
-      <class name="bg-1"/>
+      <class name="bg-2"/>
     </style>
   </object>
 </interface>

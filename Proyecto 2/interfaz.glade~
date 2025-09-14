@@ -91,8 +91,7 @@ option they can view a basic description of said algorithm.</property>
                 <property name="tooltip-text" translatable="yes">Floyd’s Algorithm is a dynamic programming method used to find the shortest paths between all pairs of vertices in a weighted graph.
 It works by gradually improving an initial distance matrix, which at first simply contains the direct edge weights between vertices (or infinity if no direct edge exists).
 The algorithm then considers each vertex in turn as a possible intermediate point along a path, checking if routing through that vertex yields a shorter distance between any pair of nodes.
-By systematically applying this update rule for every possible intermediate vertex, Floyd’s Algorithm ensures that, after 
-n iterations (where n is the number of vertices), the matrix contains the shortest path distances between all pairs.</property>
+By systematically applying this update rule for every possible intermediate vertex, Floyd’s Algorithm ensures that, after n iterations (where n is the number of vertices), the matrix contains the shortest path distances between all pairs.</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">5</property>
                 <property name="active">True</property>
@@ -114,7 +113,9 @@ n iterations (where n is the number of vertices), the matrix contains the shorte
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">False</property>
-                <property name="tooltip-text" translatable="yes">Description 2</property>
+                <property name="tooltip-text" translatable="yes">The Knapsack Problem is solved with dynamic programming by defining a table (or array) that stores, for each possible capacity from 0 up to the maximum, the best total profit that can be achieved without exceeding that capacity.
+The idea is to build the solution incrementally: the base case is that with zero capacity the profit is zero, and then for each capacity we determine the best result by considering all items whose cost does not exceed the current capacity. For each such item, the algorithm updates the table entry as the maximum of its current value and the profit of the item plus the best profit achievable with the remaining capacity. By iterating through capacities and items in this way, the table is filled with optimal values for every subproblem, and the final entry represents the maximum profit achievable with the full knapsack capacity.
+This approach ensures that the problem is solved efficiently by breaking it into overlapping subproblems and reusing previously computed solutions.</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">5</property>
                 <property name="active">True</property>

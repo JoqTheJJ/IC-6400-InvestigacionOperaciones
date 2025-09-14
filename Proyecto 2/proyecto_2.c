@@ -1,8 +1,8 @@
 /*
-                Project 1: Dynamic Programming Menu with Floyd Algorithm
+                Project 2: Calculating the Knapsack Problem
                 Made by: Carmen Hidalgo Paz, Melissa Carvajal Charpentier
                 y Josué Soto González
-                Date: Friday, September 12, 2025
+                Date: Friday, September 19, 2025
 
                 This section contains the main of a multiple algorithms program, where
                 each element in the interface shows what the corresponding algorithm does.

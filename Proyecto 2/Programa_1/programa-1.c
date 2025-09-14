@@ -1,8 +1,8 @@
 /*
-                Project 1: Calculating the Shortest Paths using the Floyd Algorithm
+                Project 2: Calculating the Shortest Paths using the Floyd Algorithm
                 Made by: Carmen Hidalgo Paz, Melissa Carvajal Charpentier
                 y Josué Soto González
-                Date: Friday, September 12, 2025
+                Date: Friday, September 19, 2025
 
                 This section contains the program used to calculate the shortest
                 path between any pair of nodes in a graph with weighted distances.
