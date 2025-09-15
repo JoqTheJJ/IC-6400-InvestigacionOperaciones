@@ -15,6 +15,8 @@
 
 #include <ctype.h>
 
+#define INF INT_MAX
+
 
 
 typedef struct {
@@ -43,6 +45,7 @@ int bitIndex(int x){
 /* ################################## TEX ################################## */
 
 void makeTitle(FILE* f){
+
     fprintf(f,
         "\\begin{titlepage}\n"
         "    \\centering\n"
@@ -90,6 +93,8 @@ void documentStart(FILE* f){
     fprintf(f, "\\usepackage{tikz-network}\n");
     fprintf(f, "\\usepackage{xcolor}\n\n");
 
+
+
     //Document start
     fprintf(f, "\\begin{document}\n");
     makeTitle(f);
@@ -103,20 +108,20 @@ void documentStart(FILE* f){
 void introduction(FILE* f){
     // TODO para Melissa
 
-    /*
-    fprintf(f, "\\section{Knapsack}\n");
-    fprintf(f, "This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.\n");
 
-    fprintf(f, "Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.\n");
+     fprintf(f, "\\section{Knapsack}\n");
+    // fprintf(f, "This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.\n");
+    //
+    // fprintf(f, "Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.\n");
 
-    fprintf(f, "\\section{Robert W. Floyd (1936–2001)}\n");
-
-    fprintf(f, "\\begin{center}\n");
-    fprintf(f, "\\includegraphics[width=0.25\\textwidth]{floyd.jpg}\n");
-    fprintf(f, "\\end{center}\n");
-    
-    fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n\n\n");
-    */
+    // fprintf(f, "\\section{Robert W. Floyd (1936–2001)}\n");
+    //
+    // fprintf(f, "\\begin{center}\n");
+    // fprintf(f, "\\includegraphics[width=0.25\\textwidth]{floyd.jpg}\n");
+    // fprintf(f, "\\end{center}\n");
+    //
+    // fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n\n\n");
+    //
 }
 
 void texTable(FILE* f, Cell** m, int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
@@ -184,12 +189,16 @@ void texTable(FILE* f, Cell** m, int objects, int capacity, int* profits, int* c
 }
 
 void printSolution(FILE* f, int* solution, int objects){
+    fprintf(f, "[");
     printf("[");
     for (int obj = 0; obj < objects; ++obj){
+        fprintf(f, "x%d:%d ", obj, solution[obj]);
         printf("x%d:%d ", obj, solution[obj]);
     }
+    fprintf(f, "]\n");
     printf("]\n");
 }
+
 
 /* ################################## KNAPSACK ################################## */
 
@@ -226,7 +235,7 @@ Cell** knapsack(int n, int maxCapacity, int* profits, int* costs, int* quantity)
             int max = -1;
             int newCapacity;
             int current;
-            for (int q = 0; q <= quantity[obj]; ++q){
+            for (int q = 0; q < quantity[obj]; ++q){
 
                 newCapacity = c - q*costs[obj];
                 if (newCapacity < 0){ //Exceeds capacity
@@ -291,6 +300,12 @@ void optimalSolutions(Cell** solution, int objects, int maxCapacity, int* costs,
 
 void runKnapsack(int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
 
+    printf("Objetos=%d, Capacidad=%d\n", objects, capacity);
+    for (int i = 0; i < objects; i++) {
+        printf("Obj %d: cost=%d, profit=%d, qty=%d, name=%s\n",
+               i, costs[i], profits[i], quantity[i], names[i]);
+    }
+
     FILE* f = fopen("programToLaTeX.tex", "w");
     if (f == NULL) {
         printf("Error: File null\n");
@@ -299,14 +314,25 @@ void runKnapsack(int objects, int capacity, int* profits, int* costs, int* quant
 
     documentStart(f);
     introduction(f);
+    fflush(f);
+
 
     Cell** answer = knapsack(objects, capacity, profits, costs, quantity);
+    for(int i=0;i<=capacity;i++){
+        for(int j=0;j<=objects;j++){
+            printf("answer[%d][%d] = max:%d ganadores:%d\n", i,j,answer[i][j].max, answer[i][j].ganadores);
+        }
+    }
+    fflush(f);
     optimalSolutions(answer, objects, capacity, costs, quantity, f);
+    fflush(f);
 
     //Print results table
     texTable(f, answer, objects, capacity, profits, costs, quantity, names);
+    fflush(f);
 
     fprintf(f, "\\end{document}\n");
+
     fclose(f);
 
 
@@ -323,7 +349,7 @@ void runKnapsack(int objects, int capacity, int* profits, int* costs, int* quant
     }
 }
 
-void test() {
+void test(){
 
     //Simulate Inputs
     int objects = 7;

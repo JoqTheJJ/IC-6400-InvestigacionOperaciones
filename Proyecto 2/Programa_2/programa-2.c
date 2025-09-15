@@ -14,6 +14,7 @@
 #include <cairo.h>
 #include <math.h>
 #include <glib/gstdio.h>
+#include "knapsack.c"
 
 // - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix
@@ -925,6 +926,7 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
     //profits = value[]
     //costs = cost[]
     //quantity = amount[]
+    runKnapsack(R, ui->knapsack_value, value, cost, amount, row_names);
 
     // Cleanup
     g_free(cost);
