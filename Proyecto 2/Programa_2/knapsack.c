@@ -131,7 +131,41 @@ void introduction(FILE* f){
     //
 }
 
-void problem(FILE* f, Cell** m, int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
+void problem(FILE* f, int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
+
+    fprintf(f, "\\section{Problem}\n\n");
+
+    for (int obj = 0; obj < objects; ++obj){
+        fprintf(f, "%s: Amount:%d, Profit:%d, and Cost:%d\n\n", names[obj], quantity[obj], profits[obj], costs[obj]);
+    }
+
+
+    fprintf(f, "$Z = ");
+    fprintf(f, "%dX_{\\text{%s}}", profits[0], names[0]);
+
+    for (int obj = 1; obj < objects; ++obj){
+        fprintf(f, " + %dX_{\\text{%s}}", profits[obj], names[obj]);
+    }
+    fprintf(f, "$\n\n");
+
+
+
+    fprintf(f, "Subject to:\n");
+    fprintf(f, "\\bullet $%d \\geq ", capacity);
+    fprintf(f, "%dX_{\\text{%s}}", costs[0], names[0]);
+    
+
+    for (int obj = 1; obj < objects; ++obj){
+        fprintf(f, " + %dX_{\\text{%s}}", costs[obj], names[obj]);
+    }
+    fprintf(f, "$\n\n");
+
+
+
+    for (int obj = 0; obj < objects; ++obj){
+        fprintf(f, "\\bullet $X_{\\text{%s}} \\leq %d$\n", names[obj], quantity[obj]);
+    }
+    fprintf(f, "\n\n");
 
 }
 
@@ -345,6 +379,8 @@ void runKnapsack(int objects, int capacity, int* profits, int* costs, int* quant
             printf("answer[%d][%d] = max:%d ganadores:%d\n", i,j,answer[i][j].max, answer[i][j].ganadores);
         }
     }
+
+    problem(f, objects, capacity, profits, costs, quantity, names);
 
     //Print results table
     texTable(f, answer, objects, capacity, profits, costs, quantity, names);
