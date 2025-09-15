@@ -42,6 +42,13 @@ int bitIndex(int x){
     return index;
 }
 
+int min(int x1, int x2){
+    if (x1 > x2){
+        return x2;
+    }
+    return x1;
+}
+
 /* ################################## TEX ################################## */
 
 void makeTitle(FILE* f){
@@ -109,7 +116,7 @@ void introduction(FILE* f){
     // TODO para Melissa
 
 
-     fprintf(f, "\\section{Knapsack}\n");
+    fprintf(f, "\\section{Knapsack}\n");
     // fprintf(f, "This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.\n");
     //
     // fprintf(f, "Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.\n");
@@ -122,6 +129,10 @@ void introduction(FILE* f){
     //
     // fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n\n\n");
     //
+}
+
+void problem(FILE* f, Cell** m, int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
+
 }
 
 void texTable(FILE* f, Cell** m, int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
@@ -158,7 +169,9 @@ void texTable(FILE* f, Cell** m, int objects, int capacity, int* profits, int* c
                 fprintf(f, "& \\cellcolor[HTML]{3F62FC}$%d$ x={", m[i][j].max); //TODO (blue for now)
 
                 int first = 1;
-                for (int q = 0; q <= quantity[j-1]; ++q){
+                int maxAmount = capacity / costs[j-1];
+                int iterations = min(quantity[j-1], maxAmount);
+                for (int q = 0; q <= iterations; ++q){
                     if (winner % 2){
                         if (!first){
                             fprintf(f, ",");
@@ -189,13 +202,11 @@ void texTable(FILE* f, Cell** m, int objects, int capacity, int* profits, int* c
 }
 
 void printSolution(FILE* f, int* solution, int objects){
-    fprintf(f, "[");
     printf("[");
     for (int obj = 0; obj < objects; ++obj){
         fprintf(f, "x%d:%d ", obj, solution[obj]);
         printf("x%d:%d ", obj, solution[obj]);
     }
-    fprintf(f, "]\n");
     printf("]\n");
 }
 
@@ -235,7 +246,10 @@ Cell** knapsack(int n, int maxCapacity, int* profits, int* costs, int* quantity)
             int max = -1;
             int newCapacity;
             int current;
-            for (int q = 0; q < quantity[obj]; ++q){
+
+            int maxAmount = capacity / costs[obj];
+            int iterations = min(quantity[obj], maxAmount);
+            for (int q = 0; q < iterations; ++q){
 
                 newCapacity = c - q*costs[obj];
                 if (newCapacity < 0){ //Exceeds capacity
@@ -258,24 +272,28 @@ Cell** knapsack(int n, int maxCapacity, int* profits, int* costs, int* quantity)
     return res;
 }
 
-void optimalSolutionsAux(int row, int col, Cell** solution, int* res, int objects, int* costs, int* quantity, FILE* f){
+void optimalSolutionsAux(int capacity, int row, int col, Cell** solution, int* res, int objects, int* costs, int* quantity, FILE* f){
 
     if (col == 0){
         //printf("Prints\n");
         printSolution(f, res, objects);
+        return;
     }
 
     int winner = solution[row][col].ganadores;
 
     //printf("Row: %d, col: %d, winner %d\n", row, col, winner);
 
-    for (int amount = 0; amount <= quantity[col-1]; amount++){
+    int maxAmount = capacity / costs[col-1];
+    int iterations = min(quantity[col-1], maxAmount);
+    for (int amount = 0; amount <= iterations; amount++){
         //printf("Amount: %d, quantity[%d]=%d\n", amount, col-1, quantity[col-1]);
         if (winner % 2){
             res[col - 1] = amount; //Store the amount of the current object
 
             //printf("Goes to: %d\n", amount);
-            optimalSolutionsAux(row - amount*costs[col-1], //row(capacity)) - amount * object cost
+            optimalSolutionsAux(capacity,
+                row - amount*costs[col-1], //row(capacity)) - amount * object cost
                 col - 1,  //goes down a col
                 solution, 
                 res,
@@ -291,8 +309,10 @@ void optimalSolutionsAux(int row, int col, Cell** solution, int* res, int object
 
 void optimalSolutions(Cell** solution, int objects, int maxCapacity, int* costs, int* quantity, FILE* f){
 
+    fprintf(f, "\\section{Optimal Solutions}\n");
+
     int* res = malloc(sizeof(int)*objects);
-    optimalSolutionsAux(maxCapacity, objects, solution, res, objects, costs, quantity, f);
+    optimalSolutionsAux(maxCapacity, maxCapacity, objects, solution, res, objects, costs, quantity, f);
     free(res);
 }
 
@@ -323,13 +343,11 @@ void runKnapsack(int objects, int capacity, int* profits, int* costs, int* quant
             printf("answer[%d][%d] = max:%d ganadores:%d\n", i,j,answer[i][j].max, answer[i][j].ganadores);
         }
     }
-    fflush(f);
-    optimalSolutions(answer, objects, capacity, costs, quantity, f);
-    fflush(f);
 
     //Print results table
     texTable(f, answer, objects, capacity, profits, costs, quantity, names);
-    fflush(f);
+    //Print optimal solutions
+    optimalSolutions(answer, objects, capacity, costs, quantity, f);
 
     fprintf(f, "\\end{document}\n");
 
