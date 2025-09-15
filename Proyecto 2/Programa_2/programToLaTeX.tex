@@ -47,6 +47,7 @@
 
 \section{Knapsack}
 \section{Problem}
+
 Agua: Amount:30, Profit:1, and Cost:2
 
 Barrita: Amount:2147483647, Profit:2, and Cost:13
@@ -57,14 +58,29 @@ Encendedor: Amount:2147483647, Profit:3, and Cost:3
 
 Kit de Costura: Amount:1, Profit:4, and Cost:7
 
-$Z = 1X_{\text{Agua}} + 2X_{\text{Barrita}} + 5X_{\text{Linterna}} + 3X_{\text{Encendedor}} + 4X_{\text{Kit de Costura}}$
+
+
+
+This translates to:
+
+Maximize $Z = 1X_{\text{Agua}} + 2X_{\text{Barrita}} + 5X_{\text{Linterna}} + 3X_{\text{Encendedor}} + 4X_{\text{Kit de Costura}}$
+
+
+
 Subject to:
-\bullet $20 \geq 2X_{\text{Agua}} + 13X_{\text{Barrita}} + 5X_{\text{Linterna}} + 3X_{\text{Encendedor}} + 7X_{\text{Kit de Costura}}$
-\bullet $X_{\text{Agua}} \leq 30$
-\bullet $X_{\text{Barrita}} \leq 2147483647$
-\bullet $X_{\text{Linterna}} \leq 10$
-\bullet $X_{\text{Encendedor}} \leq 2147483647$
-\bullet $X_{\text{Kit de Costura}} \leq 1$
+
+$20 \geq 2X_{\text{Agua}} + 13X_{\text{Barrita}} + 5X_{\text{Linterna}} + 3X_{\text{Encendedor}} + 7X_{\text{Kit de Costura}}$
+
+$X_{\text{Agua}} \leq 30$
+
+$X_{\text{Barrita}} \leq 2147483647$
+
+$X_{\text{Linterna}} \leq 10$
+
+$X_{\text{Encendedor}} \leq 2147483647$
+
+$X_{\text{Kit de Costura}} \leq 1$
+
 
 \section{Costs Table}
 \begin{center}
@@ -120,4 +136,6 @@ Subject to:
 
 
 \section{Optimal Solutions}
-x0:0 x1:0 x2:4 x3:0 x4:0 x0:0 x1:0 x2:1 x3:5 x4:0 \end{document}
+$X_{\text{Agua}}=0 \:X_{\text{Barrita}}=0 \:X_{\text{Linterna}}=4 \:X_{\text{Encendedor}}=0 \:X_{\text{Kit de Costura}}=0 \:$ \newline
+$X_{\text{Agua}}=0 \:X_{\text{Barrita}}=0 \:X_{\text{Linterna}}=1 \:X_{\text{Encendedor}}=5 \:X_{\text{Kit de Costura}}=0 \:$ \newline
+\end{document}
