@@ -4,7 +4,7 @@ EXE := $(SRC:.c=)
 
 # Add programas
 #EXE += Programa_1/programa-1
-EXE += Programa_2/knapsack
+EXE += Programa_2/programa-2
 
 all: $(EXE)
 
@@ -25,4 +25,4 @@ clean:
 	rm -f $(EXE)
 
 run:
-	./proyecto
+	./proyecto_2

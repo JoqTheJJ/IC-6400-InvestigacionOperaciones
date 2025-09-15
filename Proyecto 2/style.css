@@ -1,0 +1,47 @@
+/* menu background */
+.menu-bg {
+  background-image: url("menu-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* radio button background */
+.plank {
+  background-image: url("sign-wood.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  border: none;
+  padding: 10px 22px;
+  min-width: 320px;
+  min-height: 48px;
+
+  color: #23180a;
+  font-weight: 800;
+}
+/* instruction background */
+.parchment {
+  background-color: #f9e4b7; /* parchment beige */
+  border: 4px solid #7b4e21; /* dark brown frame */
+  border-radius: 12px;
+  padding: 16px 24px;
+  color: #5b3606; /* same text color as planks */
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+/* exit button background */
+.stone {
+  background-image: url("stone-slab.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  border: none;
+  padding: 10px 22px;
+  min-width: 320px;
+  min-height: 48px;
+
+  color: #32373a;
+  font-weight: 800;
+}
