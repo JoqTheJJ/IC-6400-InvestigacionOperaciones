@@ -48,56 +48,46 @@
 \section{Knapsack}
 \section{Costs Table}
 \begin{center}
-    \begin{tabular}{|c||c|c|c|c|c|}
+    \begin{tabular}{|c||c|c|c|c|c|c|c|}
         \hline
-        \textbf{Capacity} & \textbf{Agua} & \textbf{Barrita} & \textbf{Linterna} & \textbf{Encendedor} & \textbf{Kit de Costura} \\
+        \textbf{Capacity} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} \\
         \hline
         \hline
-        \textbf{0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}\\
+        \textbf{0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}\\
         \hline
-        \textbf{1}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}\\
+        \textbf{1}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}\\
         \hline
-        \textbf{2}& \cellcolor[HTML]{3FFC45}$1$ x={1} & \cellcolor[HTML]{FC3F3F}$1$ x={0}& \cellcolor[HTML]{FC3F3F}$1$ x={0}& \cellcolor[HTML]{FC3F3F}$1$ x={0}& \cellcolor[HTML]{FC3F3F}$1$ x={0}\\
+        \textbf{2}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{3FFC45}$5$ x={1} & \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{FC3F3F}$5$ x={0}\\
         \hline
-        \textbf{3}& \cellcolor[HTML]{3FFC45}$1$ x={1} & \cellcolor[HTML]{FC3F3F}$1$ x={0}& \cellcolor[HTML]{FC3F3F}$1$ x={0}& \cellcolor[HTML]{3FFC45}$3$ x={1} & \cellcolor[HTML]{FC3F3F}$3$ x={0}\\
+        \textbf{3}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}\\
         \hline
-        \textbf{4}& \cellcolor[HTML]{3FFC45}$2$ x={2} & \cellcolor[HTML]{FC3F3F}$2$ x={0}& \cellcolor[HTML]{FC3F3F}$2$ x={0}& \cellcolor[HTML]{3FFC45}$3$ x={1} & \cellcolor[HTML]{FC3F3F}$3$ x={0}\\
+        \textbf{4}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$9$ x={1} & \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{FC3F3F}$9$ x={0}\\
         \hline
-        \textbf{5}& \cellcolor[HTML]{3FFC45}$2$ x={2} & \cellcolor[HTML]{FC3F3F}$2$ x={0}& \cellcolor[HTML]{3FFC45}$5$ x={1} & \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{FC3F3F}$5$ x={0}\\
+        \textbf{5}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$9$ x={1} & \cellcolor[HTML]{3FFC45}$12$ x={1} & \cellcolor[HTML]{FC3F3F}$12$ x={0}& \cellcolor[HTML]{FC3F3F}$12$ x={0}& \cellcolor[HTML]{FC3F3F}$12$ x={0}& \cellcolor[HTML]{3F62FC}$12$ x={0,1}\\
         \hline
-        \textbf{6}& \cellcolor[HTML]{3FFC45}$3$ x={3} & \cellcolor[HTML]{FC3F3F}$3$ x={0}& \cellcolor[HTML]{3FFC45}$5$ x={1} & \cellcolor[HTML]{3FFC45}$6$ x={2} & \cellcolor[HTML]{FC3F3F}$6$ x={0}\\
+        \textbf{6}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$9$ x={1} & \cellcolor[HTML]{3FFC45}$14$ x={1} & \cellcolor[HTML]{FC3F3F}$14$ x={0}& \cellcolor[HTML]{FC3F3F}$14$ x={0}& \cellcolor[HTML]{FC3F3F}$14$ x={0}& \cellcolor[HTML]{FC3F3F}$14$ x={0}\\
         \hline
-        \textbf{7}& \cellcolor[HTML]{3FFC45}$3$ x={3} & \cellcolor[HTML]{FC3F3F}$3$ x={0}& \cellcolor[HTML]{3FFC45}$6$ x={1} & \cellcolor[HTML]{3F62FC}$6$ x={0,2}& \cellcolor[HTML]{FC3F3F}$6$ x={0}\\
+        \textbf{7}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{3FFC45}$17$ x={1} \\
         \hline
-        \textbf{8}& \cellcolor[HTML]{3FFC45}$4$ x={4} & \cellcolor[HTML]{FC3F3F}$4$ x={0}& \cellcolor[HTML]{3FFC45}$6$ x={1} & \cellcolor[HTML]{3FFC45}$8$ x={1} & \cellcolor[HTML]{FC3F3F}$8$ x={0}\\
+        \textbf{8}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{3FFC45}$17$ x={1} & \cellcolor[HTML]{FC3F3F}$17$ x={0}& \cellcolor[HTML]{3FFC45}$18$ x={1} & \cellcolor[HTML]{3FFC45}$19$ x={1} \\
         \hline
-        \textbf{9}& \cellcolor[HTML]{3FFC45}$4$ x={4} & \cellcolor[HTML]{FC3F3F}$4$ x={0}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$9$ x={3} & \cellcolor[HTML]{FC3F3F}$9$ x={0}\\
+        \textbf{9}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{3FFC45}$21$ x={1} & \cellcolor[HTML]{FC3F3F}$21$ x={0}& \cellcolor[HTML]{FC3F3F}$21$ x={0}& \cellcolor[HTML]{FC3F3F}$21$ x={0}& \cellcolor[HTML]{3F62FC}$21$ x={0,1}\\
         \hline
-        \textbf{10}& \cellcolor[HTML]{3FFC45}$5$ x={5} & \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{3FFC45}$10$ x={2} & \cellcolor[HTML]{FC3F3F}$10$ x={0}& \cellcolor[HTML]{FC3F3F}$10$ x={0}\\
+        \textbf{10}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{3FFC45}$21$ x={1} & \cellcolor[HTML]{3F62FC}$21$ x={0,1}& \cellcolor[HTML]{3F62FC}$21$ x={0,1}& \cellcolor[HTML]{3FFC45}$22$ x={1} & \cellcolor[HTML]{3FFC45}$24$ x={1} \\
         \hline
-        \textbf{11}& \cellcolor[HTML]{3FFC45}$5$ x={5} & \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{3FFC45}$10$ x={2} & \cellcolor[HTML]{3FFC45}$11$ x={2} & \cellcolor[HTML]{FC3F3F}$11$ x={0}\\
+        \textbf{11}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{3FFC45}$21$ x={1} & \cellcolor[HTML]{3FFC45}$24$ x={1} & \cellcolor[HTML]{FC3F3F}$24$ x={0}& \cellcolor[HTML]{FC3F3F}$24$ x={0}& \cellcolor[HTML]{3FFC45}$26$ x={1} \\
         \hline
-        \textbf{12}& \cellcolor[HTML]{3FFC45}$6$ x={6} & \cellcolor[HTML]{FC3F3F}$6$ x={0}& \cellcolor[HTML]{3FFC45}$11$ x={2} & \cellcolor[HTML]{3FFC45}$12$ x={4} & \cellcolor[HTML]{FC3F3F}$12$ x={0}\\
+        \textbf{12}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{3FFC45}$21$ x={1} & \cellcolor[HTML]{3FFC45}$26$ x={1} & \cellcolor[HTML]{3F62FC}$26$ x={0,1}& \cellcolor[HTML]{3FFC45}$27$ x={1} & \cellcolor[HTML]{3FFC45}$28$ x={1} \\
         \hline
-        \textbf{13}& \cellcolor[HTML]{3FFC45}$6$ x={6} & \cellcolor[HTML]{FC3F3F}$6$ x={0}& \cellcolor[HTML]{3FFC45}$11$ x={2} & \cellcolor[HTML]{3FFC45}$13$ x={1} & \cellcolor[HTML]{FC3F3F}$13$ x={0}\\
+        \textbf{13}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{3FFC45}$21$ x={1} & \cellcolor[HTML]{3FFC45}$28$ x={1} & \cellcolor[HTML]{3F62FC}$28$ x={0,1}& \cellcolor[HTML]{FC3F3F}$28$ x={0}& \cellcolor[HTML]{3FFC45}$30$ x={1} \\
         \hline
-        \textbf{14}& \cellcolor[HTML]{3FFC45}$7$ x={7} & \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{3FFC45}$12$ x={2} & \cellcolor[HTML]{3FFC45}$14$ x={3} & \cellcolor[HTML]{FC3F3F}$14$ x={0}\\
+        \textbf{14}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{3FFC45}$21$ x={1} & \cellcolor[HTML]{3FFC45}$28$ x={1} & \cellcolor[HTML]{3FFC45}$30$ x={1} & \cellcolor[HTML]{3F62FC}$30$ x={0,1}& \cellcolor[HTML]{3FFC45}$33$ x={1} \\
         \hline
-        \textbf{15}& \cellcolor[HTML]{3FFC45}$7$ x={7} & \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{3FFC45}$15$ x={3} & \cellcolor[HTML]{3F62FC}$15$ x={0,5}& \cellcolor[HTML]{FC3F3F}$15$ x={0}\\
-        \hline
-        \textbf{16}& \cellcolor[HTML]{3FFC45}$8$ x={8} & \cellcolor[HTML]{FC3F3F}$8$ x={0}& \cellcolor[HTML]{3FFC45}$15$ x={3} & \cellcolor[HTML]{3FFC45}$16$ x={2} & \cellcolor[HTML]{FC3F3F}$16$ x={0}\\
-        \hline
-        \textbf{17}& \cellcolor[HTML]{3FFC45}$8$ x={8} & \cellcolor[HTML]{FC3F3F}$8$ x={0}& \cellcolor[HTML]{3FFC45}$16$ x={3} & \cellcolor[HTML]{3FFC45}$17$ x={4} & \cellcolor[HTML]{FC3F3F}$17$ x={0}\\
-        \hline
-        \textbf{18}& \cellcolor[HTML]{3FFC45}$9$ x={9} & \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{3FFC45}$16$ x={3} & \cellcolor[HTML]{3F62FC}$18$ x={1,6}& \cellcolor[HTML]{FC3F3F}$18$ x={0}\\
-        \hline
-        \textbf{19}& \cellcolor[HTML]{3FFC45}$9$ x={9} & \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{3FFC45}$17$ x={3} & \cellcolor[HTML]{3FFC45}$19$ x={3} & \cellcolor[HTML]{FC3F3F}$19$ x={0}\\
-        \hline
-        \textbf{20}& \cellcolor[HTML]{3FFC45}$9$ x={9} & \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{3FFC45}$17$ x={3} & \cellcolor[HTML]{3FFC45}$20$ x={5} & \cellcolor[HTML]{FC3F3F}$20$ x={0}\\
+        \textbf{15}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{3FFC45}$21$ x={1} & \cellcolor[HTML]{3FFC45}$33$ x={1} & \cellcolor[HTML]{FC3F3F}$33$ x={0}& \cellcolor[HTML]{FC3F3F}$33$ x={0}& \cellcolor[HTML]{3FFC45}$34$ x={1} \\
         \hline
     \end{tabular}
 \end{center}
 
 
 \section{Optimal Solutions}
-x0:0 x1:0 x2:1 x3:5 x4:0 \end{document}
+x0:1 x1:1 x2:0 x3:0 x4:0 x5:1 x6:1 \end{document}

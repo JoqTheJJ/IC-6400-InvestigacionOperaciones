@@ -249,7 +249,8 @@ Cell** knapsack(int n, int maxCapacity, int* profits, int* costs, int* quantity)
 
             int maxAmount = capacity / costs[obj];
             int iterations = min(quantity[obj], maxAmount);
-            for (int q = 0; q < iterations; ++q){
+            printf("MAX AMOUNT %d     ITERATIONS %d \n", maxAmount, iterations);
+            for (int q = 0; q <= iterations; ++q){
 
                 newCapacity = c - q*costs[obj];
                 if (newCapacity < 0){ //Exceeds capacity
@@ -286,8 +287,9 @@ void optimalSolutionsAux(int capacity, int row, int col, Cell** solution, int* r
 
     int maxAmount = capacity / costs[col-1];
     int iterations = min(quantity[col-1], maxAmount);
+    //printf("MAX AMOUNT %d     ITERATIONS %d  QUANTITY(COL-1) %d\n", maxAmount, iterations, quantity[col-1]);
     for (int amount = 0; amount <= iterations; amount++){
-        //printf("Amount: %d, quantity[%d]=%d\n", amount, col-1, quantity[col-1]);
+        printf("Amount: %d, quantity[%d]=%d\n", amount, col-1, quantity[col-1]);
         if (winner % 2){
             res[col - 1] = amount; //Store the amount of the current object
 
