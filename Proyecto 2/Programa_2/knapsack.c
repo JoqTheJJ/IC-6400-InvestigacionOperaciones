@@ -134,7 +134,43 @@ void introduction(FILE* f){
 
 }
 
-void problem(FILE* f, Cell** m, int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
+void problem(FILE* f, int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
+
+    fprintf(f, "\\section{Problem}\n\n");
+
+    for (int obj = 0; obj < objects; ++obj){
+        fprintf(f, "%s: Amount:%d, Profit:%d, and Cost:%d\n\n", names[obj], quantity[obj], profits[obj], costs[obj]);
+    }
+
+     fprintf(f, "\n\n\nThis translates to:\n\n");
+
+
+    fprintf(f, "Maximize $Z = ");
+    fprintf(f, "%dX_{\\text{%s}}", profits[0], names[0]);
+
+    for (int obj = 1; obj < objects; ++obj){
+        fprintf(f, " + %dX_{\\text{%s}}", profits[obj], names[obj]);
+    }
+    fprintf(f, "$\n\n");
+
+
+
+    fprintf(f, "\n\nSubject to:\n\n");
+    fprintf(f, "$%d \\geq ", capacity);
+    fprintf(f, "%dX_{\\text{%s}}", costs[0], names[0]);
+    
+
+    for (int obj = 1; obj < objects; ++obj){
+        fprintf(f, " + %dX_{\\text{%s}}", costs[obj], names[obj]);
+    }
+    fprintf(f, "$\n\n");
+
+
+
+    for (int obj = 0; obj < objects; ++obj){
+        fprintf(f, "$X_{\\text{%s}} \\leq %d$\n\n", names[obj], quantity[obj]);
+    }
+    fprintf(f, "\n");
 
 }
 
@@ -204,12 +240,14 @@ void texTable(FILE* f, Cell** m, int objects, int capacity, int* profits, int* c
     fprintf(f, "\\end{center}\n\n\n");
 }
 
-void printSolution(FILE* f, int* solution, int objects){
+void printSolution(FILE* f, int* solution, int objects, char** names){
     printf("[");
+    fprintf(f, "$");
     for (int obj = 0; obj < objects; ++obj){
-        fprintf(f, "x%d:%d ", obj, solution[obj]);
+        fprintf(f, "X_{\\text{%s}}=%d \\:", names[obj], solution[obj]);
         printf("x%d:%d ", obj, solution[obj]);
     }
+    fprintf(f, "$ \\newline\n");
     printf("]\n");
 }
 
@@ -276,11 +314,11 @@ Cell** knapsack(int n, int maxCapacity, int* profits, int* costs, int* quantity)
     return res;
 }
 
-void optimalSolutionsAux(int capacity, int row, int col, Cell** solution, int* res, int objects, int* costs, int* quantity, FILE* f){
+void optimalSolutionsAux(int capacity, int row, int col, Cell** solution, int* res, int objects, int* costs, int* quantity, char** names, FILE* f){
 
     if (col == 0){
         //printf("Prints\n");
-        printSolution(f, res, objects);
+        printSolution(f, res, objects, names);
         return;
     }
 
@@ -305,6 +343,7 @@ void optimalSolutionsAux(int capacity, int row, int col, Cell** solution, int* r
                 objects,
                 costs,
                 quantity,
+                names,
                 f
             );
         }
@@ -312,12 +351,12 @@ void optimalSolutionsAux(int capacity, int row, int col, Cell** solution, int* r
     }
 }
 
-void optimalSolutions(Cell** solution, int objects, int maxCapacity, int* costs, int* quantity, FILE* f){
+void optimalSolutions(Cell** solution, int objects, int maxCapacity, int* costs, int* quantity, char** names, FILE* f){
 
     fprintf(f, "\\section{Optimal Solutions}\n");
 
     int* res = malloc(sizeof(int)*objects);
-    optimalSolutionsAux(maxCapacity, maxCapacity, objects, solution, res, objects, costs, quantity, f);
+    optimalSolutionsAux(maxCapacity, maxCapacity, objects, solution, res, objects, costs, quantity, names, f);
     free(res);
 }
 
@@ -349,10 +388,12 @@ void runKnapsack(int objects, int capacity, int* profits, int* costs, int* quant
         }
     }
 
+    problem(f, objects, capacity, profits, costs, quantity, names);
+
     //Print results table
     texTable(f, answer, objects, capacity, profits, costs, quantity, names);
     //Print optimal solutions
-    optimalSolutions(answer, objects, capacity, costs, quantity, f);
+    optimalSolutions(answer, objects, capacity, costs, quantity, names, f);
 
     fprintf(f, "\\end{document}\n");
 
