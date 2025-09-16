@@ -113,22 +113,25 @@ void documentStart(FILE* f){
 }
 
 void introduction(FILE* f){
-    // TODO para Melissa
 
+    fprintf(f, "\\section{Knapsack Problem}\n");
+    fprintf(f, "The \\textit{Knapsack problem} is a classic optimization problem. ");
+    fprintf(f, "The goal is to fill a backpack optimally with a set of objects, each with a weight and a profit, ");
+    fprintf(f, "in order to maximize the total profit without exceeding the backpack's capacity.\n\n");
 
-    fprintf(f, "\\section{Knapsack}\n");
-    // fprintf(f, "This program consists of Floyd's algorithm to obtain the shortest path between any pair of nodes in a graph with weighted distances.\n");
-    //
-    // fprintf(f, "Floyd's algorithm compares the distance between any two given nodes and by passing through another city in between, if the result is less than the original then it chooses the shortest one. After contemplating all nodes in the graph, the graph is guaranteed to have all the shortest distances between any two nodes in the graph. These changes are recorded in another matrix called P that helps determine the shortest path between any two nodes.\n");
+    fprintf(f, "There are a few main types of knapsack problems:\n");
+    fprintf(f, "\\begin{itemize}\n");
+    fprintf(f, "  \\item \\textbf{0/1 Knapsack:} Each object can be taken or not, only one copy per object.\n");
+    fprintf(f, "  \\item \\textbf{Bounded Knapsack:} Each object has a limited number of copies.\n");
+    fprintf(f, "  \\item \\textbf{Unbounded Knapsack:} Each object can be taken any number of times, as long as the total weight allows.\n");
+    fprintf(f, "\\end{itemize}\n\n");
 
-    // fprintf(f, "\\section{Robert W. Floyd (1936–2001)}\n");
-    //
-    // fprintf(f, "\\begin{center}\n");
-    // fprintf(f, "\\includegraphics[width=0.25\\textwidth]{floyd.jpg}\n");
-    // fprintf(f, "\\end{center}\n");
-    //
-    // fprintf(f, "Robert Willoughby Floyd was a computer scientist that lived from 1936 to 2001. He made great advances in computer science and developed an algorithm to find the shortest paths between any two nodes for a directed graph. He was awarded a Turing Award in 1978.\n\n\n");
-    //
+    fprintf(f, "\\subsection{Solution}\n");
+    fprintf(f, "A common way to solve these problems is using dynamic programming. ");
+    fprintf(f, "We build a table to keep track of the optimal profit for different capacities and numbers of objects. ");
+    fprintf(f, "By filling this table, we can find the maximum profit achievable for the given backpack capacity.\n");
+    fprintf(f, "The resulting table will show the exact quantity and which objets take in order to archive the optimal weight.\n");
+
 }
 
 void problem(FILE* f, int objects, int capacity, int* profits, int* costs, int* quantity, char** names){
