@@ -60,8 +60,8 @@ void makeTitle(FILE* f){
         "    \\includegraphics[width=0.6\\textwidth]{logo-tec.png}\\par\\vspace{1cm}\n"
         "\n"
         "    %% University and course\n"
-        "    {\\large Escuela de Ingeniería en Computación\\par}\n"
-        "    {\\large Investigación de Operaciones\\par}\n"
+        "    {\\large Computer Science\\par}\n"
+        "    {\\large Operations Research\\par}\n"
         "    \\vspace{2cm}\n"
         "\n"
         "    %% Title\n"
@@ -136,7 +136,11 @@ void problem(FILE* f, int objects, int capacity, int* profits, int* costs, int* 
     fprintf(f, "\\section{Problem}\n\n");
 
     for (int obj = 0; obj < objects; ++obj){
-        fprintf(f, "%s: Amount:%d, Profit:%d, and Cost:%d\n\n", names[obj], quantity[obj], profits[obj], costs[obj]);
+        if (quantity[obj] == INT_MAX){ //infinito
+            fprintf(f, "%s: Amount: $\\infty$, Profit:%d, and Cost:%d\n\n", names[obj], profits[obj], costs[obj]);
+        } else {
+            fprintf(f, "%s: Amount:%d, Profit:%d, and Cost:%d\n\n", names[obj], quantity[obj], profits[obj], costs[obj]);
+        }
     }
 
      fprintf(f, "\n\n\nThis translates to:\n\n");
@@ -165,7 +169,11 @@ void problem(FILE* f, int objects, int capacity, int* profits, int* costs, int* 
 
 
     for (int obj = 0; obj < objects; ++obj){
-        fprintf(f, "$X_{\\text{%s}} \\leq %d$\n\n", names[obj], quantity[obj]);
+        if (quantity[obj] == INT_MAX){ //infinito
+            fprintf(f, "$X_{\\text{%s}} \\leq \\infty $\n\n", names[obj]);
+        } else {
+            fprintf(f, "$X_{\\text{%s}} \\leq %d$\n\n", names[obj], quantity[obj]);
+        }
     }
     fprintf(f, "\n");
 

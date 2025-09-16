@@ -37,33 +37,33 @@ void makeTitle(FILE* f){
         "    \\includegraphics[width=0.6\\textwidth]{logo-tec.png}\\par\\vspace{1cm}\n"
         "\n"
         "    %% University and course\n"
-        "    {\\large Escuela de Ingeniería en Computación\\par}\n"
-        "    {\\large Investigación de Operaciones\\par}\n"
+        "    {\\large Computer Science\\par}\n"
+        "    {\\large Operations Research\\par}\n"
         "    \\vspace{2cm}\n"
         "\n"
         "    %% Title\n"
-        "    {\\Large Rutas Óptimas\\par}\n"
-        "    {\\large Algoritmo de Floyd\\par}\n"
+        "    {\\Large Optimal Routes\\par}\n"
+        "    {\\large Floyd's Algorythm\\par}\n"
         "    \\vspace{2cm}\n"
         "\n"
         "    %% Group and professor\n"
-        "    {\\large Grupo 40\\par}\n"
-        "    {\\large Profesor: Francisco Torres Rojas\\par}\n"
+        "    {\\large Group 40\\par}\n"
+        "    {\\large Professor: Francisco Torres Rojas\\par}\n"
         "    \\vspace{3cm}\n"
         "\n"
         "    %% Student info\n"
         "    {\\large Carmen Hidalgo Paz\\par}\n"
-        "    {\\large Carné: 2020030538\\par}\n"
+        "    {\\large Id: 2020030538\\par}\n"
         "    \\vspace{1cm}\n"
         "    {\\large Melissa Carvajal Charpentier\\par}\n"
-        "    {\\large Carné: 2022197088\\par}\n"
+        "    {\\large Id: 2022197088\\par}\n"
         "    \\vspace{1cm}\n"
         "    {\\large Josué Soto González\\par}\n"
-        "    {\\large Carné: 2023207915\\par}\n"
+        "    {\\large Id: 2023207915\\par}\n"
         "    \\vspace{1cm}\n"
         "\n"
         "    %% Date\n"
-        "    {\\large 12 de Septiembre del 2025\\par}\n"
+        "    {\\large 12 september 2025\\par}\n"
         "\\end{titlepage}\n"
     );
 }
@@ -195,7 +195,6 @@ int findVertexes(int** P, int* vertexes, int current, int other, int next) {
     if (P[current][other] == 0) return next;
 
     int midCity = P[current][other]-1;
-    printf("(%d)\n", midCity);
 
     next = findVertexes(P, vertexes, current, midCity, next);
     vertexes[next] = midCity;
@@ -213,18 +212,18 @@ int eachCity(FILE* f, int** D, int** P, int n, char** names) {
         char* currentCity = names[i];
         fprintf(f, "\\section*{Current city: %s}\n", currentCity);
 
-        printf("i: %d\n", i);
+        //printf("i: %d\n", i);
 
         for (int j = 0; j < n; j++) {
             if (i == j) continue;
             if (D[i][j] == INF) continue;
 
-            printf("j: %d\n", j);
+            //printf("j: %d\n", j);
 
             int *vertexes = malloc(n * sizeof(int));
             int count = findVertexes(P, vertexes, i, j, 0); // This function finds all intermediate nodes,
             // returns total of intermediate node
-            printf("Found cities!\n");
+            //printf("Found cities!\n");
 
             fprintf(f, "\\begin{center}\n");
             fprintf(f, "\\begin{tikzpicture}\n");
@@ -237,7 +236,7 @@ int eachCity(FILE* f, int** D, int** P, int n, char** names) {
            // Draws intermediate nodes
            // Prev is needed in order to know which was the previous node, so we can draw the edge
             for (int k = 0; k < count; k++) {
-                printf("k: %d\n", k);
+                //printf("k: %d\n", k);
                 int v = vertexes[k];
                 fprintf(f, " \\Vertex[x=%d, y=%d, color=LightBlue, size=0.5, label={%s}]{%c}\n", 2*(k+1), 0, names[v], 'A' + v);
 
@@ -255,7 +254,7 @@ int eachCity(FILE* f, int** D, int** P, int n, char** names) {
 
             free(vertexes);
         }
-        printf("Final i: %d\n", i);
+        //printf("Final i: %d\n", i);
     }
 
     return 0;
