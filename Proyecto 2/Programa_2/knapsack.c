@@ -97,6 +97,8 @@ void documentStart(FILE* f){
     //Packages
     fprintf(f, "\\PassOptionsToPackage{table,svgnames}{xcolor}");
     fprintf(f, "\\usepackage{graphicx}\n");
+    fprintf(f, "\\usepackage{pdflscape}\n");
+    fprintf(f, "\\usepackage{adjustbox}\n");
     fprintf(f, "\\usepackage{tikz-network}\n");
     fprintf(f, "\\usepackage{xcolor}\n\n");
 
@@ -186,7 +188,10 @@ void texTable(FILE* f, Cell** m, int objects, int capacity, int* profits, int* c
 
     fprintf(f, "\\section{Costs Table}\n");
 
+    //fprintf(f, "\\begin{landscape}\n");
     fprintf(f, "\\begin{center}\n");
+    fprintf(f, "\\begin{adjustbox}{max width=\\textwidth}\n");
+
 
     fprintf(f, "    \\begin{tabular}{|c||");
     for (int col = 0; col < objects; ++col){
@@ -245,7 +250,9 @@ void texTable(FILE* f, Cell** m, int objects, int capacity, int* profits, int* c
     }
 
     fprintf(f, "    \\end{tabular}\n");
+    fprintf(f, "\\end{adjustbox}\n\n\n");
     fprintf(f, "\\end{center}\n\n\n");
+    //fprintf(f, "\\end{landscape}\n");
 }
 
 void printSolution(FILE* f, int* solution, int objects, char** names){
