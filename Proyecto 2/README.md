@@ -1,7 +1,9 @@
 # Knapsack Problem Project
 ### Members of the team
-Carmen Hidalgo Paz
-Josué Soto González
+Carmen Hidalgo Paz.
+
+Josué Soto González.
+
 Melissa Carvajal Charpentier
 
 ## Description
