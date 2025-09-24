@@ -2,9 +2,6 @@
                 Project 2: Knapsack
                 Made by: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
                 Date: Friday, September 12, 2025
-
-                Here goes the description
-
 */
 
 

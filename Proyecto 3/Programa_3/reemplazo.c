@@ -1,10 +1,7 @@
 /*
-                Project 1: Shortest Paths (Floyd's Algorythm)
+                Project 3: Equipment replacement
                 Made by: Carmen Hidalgo Paz, Melissa Carvajal y Josué Soto
                 Date: Friday, September 12, 2025
-
-                Here goes the description
-
 */
 
 
@@ -106,13 +103,31 @@ int main(int argc, char *argv[]) {
     int lifespan = 4;   //Lifespan
     int buyPrice = 500; //Buying price
     int max = 7;        //Years for the project
+    float inflationPercentage = 0.05; //Inflation percentage
 
-    int sellPrice[lifespan] = {400, 300, 250, 100};   //Selling price on the n year of use
-    int maintenance[lifespan] = {400, 300, 250, 100}; //Maintenance price (accumulative (?))
+
+    int* sellPrice = malloc(sizeof(int)*lifespan);   //Selling price on the n year of use
+    int* maintenance = malloc(sizeof(int)*lifespan); //Maintenance price (accumulative (?))
     //(until lifespan+1 ???)
 
-    int inflation[max] = {0, 20, 30, 40, 50, 60, 70}; //Inflation to the year n
 
+    int* inflation = malloc(sizeof(int)*lifespan);   //Inflation to the year n (accumulative)
+    float currentCost = buyPrice;
+    float newCost;
+    for (int i = 0; i < max; ++i){
+        newCost = currentCost*; //???
+    }
+
+
+    sellPrice[0] = 400;
+    sellPrice[1] = 300;
+    sellPrice[2] = 250;
+    sellPrice[3] = 100;
+    maintenance[0] = 400;
+    maintenance[1] = 300;
+    maintenance[2] = 250;
+    maintenance[3] = 100;
+    
     
     calculateC(); //Receives all of the above :P
 
