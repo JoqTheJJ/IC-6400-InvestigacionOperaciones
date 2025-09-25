@@ -55,9 +55,9 @@ float** calculateC(int years, int lifespan, float buyPrice, float* sellPrice, fl
     float** C = malloc(sizeof(float*) * (years+1));
 
 
-    for (int i = 0; i < years; i++){
+    for (int i = 0; i < years+1; i++){
         C[i] = malloc(sizeof(float) * (years+1));
-        for (int j = 0; j < years; j++){
+        for (int j = 0; j < years+1; j++){
             C[i][j] = INT_MAX; // Infinite invalid cost
         }
     }
@@ -65,9 +65,10 @@ float** calculateC(int years, int lifespan, float buyPrice, float* sellPrice, fl
 
 
 
-    for (int dif = 0; dif <= lifespan; ++dif){
-        for (int t = 0; t+dif < years; ++t){
-            C[t][t+dif] = buyPrice - sellPrice[dif] + maintenance[dif] + inflation[t];
+    for (int dif = 1; dif <= lifespan; ++dif){
+        for (int t = 0; t+dif <= years; ++t){
+            C[t][t+dif] = buyPrice - sellPrice[dif-1] + maintenance[dif-1] + inflation[t];
+            printf("C[%d][%d]= %2.f = buy:%2.f - sell:%2.f + m:%2.f + inf:%2.f\n", t, t+dif, C[t][t+dif], buyPrice, sellPrice[dif-1], maintenance[dif-1], inflation[t]);
         }
     }
 
@@ -79,9 +80,22 @@ Solution replacement(FILE* f, int years, int lifespan, float buyPrice, float* se
 
     float** C = calculateC(years, lifespan, buyPrice, sellPrice, maintenance, inflation);
 
-    for (int i = 0; i < years; i++){
-        for (int j = 0; j < years; j++){
-            printf("%2.f\t", C[i][j]);
+    for (int i = 0; i < years+1; i++){
+        if (i == 0){
+            printf("C\t");
+            for (int j = 0; j < years+1; j++){
+                printf("%d\t", j);
+            }
+            printf("\n");
+        }
+
+        printf("%d\t", i);
+        for (int j = 0; j < years+1; j++){
+            if (C[i][j] >= 2147483648){
+                printf("<->\t", C[i][j]);
+            } else {
+                printf("%2.f\t", C[i][j]);
+            }
         }
         printf("\n");
     }
@@ -169,7 +183,34 @@ void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, f
 
 
 
+
+
+
 void main(){
+    int lifespan = 3;   //Lifespan
+    float buyPrice = 500; //Buying price
+    int years = 5;        //Years for the project
+    float inflationPercentage = 0; //Inflation percentage
+
+
+    float* sellPrice = malloc(sizeof(float)*lifespan);   //Selling price on the n year of use
+    float* maintenance = malloc(sizeof(float)*lifespan); //Maintenance price (accumulative)
+    float* inflation = inflationCosts(buyPrice, inflationPercentage, years);
+
+
+    sellPrice[0] = 400;
+    sellPrice[1] = 300;
+    sellPrice[2] = 250;
+    maintenance[0] = 30;
+    maintenance[1] = 70;
+    maintenance[2] = 130;
+
+
+    runReplacement(years, lifespan, buyPrice, sellPrice, maintenance, inflation);
+}
+
+
+void test(){
 
     int lifespan = 4;   //Lifespan
     float buyPrice = 500; //Buying price
