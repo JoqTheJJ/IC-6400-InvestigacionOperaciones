@@ -30,14 +30,14 @@ int ipow(int base, int exp) {
 
 /* ################################## REPLACEMENT ################################## */
 
-int** calculateC(int lifespan){
+int** calculateC(int years, int lifespan, int buyPrice, int* sellPrice, int* maintenance, int* inflation){
 
     int** C = malloc(sizeof(int*) * (lifespan+1));
 
 
-    for (int i = 0; i < n; i++){
+    for (int i = 0; i < years; i++){
         C[i] = malloc(sizeof(int) * (lifespan+1));
-        for (int j = 0; j < n; j++){
+        for (int j = 0; j < years; j++){
             C[i][j] = INT_MAX; // Infinite invalid cost
         }
     }
@@ -46,7 +46,7 @@ int** calculateC(int lifespan){
 
 
     for (int dif = 0; dif <= lifespan; ++dif){
-        for (int t = 0; t+dif < max; ++t){
+        for (int t = 0; t+dif < years; ++t){
             C[t][t+dif] = buyPrice - sellPrice[dif] + maintenance[dif] + inflation[t];
         }
     }
@@ -55,35 +55,53 @@ int** calculateC(int lifespan){
 }
 
 
-void replacement(){
+void replacement(int years, int lifespan, int buyPrice, int* sellPrice, int* maintenance, int* inflation){
 
-    int** C = calculateC();
+    int** C = calculateC(years, lifespan, buyPrice, sellPrice, maintenance, inflation);
 
-    int* G    = malloc(sizeof(int) * (max+1));
-    int* GPos = malloc(sizeof(int) * (max+1)); //Stores the binary code of the winners
+    int* G    = malloc(sizeof(int) * (years+1));
+    int* GPos = malloc(sizeof(int) * (years+1)); //Stores the binary code of the winners
 
     //Base case
-    G[max]    = 0;
-    GPos[max] = 0;
+    G[years]    = 0;
+    GPos[years] = 0;
 
 
-    for (int g = max-1; g >= 0; --g){
+    for (int g = years-1; g >= 0; --g){
+
         G[g] = INT_MAX;
         GPos[g] = 0;
 
         int option;
-        for (int dif = 1; g+dif < max; dif++){
+
+        //Print
+        // minimo
+        for (int dif = 1; g+dif < years; dif++){
+            //Marcar Proceso
+            // Imprimir Calculo
+            // G(4) = C[i][j] + G(j)
+            // G(4) = %d + %d
+
+
             option = C[g][g+dif] + G[g+dif];
             
-            if (option < G[g]){ //Better
+            if (option < G[g]){ //Better option
                 G[g] = option;
-                Gpos[g] = ipow(2, g+dif); //Sets the digit of the candidate option
+                GPos[g] = ipow(2, g+dif); //Sets the digit of the candidate option
 
-            } else (option == G[g]) { //Draw
-                Gpos[g] += ipow(2, g+dif); //Adds the digit of the next candidate option
+            } else if (option == G[g]) { //Tie option
+                GPos[g] += ipow(2, g+dif); //Adds the digit of the next candidate option
             }
         }
+        //
+
+        //Marcar G calculado
+        // G(algo) = x
+        // Ganadores son: 1, 2, 3
     }
+
+    free(C);
+
 }
 
 
@@ -102,7 +120,7 @@ int main(int argc, char *argv[]) {
 
     int lifespan = 4;   //Lifespan
     int buyPrice = 500; //Buying price
-    int max = 7;        //Years for the project
+    int years = 7;        //Years for the project
     float inflationPercentage = 0.05; //Inflation percentage
 
 
@@ -112,11 +130,11 @@ int main(int argc, char *argv[]) {
 
 
     int* inflation = malloc(sizeof(int)*lifespan);   //Inflation to the year n (accumulative)
-    float currentCost = buyPrice;
+    /*float currentCost = buyPrice;
     float newCost;
-    for (int i = 0; i < max; ++i){
-        newCost = currentCost*; //???
-    }
+    for (int i = 0; i < years; ++i){
+        newCost = currentCost*2; //???
+    }*/
 
 
     sellPrice[0] = 400;
@@ -127,9 +145,24 @@ int main(int argc, char *argv[]) {
     maintenance[1] = 300;
     maintenance[2] = 250;
     maintenance[3] = 100;
+    inflation[0] = 0;
+    inflation[1] = 10;
+    inflation[2] = 20;
+    inflation[3] = 30;
+    inflation[4] = 40;
+    inflation[5] = 50;
+    inflation[6] = 60;
     
-    
-    calculateC(); //Receives all of the above :P
+
+
+
+    //Title
+
+    //Problem
+
+    replacement(years, lifespan, buyPrice, sellPrice, maintenance, inflation);
+
+    //Print Table
 
 
     return 0;
