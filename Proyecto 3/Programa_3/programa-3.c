@@ -132,7 +132,6 @@ static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
         now_invalid = !integer_digits_only(txt);
     }
 
-    // previous state
     gboolean was_invalid = g_object_get_data(G_OBJECT(entry), "invalid") != NULL;
 
     // update the invalid counter
@@ -347,7 +346,6 @@ static void cell_string_for_export(GtkEntry *entry, gint i, gint j, gchar **out)
 
     if (is_blank(txt)) { g_free(txt); *out = g_strdup(""); return; }
 
-    // No infinity normalization anymore
     *out = txt;
 }
 
@@ -370,7 +368,7 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     const gint rows = ui->rows;
     const gint cols = ui->cols;
 
-    // Validate current focus (like before)
+    // Validate current focus
     GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(btn));
     if (GTK_IS_WINDOW(toplevel)) {
         GtkWidget *focus = gtk_window_get_focus(GTK_WINDOW(toplevel));
@@ -411,7 +409,7 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
     gtk_widget_destroy(dialog);
 
-    // Compute column widths for pretty table (no corner string anymore)
+    // Compute column widths for pretty table
     size_t *W = g_new0(size_t, (size_t)cols + 1);
 
     // Row-name width (names column)
@@ -450,7 +448,6 @@ static void save_file(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    // ===== Metadata block (new) =====
     // Stored in Matrix: amount_price, amount_lifespan, amount_profit, amount_inflation, amount_period
     fprintf(fp, "# Tool Replacement Parameters\n");
     fprintf(fp, "Price: %d\n",      ui->amount_price);
@@ -460,7 +457,6 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     fprintf(fp, "Periods: %d\n",    ui->rows);
     fputc('\n', fp);
 
-    // ===== Table header row (no corner text) =====
     // Print an empty slot for the row-name column (keeps alignment with saved row names)
     fprint_padded(fp, "", W[0], FALSE);
     if (cols > 0) fputc(' ', fp);
@@ -472,7 +468,7 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     }
     fputc('\n', fp);
 
-    // ===== Rows =====
+    // Rows
     for (gint i = 0; i < rows; ++i) {
         GtkEntry *rh = GTK_ENTRY(g_ptr_array_index(ui->row_headers, i));
         const gchar *rname = gtk_entry_get_text(rh);
@@ -510,7 +506,6 @@ static void save_file(GtkButton *btn, gpointer user_data) {
 // Checks the data at the top that contains the info of the spinbuttons
 static gboolean parse_int_field(const gchar *line, const gchar *key, gint *out) {
     if (!line || !key || !out) return FALSE;
-    // Build "Key:" prefix
     gchar *prefix = g_strdup_printf("%s:", key);
     gboolean ok = FALSE;
 
@@ -592,23 +587,23 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // ===== 1) Parse metadata block at top =====
+    // Parse the info block at top
     // Accept either a block starting with "#" or plain "Key: value" lines.
-    // Stop metadata at the first blank line in the original file (already removed),
-    // or when we hit a header-like line that ends with "Period Maintenance Resell".
+    // Stop parsing at the first blank line in the original file
+    // or when it hits a header-like line that ends with "Period Maintenance Resell".
     gint price = -1, lifespan = -1, profit = -1, inflation = -1, periods = -1;
 
     guint idx = 0;
     for (; idx < rows->len; ++idx) {
         const gchar *L = rows->pdata[idx];
-        // Header line? (ends with our 3 labels)
+        // Check if its the header line
         gchar **tok = split_ws(L);
         guint tokc = g_strv_length(tok);
         gboolean is_header = header_matches_fixed(tok, tokc);
         g_strfreev(tok);
         if (is_header) break;
 
-        // Metadata lines: possibly start with '#'
+        // Info line, starts with #
         const gchar *line = L;
         if (*line == '#') {
             line++; while (*line && g_ascii_isspace(*line)) line++;
@@ -621,12 +616,11 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
             parse_int_field(line, "Inflation", &inflation) ||
             parse_int_field(line, "Periods",   &periods);
 
-        // If it's not metadata and not a header, we'll keep advancing until header is found.
-        // (The previous save format puts a blank line before the header, which we removed.)
+        // If it's not the info and not a header, it keeps advancing until header is found.
     }
 
     if (idx >= rows->len) {
-        // We never found a header line
+        // We a header line isnt found
         GtkWidget *d = gtk_message_dialog_new(
             GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -639,7 +633,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // ===== 2) Header line =====
+    // Header
     gchar **head = split_ws(rows->pdata[idx]);
     guint headc  = g_strv_length(head);
     if (!header_matches_fixed(head, headc)) {
@@ -653,7 +647,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         gtk_widget_destroy(d);
     }
 
-    // ===== 3) Data rows begin after header =====
+    // Data rows
     guint data0 = idx + 1;
     guint nrows = (rows->len > data0) ? (rows->len - data0) : 0;
     if (nrows == 0) {
@@ -670,29 +664,28 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // If "Periods" metadata exists, prefer it; otherwise infer from rows
+    // If the "Periods" metadata exists, check it. If not infer from rows
     gint target_rows = (periods > 0) ? periods : (gint)nrows;
     if (target_rows < 1) target_rows = (gint)nrows;
 
-    // Build UI as target_rows × 3
+    // Build UI
     rebuild_matrix_ui(ui, target_rows);
     ui->invalid_count = 0;
 
-    // Force fixed column labels (safety)
+    // Force fixed column labels
     for (guint j = 0; j < ui->cols; ++j) {
         GtkWidget *cw = g_ptr_array_index(ui->col_headers, j);
         gtk_label_set_text(GTK_LABEL(cw), FIXED_COLS[j]); // {"Period","Maintenance","Resell"}
     }
 
-    // ===== 4) Fill rows =====
-    // We map each file row r = 0..nrows-1 into UI row i = r (until we run out).
+    // Fill rows
     guint to_fill = MIN(nrows, (guint)ui->rows);
 
     for (guint r = 0; r < to_fill; ++r) {
         gchar **tok = split_ws(rows->pdata[data0 + r]);
         guint tokc = g_strv_length(tok);
 
-        if (tokc < 1 + 3) { // row-name + 3 values
+        if (tokc < 1 + 3) { // the rowname plus 3 values
             GtkWidget *d = gtk_message_dialog_new(
                 GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -707,7 +700,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
 
         guint vstart = tokc - 3;
 
-        // Row name may contain spaces -> join all tokens before the last 3
+        // The row name may contain spaces
         gchar *saved = tok[vstart];
         tok[vstart] = NULL;
         gchar *rname = g_strjoinv(" ", tok);
@@ -727,12 +720,11 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
                 gchar buf[16];
                 g_snprintf(buf, sizeof(buf), "%u", r + 1);
                 gtk_entry_set_text(GTK_ENTRY(cell), buf);
-                // no validation needed; it's our own text
             } else {
                 const gchar *vstr = tok[vstart + j];
-                // digits-only expected (no infinity)
+                // digits-only expected
                 if (!integer_digits_only(vstr)) {
-                    // still show whatever is there so user can fix it; mark invalid
+                    // still show whatever is there so user can fix it but mark as invalid
                     gtk_entry_set_text(GTK_ENTRY(cell), vstr ? vstr : "");
                     mark_cell_validity(cell, ui);
                 } else {
@@ -745,9 +737,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         g_strfreev(tok);
     }
 
-    // If "Periods" metadata > actual rows in file, remaining UI rows keep defaults.
-
-    // ===== 5) Reflect metadata into spins (if present) =====
+    // Reflect info in the spinbuttons
     // IDs: amount-price, amount-period, amount-lifespan, amount-profit, amount-inflation
     GtkSpinButton *sp_price     = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-price"));
     GtkSpinButton *sp_period    = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-period"));
@@ -756,11 +746,15 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
     GtkSpinButton *sp_inflation = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-inflation"));
 
     if (price     >= 0 && sp_price)     gtk_spin_button_set_value(sp_price,     price);
-    if (lifespan  >= 0 && sp_lifespan)  gtk_spin_button_set_value(sp_lifespan,  lifespan);
-    if (profit    >= 0 && sp_profit)    gtk_spin_button_set_value(sp_profit,    profit);
-    if (inflation >= 0 && sp_inflation) gtk_spin_button_set_value(sp_inflation, inflation);
-
-    // If periods metadata existed and differs, we already rebuilt the table above to match.
+if (sp_period && periods >= 0) {
+    // prevent the matrix from rebuilding
+    g_signal_handlers_block_by_func(sp_period, G_CALLBACK(on_amount_period_changed), ui);
+    gtk_spin_button_set_value(sp_period, periods);
+    g_signal_handlers_unblock_by_func(sp_period, G_CALLBACK(on_amount_period_changed), ui);
+}
+if (lifespan  >= 0 && sp_lifespan)  gtk_spin_button_set_value(sp_lifespan,  lifespan);
+if (profit    >= 0 && sp_profit)    gtk_spin_button_set_value(sp_profit,    profit);
+if (inflation >= 0 && sp_inflation) gtk_spin_button_set_value(sp_inflation, inflation);
 
     // Clean up
     g_strfreev(head);
@@ -819,7 +813,7 @@ static gboolean parse_number_strict(const gchar *txt, double *out) {
     g_strstrip(t);
     if (*t == '\0') { g_free(t); return FALSE; }
 
-    // Accept numeric strings only (we're feeding integers from the UI)
+    // Accept numeric strings only
     gchar *endp = NULL;
     double v = g_ascii_strtod(t, &endp);
     gboolean ok = (endp && *endp == '\0');
@@ -843,7 +837,7 @@ gboolean collect_matrix_from_ui(Matrix *ui, MatrixData *out, GError **err) {
     out->lifespan  = ui->amount_lifespan;
     out->profit    = ui->amount_profit;
     out->inflation = ui->amount_inflation;
-    out->periods   = ui->amount_period;  // should match rows
+    out->periods   = ui->amount_period;
 
     // Read the column names from the labels
     for (gint j = 0; j < cols; ++j) {
@@ -865,7 +859,7 @@ gboolean collect_matrix_from_ui(Matrix *ui, MatrixData *out, GError **err) {
             GtkEntry *cell = GTK_ENTRY(g_ptr_array_index(ui->cells, i*cols + j));
             const gchar *raw = gtk_entry_get_text(cell);
 
-            // Period column is read-only, but we still save it (1..rows)
+            // Period column is read-only, but we still save it
             double v;
             if (!parse_number_strict(raw, &v)) {
                 GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(cell));
@@ -938,18 +932,17 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
     int *resell      = g_new0(int, R);
 
     for (int i = 0; i < R; ++i) {
-        // col 0 = Period (ignored for arrays), col 1 = Maintenance, col 2 = Resell
         double m = g_array_index(md.values, double, i*C + 1);
         double s = g_array_index(md.values, double, i*C + 2);
         maintenance[i] = (int)m;
         resell[i]      = (int)s;
     }
 
-    // Row names (period labels) if you need them
+    // Row names
     char **row_names   = (char **) md.row_names->pdata; // size R
     char **column_names= (char **) md.col_names->pdata; // size 3
 
-    // ===== Call Tool Replacement function here =====
+    // ----- Call Tool Replacement function here -----
     //     int price, int lifespan, int profit, int inflation, int periods,
     //     const int *maintenance, const int *resell
 
