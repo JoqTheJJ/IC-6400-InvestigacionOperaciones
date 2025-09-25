@@ -154,8 +154,90 @@ Solution replacement(FILE* f, int years, int lifespan, float buyPrice, float* se
 
 /* ################################## TEX ################################## */
 
+void makeTitle(FILE* f){
+
+    fprintf(f,
+        "\\begin{titlepage}\n"
+        "    \\centering\n"
+        "    %% Logo\n"
+        "    \\includegraphics[width=0.6\\textwidth]{logo-tec.png}\\par\\vspace{1cm}\n"
+        "\n"
+        "    %% University and course\n"
+        "    {\\large Computer Science\\par}\n"
+        "    {\\large Operations Research\\par}\n"
+        "    \\vspace{2cm}\n"
+        "\n"
+        "    %% Title\n"
+        "    {\\Large Replacement Problem\\par}\n"
+        "    {\\large Dynamic Programming\\par}\n"
+        "    \\vspace{2cm}\n"
+        "\n"
+        "    %% Group and professor\n"
+        "    {\\large Group 40\\par}\n"
+        "    {\\large Professor: Francisco Torres Rojas\\par}\n"
+        "    \\vspace{3cm}\n"
+        "\n"
+        "    %% Student info\n"
+        "    {\\large Carmen Hidalgo Paz\\par}\n"
+        "    {\\large Id: 2020030538\\par}\n"
+        "    \\vspace{1cm}\n"
+        "    {\\large Melissa Carvajal Charpentier\\par}\n"
+        "    {\\large Id: 2022197088\\par}\n"
+        "    \\vspace{1cm}\n"
+        "    {\\large Josué Soto González\\par}\n"
+        "    {\\large Id: 2023207915\\par}\n"
+        "    \\vspace{1cm}\n"
+        "\n"
+        "    %% Date\n"
+        "    {\\large 26 september 2025\\par}\n"
+        "\\end{titlepage}\n"
+    );
+}
+
+void documentStart(FILE* f){
+    fprintf(f, "\\documentclass{article}\n\n");
+
+    //Packages
+    fprintf(f, "\\PassOptionsToPackage{table,svgnames}{xcolor}");
+    fprintf(f, "\\usepackage{graphicx}\n");
+    fprintf(f, "\\usepackage{pdflscape}\n");
+    fprintf(f, "\\usepackage{adjustbox}\n");
+    fprintf(f, "\\usepackage{tikz-network}\n");
+    fprintf(f, "\\usepackage{xcolor}\n\n");
 
 
+
+    //Document start
+    fprintf(f, "\\begin{document}\n");
+    makeTitle(f);
+
+    //Colors
+    fprintf(f, "\\definecolor{KirbyPink}{HTML}{D74894}\n");
+    fprintf(f, "\\definecolor{LightPink}{HTML}{FFBFBF}\n\n");
+    fprintf(f, "\\newpage\n\n\n");
+}
+
+void introduction(FILE* f){
+
+    fprintf(f, "\\section{Knapsack Problem}\n");
+    fprintf(f, "The \\textit{Knapsack problem} is a classic optimization problem. ");
+    fprintf(f, "The goal is to fill a backpack optimally with a set of objects, each with a weight and a profit, ");
+    fprintf(f, "in order to maximize the total profit without exceeding the backpack's capacity.\n\n");
+
+    fprintf(f, "There are a few main types of knapsack problems:\n");
+    fprintf(f, "\\begin{itemize}\n");
+    fprintf(f, "  \\item \\textbf{0/1 Knapsack:} Each object can be taken or not, only one copy per object.\n");
+    fprintf(f, "  \\item \\textbf{Bounded Knapsack:} Each object has a limited number of copies.\n");
+    fprintf(f, "  \\item \\textbf{Unbounded Knapsack:} Each object can be taken any number of times, as long as the total weight allows.\n");
+    fprintf(f, "\\end{itemize}\n\n");
+
+    fprintf(f, "\\subsection{Solution}\n");
+    fprintf(f, "A common way to solve these problems is using dynamic programming. ");
+    fprintf(f, "We build a table to keep track of the optimal profit for different capacities and numbers of objects. ");
+    fprintf(f, "By filling this table, we can find the maximum profit achievable for the given backpack capacity.\n");
+    fprintf(f, "The resulting table will show the exact quantity and which objets take in order to archive the optimal weight.\n");
+
+}
 /* ################################## TEX ################################## */
 
 
