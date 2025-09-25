@@ -32,11 +32,11 @@ int ipow(int base, int exp) {
 
 int** calculateC(int years, int lifespan, int buyPrice, int* sellPrice, int* maintenance, int* inflation){
 
-    int** C = malloc(sizeof(int*) * (lifespan+1));
+    int** C = malloc(sizeof(int*) * (years+1));
 
 
     for (int i = 0; i < years; i++){
-        C[i] = malloc(sizeof(int) * (lifespan+1));
+        C[i] = malloc(sizeof(int) * (years+1));
         for (int j = 0; j < years; j++){
             C[i][j] = INT_MAX; // Infinite invalid cost
         }
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
     //(until lifespan+1 ???)
 
 
-    int* inflation = malloc(sizeof(int)*lifespan);   //Inflation to the year n (accumulative)
+    int* inflation = malloc(sizeof(int)*years);   //Inflation to the year n (accumulative)
     /*float currentCost = buyPrice;
     float newCost;
     for (int i = 0; i < years; ++i){
@@ -160,6 +160,7 @@ int main(int argc, char *argv[]) {
 
     //Problem
 
+    printf("Replacement\n");
     replacement(years, lifespan, buyPrice, sellPrice, maintenance, inflation);
 
     //Print Table
