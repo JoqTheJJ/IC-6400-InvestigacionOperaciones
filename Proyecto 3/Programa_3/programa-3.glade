@@ -2,14 +2,25 @@
 <!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <object class="GtkAdjustment" id="adjustment-knapsack">
-    <property name="upper">20</property>
+  <object class="GtkAdjustment" id="adjustment-inflation">
+    <property name="upper">1e+153</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adjustment-objects">
+  <object class="GtkAdjustment" id="adjustment-lifespan">
     <property name="lower">1</property>
-    <property name="upper">50</property>
+    <property name="upper">10</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment-period">
+    <property name="lower">1</property>
+    <property name="upper">30</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment-price">
+    <property name="upper">1e+153</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
@@ -66,7 +77,7 @@
 by defining a table where the entries are the cost of maintenance and the cost of selling the
 tool in a given time.
 DIRECTIONS:
-- Enter  a positive number for the Maintenance and Resell Value columns.
+- Enter a positive number for the Maintenance and Resell Value columns.
 - If the cell becomes red, you've entered the wrong value.</property>
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
@@ -82,12 +93,12 @@ DIRECTIONS:
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="instruction-nodes1">
+              <object class="GtkLabel" id="instruction-nodes4">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
-                <property name="label" translatable="yes">    Insert the capacity of the knapsack (0-20):    </property>
+                <property name="label" translatable="yes">    Insert the price of the equipment (0=&lt;):    </property>
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
@@ -102,16 +113,15 @@ DIRECTIONS:
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="amount-knapsack">
+              <object class="GtkSpinButton" id="amount-price">
                 <property name="width-request">257</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">Choose a number greater than 1 for the amount of objects wanted</property>
+                <property name="tooltip-text" translatable="yes">Choose a number greater than 0 for the price of the equipment</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <property name="text" translatable="yes">0</property>
-                <property name="adjustment">adjustment-knapsack</property>
-                <property name="value">1</property>
+                <property name="adjustment">adjustment-price</property>
                 <style>
                   <class name="sign-color"/>
                 </style>
@@ -123,12 +133,12 @@ DIRECTIONS:
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="instruction-nodes">
+              <object class="GtkLabel" id="instruction-nodes1">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
-                <property name="label" translatable="yes">    Insert the amount of objects wanted (1=&lt;):    </property>
+                <property name="label" translatable="yes">    Insert the amount of time periods (1-30):    </property>
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
@@ -143,14 +153,14 @@ DIRECTIONS:
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="amount-objects">
+              <object class="GtkSpinButton" id="amount-period">
                 <property name="width-request">257</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">Choose a number greater than 1 for the amount of objects wanted</property>
+                <property name="tooltip-text" translatable="yes">Choose a number between 1 and 30 for the amount of time periods</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
-                <property name="adjustment">adjustment-objects</property>
+                <property name="adjustment">adjustment-period</property>
                 <property name="value">1</property>
                 <style>
                   <class name="sign-color"/>
@@ -160,6 +170,126 @@ DIRECTIONS:
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="instruction-nodes">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">    Insert the equipment's lifespan (1-10):    </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="amount-lifespan">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Choose a number between 1 and 30 for the equpiment's lifespan</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="adjustment">adjustment-lifespan</property>
+                <property name="value">1</property>
+                <style>
+                  <class name="sign-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="instruction-nodes2">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">    Insert the profit that can be gained by using the product (0=&lt;):    </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="amount-profit">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Choose a number greater than 0 for the profit that can be gained by using the equipment</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="text" translatable="yes">0</property>
+                <property name="adjustment">adjustment-profit</property>
+                <style>
+                  <class name="sign-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="instruction-nodes3">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">    Insert the amount of inflation you want to be applied (0=&lt;):    </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 9"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="amount-inflation">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Choose a number greater than 0 for the inflation that is going to be applied</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="text" translatable="yes">0</property>
+                <property name="adjustment">adjustment-inflation</property>
+                <style>
+                  <class name="sign-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">11</property>
               </packing>
             </child>
             <child>
@@ -179,7 +309,7 @@ DIRECTIONS:
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">6</property>
+                <property name="position">12</property>
               </packing>
             </child>
             <child>
@@ -187,7 +317,7 @@ DIRECTIONS:
                 <property name="width-request">257</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface as a Table of Objects and the capacity of the Knapsack</property>
+                <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface as a Table of the Maintenance and Resell values for each time period and the initial price, the lifespan, the profit and the inflation applied</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <property name="title" translatable="yes"/>
@@ -198,7 +328,7 @@ DIRECTIONS:
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">7</property>
+                <property name="position">13</property>
               </packing>
             </child>
             <child>
@@ -218,7 +348,7 @@ DIRECTIONS:
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">8</property>
+                <property name="position">14</property>
               </packing>
             </child>
             <child>
@@ -228,7 +358,7 @@ DIRECTIONS:
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="tooltip-text" translatable="yes">Press button to save the current Table of objects and the Knapsack capacity as a .txt file</property>
+                <property name="tooltip-text" translatable="yes">Press button to save the current Table of Tool Replacement and the other values as a .txt file</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <style>
@@ -238,7 +368,7 @@ DIRECTIONS:
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">9</property>
+                <property name="position">15</property>
               </packing>
             </child>
             <child>
@@ -258,7 +388,7 @@ DIRECTIONS:
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">10</property>
+                <property name="position">16</property>
               </packing>
             </child>
             <child>
@@ -268,7 +398,7 @@ DIRECTIONS:
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="tooltip-text" translatable="yes">Press button to create .tex file with the Knapsack Algorithm applied</property>
+                <property name="tooltip-text" translatable="yes">Press button to create .tex file with the Tool Replacement Algorithm applied</property>
                 <property name="halign">center</property>
                 <property name="margin-bottom">3</property>
                 <style>
@@ -278,7 +408,7 @@ DIRECTIONS:
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">11</property>
+                <property name="position">17</property>
               </packing>
             </child>
             <child>
@@ -299,11 +429,8 @@ DIRECTIONS:
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">12</property>
+                <property name="position">18</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
           <packing>
@@ -316,5 +443,10 @@ DIRECTIONS:
     <style>
       <class name="bg-2"/>
     </style>
+  </object>
+  <object class="GtkAdjustment" id="adjustment-profit">
+    <property name="upper">1e+153</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
   </object>
 </interface>

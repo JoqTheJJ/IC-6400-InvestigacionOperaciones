@@ -937,7 +937,7 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
 
 // - - - - - END OF CREATING MATRIX FOR CODE - - - - -
 
-//Main for program 1
+//Main for program 2
 int main(int argc, char *argv[]) {
     GtkBuilder *builder;            // Used to obtain the objects from glade
     GtkWidget *ventana;             // Window

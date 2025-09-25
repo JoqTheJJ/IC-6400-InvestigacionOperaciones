@@ -23,27 +23,38 @@ typedef struct {
     GPtrArray  *row_headers;
     GPtrArray  *col_headers;
     GPtrArray  *cells;
-    gint        rows;          // n
-    gint        cols;          // 3
+    gint        rows;              // number of periods (n)
+    gint        cols;              // 3 (Period, Maintenance, Resell)
     gint        invalid_count;
-    gint        knapsack_value;
+
+    // Spin values captured from UI
+    gint        amount_price;      // equipment price
+    gint        amount_period;     // number of periods
+    gint        amount_lifespan;   // equipment lifespan
+    gint        amount_profit;     // profit per use/period
+    gint        amount_inflation;  // inflation percent
 } Matrix;
 
 typedef struct {
-    gint        rows;       // n rows
-    gint        cols;       // 3 (fixed)
-    GPtrArray  *row_names;  // n items
-    GPtrArray  *col_names;  // 3 items
-    GArray     *values;     // table with data
-    gint        knapsack;   // capacity of the knapsack
+    gint        rows;       // number of periods
+    gint        cols;       // 3 (Period, Maintenance, Resell)
+    GPtrArray  *row_names;  // period labels / names
+    GPtrArray  *col_names;  // {"Period","Maintenance","Resell"}
+    GArray     *values;     // row-major double array of size rows*cols
+
+    // Tool Replacement parameters (from spin buttons)
+    gint        price;      // amount-price
+    gint        lifespan;   // amount-lifespan
+    gint        profit;     // amount-profit
+    gint        inflation;  // amount-inflation
+    gint        periods;    // amount-period
 } MatrixData;
 
 // Fixed column names
-static const char *FIXED_COLS[3] = {"Cost", "Value", "Amount"};
+static const char *FIXED_COLS[3] = {"Period", "Maintenance", "Resell"};
 // Fixed amount of columns
 static const guint FIXED_COL_COUNT = 3;
-// Column that can take the infinity symbols
-#define AMOUNT_COL_IDX 2
+#define PERIOD_COL_IDX 0
 
 // Color of the text of the column names
 static GtkCssProvider* get_header_css_provider(void) {
@@ -52,16 +63,10 @@ static GtkCssProvider* get_header_css_provider(void) {
         prov = gtk_css_provider_new();
         gtk_css_provider_load_from_data(
             prov,
-            ".col-header-white { color: white; font-weight: 600; }",
+            ".col-header-yellow { background-color: rgba(249, 228, 183, 0.67); color: #000000; font-weight: 700; }",
             -1, NULL);
     }
     return prov;
-}
-
-// Function for amount a knapsack can hold being changed
-static void on_knapsack_changed(GtkSpinButton *spin, gpointer user_data) {
-    Matrix *ui = (Matrix*)user_data;
-    ui->knapsack_value = gtk_spin_button_get_value_as_int(spin);
 }
 
 // Calculate the default names of rows
@@ -87,15 +92,6 @@ static void clear_container_children(GtkWidget *container) {
     g_list_free(children);
 }
 
-// Values that can be accepted as infinity
-static gboolean is_inf_text(const gchar *t) {
-    if (!t) return FALSE;
-    // "i", "I", "inf" and "∞" are accepted
-    return g_ascii_strcasecmp(t, "i") == 0
-        || g_ascii_strcasecmp(t, "inf") == 0
-        || g_strstr_len(t, -1, "∞") != NULL;
-}
-
 // Checks if the cell is empty
 static gboolean is_blank(const gchar *s) {
     if (!s) return TRUE;
@@ -119,10 +115,10 @@ static gboolean integer_digits_only(const char *s_in) {
 
 // Checks if the cell is valid; updates the CSS and the invalid cell counter
 static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
-    gpointer prow = g_object_get_data(G_OBJECT(entry), "row");
+    // if it's the Period column, it's read-only and always valid
     gpointer pcol = g_object_get_data(G_OBJECT(entry), "col");
-    int i = prow ? (GPOINTER_TO_INT(prow)-1) : -1;
     int j = pcol ? (GPOINTER_TO_INT(pcol)-1) : -1;
+    if (j == PERIOD_COL_IDX) return TRUE;
 
     const gchar *txt = gtk_entry_get_text(GTK_ENTRY(entry));
     GtkStyleContext *ctx = gtk_widget_get_style_context(entry);
@@ -131,24 +127,15 @@ static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
 
     if (is_blank(txt)) {
         now_invalid = TRUE;
-    } else if (is_inf_text(txt)) {
-        // ∞ is only allowed in the Amount column
-        if (j == AMOUNT_COL_IDX) {
-            if (g_strcmp0(txt, "∞") != 0)
-                gtk_entry_set_text(GTK_ENTRY(entry), "∞");
-            now_invalid = FALSE;
-        } else {
-            now_invalid = TRUE;
-        }
     } else {
-        // Only allows positive integers with no other characters
+        // Only allow whole non-negative integers (0,1,2,...)
         now_invalid = !integer_digits_only(txt);
     }
 
     // previous state
     gboolean was_invalid = g_object_get_data(G_OBJECT(entry), "invalid") != NULL;
 
-    // update the invalid cell counter
+    // update the invalid counter
     if (now_invalid && !was_invalid) {
         ui->invalid_count++;
         g_object_set_data(G_OBJECT(entry), "invalid", GINT_TO_POINTER(1));
@@ -157,15 +144,8 @@ static gboolean mark_cell_validity(GtkWidget *entry, Matrix *ui) {
         g_object_set_data(G_OBJECT(entry), "invalid", NULL);
     }
 
-    // Tooltips for invalid cells are tailored by column
     if (now_invalid) {
-        if (j == AMOUNT_COL_IDX) {
-            gtk_widget_set_tooltip_text(entry,
-                "Invalid value. Enter a whole number (0,1,2,…) or 'i'/'I' for ∞ in Amount.");
-        } else {
-            gtk_widget_set_tooltip_text(entry,
-                "Invalid value. Enter a whole number (0,1,2,…).");
-        }
+        gtk_widget_set_tooltip_text(entry, "Enter a whole number (0,1,2,…).");
         gtk_style_context_add_class(ctx, "entry-error");
     } else {
         gtk_style_context_remove_class(ctx, "entry-error");
@@ -205,7 +185,7 @@ static GtkWidget* make_col_header_label(const char *text) {
     gtk_label_set_xalign(GTK_LABEL(l), 0.5);
 
     GtkStyleContext *ctx = gtk_widget_get_style_context(l);
-    gtk_style_context_add_class(ctx, "col-header-white");
+    gtk_style_context_add_class(ctx, "col-header-yellow");
     gtk_style_context_add_provider(
         ctx, GTK_STYLE_PROVIDER(get_header_css_provider()),
         GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -242,7 +222,19 @@ static GtkWidget* make_cell_entry(Matrix *ui, gint i, gint j) {
     g_object_set_data(G_OBJECT(e), "row", GINT_TO_POINTER(i+1));
     g_object_set_data(G_OBJECT(e), "col", GINT_TO_POINTER(j+1));
 
-    // Default value is 0 for all columns
+    if (j == PERIOD_COL_IDX) {
+        gchar buf[16];
+        g_snprintf(buf, sizeof(buf), "%d", i + 1);
+        gtk_entry_set_text(GTK_ENTRY(e), buf);
+
+        // Make it read-only but keep normal look
+        gtk_editable_set_editable(GTK_EDITABLE(e), FALSE);
+        gtk_widget_set_can_focus(e, FALSE);
+
+        return e;
+    }
+
+    // Editable numeric cells for Maintenance / Resell
     gtk_entry_set_text(GTK_ENTRY(e), "0");
     mark_cell_validity(e, ui);
     g_signal_connect(e, "changed", G_CALLBACK(on_cell_changed), ui);
@@ -265,7 +257,7 @@ static void rebuild_matrix_ui(Matrix *ui, gint n_rows) {
 
     GtkWidget *scrolled = GTK_WIDGET(gtk_builder_get_object(ui->builder, "scroll"));
 
-    // Clear the old child (table) and rebuild it
+    // Clear old child (table) and rebuild
     GList *children = gtk_container_get_children(GTK_CONTAINER(scrolled));
     if (children) { gtk_widget_destroy(GTK_WIDGET(children->data)); g_list_free(children); }
 
@@ -304,12 +296,36 @@ static void rebuild_matrix_ui(Matrix *ui, gint n_rows) {
     gtk_widget_show_all(scrolled);
 }
 
-// Check if the number on the spin button of the amount of nodes has been changed
-static void on_spin_value_changed(GtkSpinButton *spin, gpointer user_data) {
+// Check if the number on the spin button has changed
+static void on_amount_price_changed(GtkSpinButton *spin, gpointer user_data) {
+    Matrix *ui = (Matrix*)user_data;
+    ui->amount_price = gtk_spin_button_get_value_as_int(spin);
+}
+
+// Check if the number on the spin button has changed
+static void on_amount_period_changed(GtkSpinButton *spin, gpointer user_data) {
     Matrix *ui = (Matrix*)user_data;
     gint n = gtk_spin_button_get_value_as_int(spin);
-    if (n < 1) n = 1;
-    rebuild_matrix_ui(ui, n);  // n rows × 3 cols
+    ui->amount_period = MAX(1, n);
+    rebuild_matrix_ui(ui, ui->amount_period);
+}
+
+// Check if the number on the spin button has changed
+static void on_amount_lifespan_changed(GtkSpinButton *spin, gpointer user_data) {
+    Matrix *ui = (Matrix*)user_data;
+    ui->amount_lifespan = gtk_spin_button_get_value_as_int(spin);
+}
+
+// Check if the number on the spin button has changed
+static void on_amount_profit_changed(GtkSpinButton *spin, gpointer user_data) {
+    Matrix *ui = (Matrix*)user_data;
+    ui->amount_profit = gtk_spin_button_get_value_as_int(spin);
+}
+
+// Check if the number on the spin button has changed
+static void on_amount_inflation_changed(GtkSpinButton *spin, gpointer user_data) {
+    Matrix *ui = (Matrix*)user_data;
+    ui->amount_inflation = gtk_spin_button_get_value_as_int(spin);
 }
 // - - - - - END OF TABLE IN THE INTERFACE - - - - -
 
@@ -322,7 +338,7 @@ static gchar* trimmed_copy(const gchar *s) {
     return g_strstrip(cpy);
 }
 
-// Makes sure infinities are the symbol ∞ and that the numbers have no weird spaces
+// Makes sure that the numbers have no weird spaces
 static void cell_string_for_export(GtkEntry *entry, gint i, gint j, gchar **out) {
     (void)i; (void)j;
 
@@ -331,9 +347,7 @@ static void cell_string_for_export(GtkEntry *entry, gint i, gint j, gchar **out)
 
     if (is_blank(txt)) { g_free(txt); *out = g_strdup(""); return; }
 
-    // Normalize any accepted infinity token to the symbol
-    if (is_inf_text(txt)) { g_free(txt); *out = g_strdup("∞"); return; }
-
+    // No infinity normalization anymore
     *out = txt;
 }
 
@@ -356,7 +370,7 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     const gint rows = ui->rows;
     const gint cols = ui->cols;
 
-    // Check there aren't any invalid cells. If there are, show message saying so
+    // Validate current focus (like before)
     GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(btn));
     if (GTK_IS_WINDOW(toplevel)) {
         GtkWidget *focus = gtk_window_get_focus(GTK_WINDOW(toplevel));
@@ -377,13 +391,13 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     // Ask where to save
     GtkWidget *dialog = gtk_file_chooser_dialog_new(
         "Save Table As:",
-        GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+        GTK_WINDOW(toplevel),
         GTK_FILE_CHOOSER_ACTION_SAVE,
         "_Cancel", GTK_RESPONSE_CANCEL,
         "_Save",   GTK_RESPONSE_ACCEPT,
         NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
-    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "Costs-Values-Amounts.txt");
+    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "Tool-Replacement-Table.txt");
 
     GtkFileFilter *flt = gtk_file_filter_new();
     gtk_file_filter_set_name(flt, "Text files");
@@ -397,7 +411,7 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
     gtk_widget_destroy(dialog);
 
-    // Compute widths
+    // Compute column widths for pretty table (no corner string anymore)
     size_t *W = g_new0(size_t, (size_t)cols + 1);
 
     // Row-name width (names column)
@@ -406,13 +420,8 @@ static void save_file(GtkButton *btn, gpointer user_data) {
         W[0] = MAX(W[0], ulen(gtk_entry_get_text(rh)));
     }
 
-    // Corner text: K=<value>
-    gchar *corner = g_strdup_printf("K=%d", ui->knapsack_value);
-    W[0] = MAX(W[0], ulen(corner));
-
-    // Column header and the cells widths
+    // Column headers + cell widths
     for (gint j = 0; j < cols; ++j) {
-        // headers are labels now
         GtkWidget *hdr = g_ptr_array_index(ui->col_headers, j);
         const gchar *h = gtk_label_get_text(GTK_LABEL(hdr));
         W[j+1] = MAX(W[j+1], ulen(h));
@@ -430,7 +439,7 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     FILE *fp = g_fopen(filename, "w");
     if (!fp) {
         GtkWidget *d = gtk_message_dialog_new(
-            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+            GTK_WINDOW(toplevel),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
             "Could not open file for writing:\n%s", filename);
@@ -441,9 +450,20 @@ static void save_file(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    // Header row: the corner + column labels
-    fprint_padded(fp, corner, W[0], FALSE);
-    fputc(' ', fp);
+    // ===== Metadata block (new) =====
+    // Stored in Matrix: amount_price, amount_lifespan, amount_profit, amount_inflation, amount_period
+    fprintf(fp, "# Tool Replacement Parameters\n");
+    fprintf(fp, "Price: %d\n",      ui->amount_price);
+    fprintf(fp, "Lifespan: %d\n",   ui->amount_lifespan);
+    fprintf(fp, "Profit: %d\n",     ui->amount_profit);
+    fprintf(fp, "Inflation: %d\n",  ui->amount_inflation);
+    fprintf(fp, "Periods: %d\n",    ui->rows);
+    fputc('\n', fp);
+
+    // ===== Table header row (no corner text) =====
+    // Print an empty slot for the row-name column (keeps alignment with saved row names)
+    fprint_padded(fp, "", W[0], FALSE);
+    if (cols > 0) fputc(' ', fp);
     for (gint j = 0; j < cols; ++j) {
         GtkWidget *hdr = g_ptr_array_index(ui->col_headers, j);
         const gchar *h = gtk_label_get_text(GTK_LABEL(hdr));
@@ -452,12 +472,12 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     }
     fputc('\n', fp);
 
-    // Rows
+    // ===== Rows =====
     for (gint i = 0; i < rows; ++i) {
         GtkEntry *rh = GTK_ENTRY(g_ptr_array_index(ui->row_headers, i));
         const gchar *rname = gtk_entry_get_text(rh);
         fprint_padded(fp, rname ? rname : "", W[0], FALSE);
-        fputc(' ', fp);
+        if (cols > 0) fputc(' ', fp);
 
         for (gint j = 0; j < cols; ++j) {
             GtkEntry *cell = GTK_ENTRY(g_ptr_array_index(ui->cells, i*cols + j));
@@ -473,93 +493,48 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     fclose(fp);
     g_free(W);
     g_free(filename);
-    g_free(corner);
 
     GtkWidget *done = gtk_message_dialog_new(
-        GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+        GTK_WINDOW(toplevel),
         GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
         GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
         "Table saved successfully.");
     gtk_dialog_run(GTK_DIALOG(done));
     gtk_widget_destroy(done);
 }
+
 // - - - - - END OF SAVING THE FILE - - - - -
-
-// So that the panels created can't be moved around
-void set_panel(GtkPaned *panel, GParamSpec *pspec, gpointer user_data) {
-    // Position where division is set
-    const int set_pos = 600;
-    int current_pos = gtk_paned_get_position(panel);
-    if (current_pos != set_pos) {
-        gtk_paned_set_position(panel, set_pos);
-    }
-}
-
 
 // - - - - - UPLOADING A FILE - - - - -
 
-// Check the number in the corner
-static gboolean parse_knapsack_corner(const gchar *tok, gint *out_val) {
-    if (!tok || !*tok) return FALSE;
-
-    // Accept K=<Value> form
-    if ((tok[0]=='K' || tok[0]=='k') && tok[1]=='=') {
-        const gchar *p = tok + 2;
-        for (const gchar *q=p; *q; ++q) if (!g_ascii_isdigit(*q)) return FALSE;
-        if (*p=='\0') return FALSE;
-        *out_val = (gint)g_ascii_strtoll(p, NULL, 10);
-        return TRUE;
-    }
-
-    // Accept only an integer
-    for (const gchar *q=tok; *q; ++q) if (!g_ascii_isdigit(*q)) return FALSE;
-    *out_val = (gint)g_ascii_strtoll(tok, NULL, 10);
-    return TRUE;
-}
-
-// It checks wether a string contains at least one ASCII digit
-static gboolean has_ascii_digit(const gchar *s) {
-    if (!s) return FALSE;
-    for (const gchar *p = s; *p; ++p)
-        if (g_ascii_isdigit(*p)) return TRUE;
-    return FALSE;
-}
-
-// Checks if it's either the infinity symbol or a positive integer (digits only)
-static gboolean is_value_token_strict(const gchar *t) {
-    if (!t) return FALSE;
-    gchar *s = g_strdup(t);
-    g_strstrip(s);
-
+// Checks the data at the top that contains the info of the spinbuttons
+static gboolean parse_int_field(const gchar *line, const gchar *key, gint *out) {
+    if (!line || !key || !out) return FALSE;
+    // Build "Key:" prefix
+    gchar *prefix = g_strdup_printf("%s:", key);
     gboolean ok = FALSE;
-    if (*s) {
-        // Infinity symbol allowed
-        if (g_strcmp0(s, "∞") == 0) {
+
+    // Trim a copy to be robust
+    gchar *t = g_strdup(line);
+    g_strstrip(t);
+
+    // Case-sensitive match on prefix, then parse the number
+    if (g_str_has_prefix(t, prefix)) {
+        const gchar *p = t + strlen(prefix);
+        while (*p && g_ascii_isspace(*p)) p++;
+        // digits only
+        if (*p) {
             ok = TRUE;
-        } else {
-            // Check all characters are digits
-            ok = TRUE;
-            for (const char *p = s; *p; p++) {
-                if (!g_ascii_isdigit(*p)) {
-                    ok = FALSE;
-                    break;
-                }
+            for (const gchar *q=p; *q; ++q) {
+                if (!g_ascii_isdigit(*q)) { ok = FALSE; break; }
             }
+            if (ok) *out = (gint)g_ascii_strtoll(p, NULL, 10);
         }
     }
 
-    g_free(s);
+    g_free(prefix);
+    g_free(t);
     return ok;
-}
-
-// Checks if the symbol for infinity is used so that it doesn't also use things like Inf or I
-static gboolean is_infinity_symbol_only(const gchar *t) {
-    if (!t) return FALSE;
-    gchar *s = g_strdup(t);
-    g_strstrip(s);
-    gboolean r = (g_strcmp0(s, "∞") == 0);
-    g_free(s);
-    return r;
 }
 
 // Splits a line into tokens on runs of whitespace after trimming the ends
@@ -572,31 +547,12 @@ static gchar** split_ws(const gchar *line) {
     return v;
 }
 
-// Block a specific handler while setting a text to avoid infinite loops
-static void set_text_blocked(GtkEntry *entry, const gchar *text, GCallback handler,
-                             gpointer handler_data) {
-    g_signal_handlers_block_by_func(entry, handler, handler_data);
-    gtk_entry_set_text(entry, text);
-    g_signal_handlers_unblock_by_func(entry, handler, handler_data);
-}
-
-// Case-insensitive, trim-aware equality
-static gboolean equal_ci_trim(const gchar *a, const gchar *b) {
-    if (!a || !b) return FALSE;
-    gchar *sa = g_strdup(a), *sb = g_strdup(b);
-    g_strstrip(sa); g_strstrip(sb);
-    gboolean ok = (g_ascii_strcasecmp(sa, sb) == 0);
-    g_free(sa); g_free(sb);
-    return ok;
-}
-
-// Check the header names are "Cost Value Amount"
+// Header must end with the 3 fixed labels
 static gboolean header_matches_fixed(gchar **head, guint headc) {
-    if (headc < FIXED_COL_COUNT) return FALSE;
-
-    return equal_ci_trim(head[headc-3], FIXED_COLS[0]) &&
-           equal_ci_trim(head[headc-2], FIXED_COLS[1]) &&
-           equal_ci_trim(head[headc-1], FIXED_COLS[2]);
+    if (headc < 3) return FALSE;
+    return g_ascii_strcasecmp(head[headc-3], "Period")      == 0 &&
+           g_ascii_strcasecmp(head[headc-2], "Maintenance") == 0 &&
+           g_ascii_strcasecmp(head[headc-1], "Resell")      == 0;
 }
 
 // Opening a file and seeing the table in the interface
@@ -606,7 +562,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
     gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(btn));
     if (!filename) return;
 
-    // Read a file
+    // Read whole file
     gchar *contents = NULL; gsize len = 0; GError *err = NULL;
     if (!g_file_get_contents(filename, &contents, &len, &err)) {
         GtkWidget *d = gtk_message_dialog_new(
@@ -622,7 +578,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // Keep only non-empty lines
+    // Split & keep non-empty lines (trimmed)
     gchar **lines = g_strsplit(contents, "\n", -1);
     GPtrArray *rows = g_ptr_array_new_with_free_func(g_free);
     for (guint k = 0; lines[k]; ++k) {
@@ -636,36 +592,70 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // First line is the header
-    gchar **head = split_ws(rows->pdata[0]);
-    guint headc  = g_strv_length(head);
+    // ===== 1) Parse metadata block at top =====
+    // Accept either a block starting with "#" or plain "Key: value" lines.
+    // Stop metadata at the first blank line in the original file (already removed),
+    // or when we hit a header-like line that ends with "Period Maintenance Resell".
+    gint price = -1, lifespan = -1, profit = -1, inflation = -1, periods = -1;
 
-    // Get the knapsack caapcity from the corner value
-    gint knap = -1;
-    if (headc >= 1 && parse_knapsack_corner(head[0], &knap)) {
-        // Update the stored value
-        ui->knapsack_value = knap;
+    guint idx = 0;
+    for (; idx < rows->len; ++idx) {
+        const gchar *L = rows->pdata[idx];
+        // Header line? (ends with our 3 labels)
+        gchar **tok = split_ws(L);
+        guint tokc = g_strv_length(tok);
+        gboolean is_header = header_matches_fixed(tok, tokc);
+        g_strfreev(tok);
+        if (is_header) break;
 
-        // Also show it in the spin button
-        GtkSpinButton *spin_knap = GTK_SPIN_BUTTON(
-            gtk_builder_get_object(ui->builder, "amount-knapsack"));
-        if (spin_knap) gtk_spin_button_set_value(spin_knap, knap);
+        // Metadata lines: possibly start with '#'
+        const gchar *line = L;
+        if (*line == '#') {
+            line++; while (*line && g_ascii_isspace(*line)) line++;
+        }
+
+        gboolean any =
+            parse_int_field(line, "Price",     &price)     ||
+            parse_int_field(line, "Lifespan",  &lifespan)  ||
+            parse_int_field(line, "Profit",    &profit)    ||
+            parse_int_field(line, "Inflation", &inflation) ||
+            parse_int_field(line, "Periods",   &periods);
+
+        // If it's not metadata and not a header, we'll keep advancing until header is found.
+        // (The previous save format puts a blank line before the header, which we removed.)
     }
 
+    if (idx >= rows->len) {
+        // We never found a header line
+        GtkWidget *d = gtk_message_dialog_new(
+            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+            "Could not find table header ending with: \"Period Maintenance Resell\".");
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        g_strfreev(lines); g_free(contents); g_free(filename);
+        g_ptr_array_free(rows, TRUE);
+        return;
+    }
+
+    // ===== 2) Header line =====
+    gchar **head = split_ws(rows->pdata[idx]);
+    guint headc  = g_strv_length(head);
     if (!header_matches_fixed(head, headc)) {
         GtkWidget *d = gtk_message_dialog_new(
             GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
-            "Header does not end with the required columns:\n\"Cost Value Amount\".\n"
+            "Header does not end with the required columns:\n\"Period Maintenance Resell\".\n"
             "I'll proceed anyway and force those column names.");
         gtk_dialog_run(GTK_DIALOG(d));
         gtk_widget_destroy(d);
     }
 
-    // Data row count
-    guint data0 = 1u;
-    guint nrows = rows->len - data0;
+    // ===== 3) Data rows begin after header =====
+    guint data0 = idx + 1;
+    guint nrows = (rows->len > data0) ? (rows->len - data0) : 0;
     if (nrows == 0) {
         GtkWidget *d = gtk_message_dialog_new(
             GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
@@ -680,70 +670,97 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // Build UI as n rows × 3
-    rebuild_matrix_ui(ui, (gint)nrows);
+    // If "Periods" metadata exists, prefer it; otherwise infer from rows
+    gint target_rows = (periods > 0) ? periods : (gint)nrows;
+    if (target_rows < 1) target_rows = (gint)nrows;
+
+    // Build UI as target_rows × 3
+    rebuild_matrix_ui(ui, target_rows);
     ui->invalid_count = 0;
 
-    // Force the fixed column labels just in case
+    // Force fixed column labels (safety)
     for (guint j = 0; j < ui->cols; ++j) {
         GtkWidget *cw = g_ptr_array_index(ui->col_headers, j);
-        gtk_label_set_text(GTK_LABEL(cw), FIXED_COLS[j]);
+        gtk_label_set_text(GTK_LABEL(cw), FIXED_COLS[j]); // {"Period","Maintenance","Resell"}
     }
 
-    // Check each data row
-    for (guint r = 0; r < nrows; ++r) {
+    // ===== 4) Fill rows =====
+    // We map each file row r = 0..nrows-1 into UI row i = r (until we run out).
+    guint to_fill = MIN(nrows, (guint)ui->rows);
+
+    for (guint r = 0; r < to_fill; ++r) {
         gchar **tok = split_ws(rows->pdata[data0 + r]);
         guint tokc = g_strv_length(tok);
 
-        if (tokc < (1 + FIXED_COL_COUNT)) {
+        if (tokc < 1 + 3) { // row-name + 3 values
             GtkWidget *d = gtk_message_dialog_new(
                 GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
                 "Row %u has %u token(s); expected at least %u (name + 3 values).",
-                r+1, tokc, 1 + FIXED_COL_COUNT);
+                r+1, tokc, 4);
             gtk_dialog_run(GTK_DIALOG(d));
             gtk_widget_destroy(d);
             g_strfreev(tok);
             continue;
         }
 
-        guint vstart = tokc - FIXED_COL_COUNT;
+        guint vstart = tokc - 3;
 
-        // Obtain the row names
+        // Row name may contain spaces -> join all tokens before the last 3
         gchar *saved = tok[vstart];
         tok[vstart] = NULL;
         gchar *rname = g_strjoinv(" ", tok);
         tok[vstart] = saved;
 
-        // Set the row header text
+        // Set row header text
         GtkEntry *rh = GTK_ENTRY(g_ptr_array_index(ui->row_headers, r));
         gtk_entry_set_text(rh, rname ? rname : "");
         g_free(rname);
 
-        // Fill the cells
-        for (guint j = 0; j < ui->cols; ++j) {
+        // Fill cells
+        for (guint j = 0; j < (guint)ui->cols; ++j) {
             GtkWidget *cell = GTK_WIDGET(g_ptr_array_index(ui->cells, r * ui->cols + j));
-            const gchar *vstr = tok[vstart + j];
 
-            // Strict validation: its either a "∞" or digits only
-            if (!is_value_token_strict(vstr)) {
-                // Set the text anyway so the user sees the error
-                gtk_entry_set_text(GTK_ENTRY(cell), vstr);
-                mark_cell_validity(cell, ui);
+            if (j == PERIOD_COL_IDX) {
+                // Ignore file value and force Period = i+1
+                gchar buf[16];
+                g_snprintf(buf, sizeof(buf), "%u", r + 1);
+                gtk_entry_set_text(GTK_ENTRY(cell), buf);
+                // no validation needed; it's our own text
             } else {
-                if (is_infinity_symbol_only(vstr)) {
-                    gtk_entry_set_text(GTK_ENTRY(cell), "∞");
+                const gchar *vstr = tok[vstart + j];
+                // digits-only expected (no infinity)
+                if (!integer_digits_only(vstr)) {
+                    // still show whatever is there so user can fix it; mark invalid
+                    gtk_entry_set_text(GTK_ENTRY(cell), vstr ? vstr : "");
+                    mark_cell_validity(cell, ui);
                 } else {
                     gtk_entry_set_text(GTK_ENTRY(cell), vstr);
+                    mark_cell_validity(cell, ui);
                 }
-                // Check the cell validity to clear any previous error styling
-                mark_cell_validity(cell, ui);
             }
         }
 
         g_strfreev(tok);
     }
+
+    // If "Periods" metadata > actual rows in file, remaining UI rows keep defaults.
+
+    // ===== 5) Reflect metadata into spins (if present) =====
+    // IDs: amount-price, amount-period, amount-lifespan, amount-profit, amount-inflation
+    GtkSpinButton *sp_price     = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-price"));
+    GtkSpinButton *sp_period    = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-period"));
+    GtkSpinButton *sp_lifespan  = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-lifespan"));
+    GtkSpinButton *sp_profit    = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-profit"));
+    GtkSpinButton *sp_inflation = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-inflation"));
+
+    if (price     >= 0 && sp_price)     gtk_spin_button_set_value(sp_price,     price);
+    if (lifespan  >= 0 && sp_lifespan)  gtk_spin_button_set_value(sp_lifespan,  lifespan);
+    if (profit    >= 0 && sp_profit)    gtk_spin_button_set_value(sp_profit,    profit);
+    if (inflation >= 0 && sp_inflation) gtk_spin_button_set_value(sp_inflation, inflation);
+
+    // If periods metadata existed and differs, we already rebuilt the table above to match.
 
     // Clean up
     g_strfreev(head);
@@ -752,7 +769,9 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
     g_free(contents);
     g_free(filename);
 }
+
 // - - - - - END OF UPLOADING A FILE - - - - -
+
 
 // - - - - - CREATING MATRIX FOR CODE - - - - -
 
@@ -762,7 +781,12 @@ static void matrix_data_init(MatrixData *md, gint rows, gint cols) {
     md->row_names = g_ptr_array_new_with_free_func(g_free);
     md->col_names = g_ptr_array_new_with_free_func(g_free);
     md->values    = g_array_sized_new(FALSE, TRUE, sizeof(double), rows * cols);
-    md->knapsack  = 0;
+
+    md->price = 0;
+    md->lifespan = 0;
+    md->profit = 0;
+    md->inflation = 0;
+    md->periods = rows;
 }
 
 // Clean up
@@ -771,10 +795,12 @@ static void matrix_data_clear(MatrixData *md) {
     if (md->row_names) g_ptr_array_free(md->row_names, TRUE);
     if (md->col_names) g_ptr_array_free(md->col_names, TRUE);
     if (md->values)    g_array_free(md->values, TRUE);
-    md->rows = md->cols = 0;
-    md->knapsack = 0;
+
     md->row_names = md->col_names = NULL;
     md->values = NULL;
+    md->rows = md->cols = 0;
+
+    md->price = md->lifespan = md->profit = md->inflation = md->periods = 0;
 }
 
 // Cleans up spaces so that there aren't any extra lying around
@@ -786,22 +812,19 @@ static inline gchar *trimdup(const gchar *s) {
     return g_strndup(b, (gsize)(e-b));
 }
 
-static gboolean parse_number_or_inf(const gchar *txt, double *out) {
-    // Accept: "∞"
+// Checks its numbers
+static gboolean parse_number_strict(const gchar *txt, double *out) {
     if (!txt) return FALSE;
-    gchar *t = trimdup(txt);
-    for (gchar *p = t; *p; ++p) *p = g_ascii_tolower(*p);
+    gchar *t = g_strdup(txt);
+    g_strstrip(t);
+    if (*t == '\0') { g_free(t); return FALSE; }
 
-    gboolean is_inf = (g_strcmp0(t, "∞") == 0);
-    if (is_inf) { *out = (double)__INT_MAX__;
-        g_free(t);
-        return TRUE;
-    }
-
+    // Accept numeric strings only (we're feeding integers from the UI)
     gchar *endp = NULL;
     double v = g_ascii_strtod(t, &endp);
     gboolean ok = (endp && *endp == '\0');
     if (ok) *out = v;
+
     g_free(t);
     return ok;
 }
@@ -814,6 +837,13 @@ gboolean collect_matrix_from_ui(Matrix *ui, MatrixData *out, GError **err) {
     const gint cols = ui->cols;
 
     matrix_data_init(out, rows, cols);
+
+    // Add Tool Replacement parameters from the UI spins
+    out->price     = ui->amount_price;
+    out->lifespan  = ui->amount_lifespan;
+    out->profit    = ui->amount_profit;
+    out->inflation = ui->amount_inflation;
+    out->periods   = ui->amount_period;  // should match rows
 
     // Read the column names from the labels
     for (gint j = 0; j < cols; ++j) {
@@ -833,40 +863,35 @@ gboolean collect_matrix_from_ui(Matrix *ui, MatrixData *out, GError **err) {
     for (gint i = 0; i < rows; ++i) {
         for (gint j = 0; j < cols; ++j) {
             GtkEntry *cell = GTK_ENTRY(g_ptr_array_index(ui->cells, i*cols + j));
+            const gchar *raw = gtk_entry_get_text(cell);
 
-            gchar *s = NULL;
-            cell_string_for_export(cell, i, j, &s);
+            // Period column is read-only, but we still save it (1..rows)
             double v;
-            if (!parse_number_or_inf(s, &v)) {
+            if (!parse_number_strict(raw, &v)) {
                 GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(cell));
                 matrix_data_clear(out);
                 g_set_error(err, G_FILE_ERROR, G_FILE_ERROR_INVAL,
                             "Invalid number at row %d, column %d: “%s”",
-                            i+1, j+1, s ? s : "");
-                g_free(s);
+                            i+1, j+1, raw ? raw : "");
                 return FALSE;
             }
             g_array_append_val(out->values, v);
-            g_free(s);
         }
     }
-
-    out->knapsack = ui->knapsack_value;
 
     return TRUE;
 }
 
-// Create a matrix for the Knapsack algorithm code
+// Create a matrix for the Tool Replacement algorithm code
 static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
     Matrix *ui = (Matrix*)user_data;
 
-    // Check if there are any invalid cells
+    // Re-validate focused entry if any
     GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(btn));
     if (GTK_IS_WINDOW(toplevel)) {
         GtkWidget *focus = gtk_window_get_focus(GTK_WINDOW(toplevel));
-        if (focus && GTK_IS_ENTRY(focus)) {
+        if (focus && GTK_IS_ENTRY(focus))
             mark_cell_validity(focus, ui);
-        }
     }
     if (ui->invalid_count > 0) {
         GtkWidget *d = gtk_message_dialog_new(
@@ -879,7 +904,7 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    // Collect the matrix and names data
+    // Collect everything from UI
     MatrixData md = {0};
     GError *err = NULL;
     if (!collect_matrix_from_ui(ui, &md, &err)) {
@@ -893,59 +918,73 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
         if (err) g_clear_error(&err);
         return;
     }
-    // Number of items
-    const int R = md.rows;
-    // Amount of columns
-    const int C = md.cols;
 
-    // Extract the Cost/Value/Amount columns as integer arrays
-    int *cost   = g_new0(int, R);
-    int *value  = g_new0(int, R);
-    int *amount = g_new0(int, R);
-
-    for (int i = 0; i < R; ++i) {
-        double c = g_array_index(md.values, double, i*C + 0);
-        double v = g_array_index(md.values, double, i*C + 1);
-        double a = g_array_index(md.values, double, i*C + 2);
-        cost[i]   = (int)c;
-        value[i]  = (int)v;
-        amount[i] = (int)a;
+    const int R = md.rows;          // periods
+    const int C = md.cols;          // 3 (Period, Maintenance, Resell)
+    if (C < 3) {
+        GtkWidget *d = gtk_message_dialog_new(
+            GTK_WINDOW(toplevel),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+            "Unexpected column count (%d). Expected 3: Period, Maintenance, Resell.", C);
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        matrix_data_clear(&md);
+        return;
     }
 
-    // Row names (item names)
-    char **row_names = (char **) md.row_names->pdata;
-    // Column names
-    char **column_names = (char **) md.col_names->pdata;
+    // Extract Maintenance and Resell as integer arrays for the algorithm
+    int *maintenance = g_new0(int, R);
+    int *resell      = g_new0(int, R);
 
-    // Call Knapsack algorithm here
-    // int objects, int capacity, int* profits, int* costs, int* quantity
-    // where:
-    //objects = R
-    //capacity = ui->knapsack_value
-    //profits = value[]
-    //costs = cost[]
-    //quantity = amount[]
+    for (int i = 0; i < R; ++i) {
+        // col 0 = Period (ignored for arrays), col 1 = Maintenance, col 2 = Resell
+        double m = g_array_index(md.values, double, i*C + 1);
+        double s = g_array_index(md.values, double, i*C + 2);
+        maintenance[i] = (int)m;
+        resell[i]      = (int)s;
+    }
+
+    // Row names (period labels) if you need them
+    char **row_names   = (char **) md.row_names->pdata; // size R
+    char **column_names= (char **) md.col_names->pdata; // size 3
+
+    // ===== Call Tool Replacement function here =====
+    //     int price, int lifespan, int profit, int inflation, int periods,
+    //     const int *maintenance, const int *resell
 
     // Cleanup
-    g_free(cost);
-    g_free(value);
-    g_free(amount);
+    g_free(maintenance);
+    g_free(resell);
     matrix_data_clear(&md);
 }
 
 // - - - - - END OF CREATING MATRIX FOR CODE - - - - -
 
-//Main for program 1
+// So that the panels created can't be moved around
+void set_panel(GtkPaned *panel, GParamSpec *pspec, gpointer user_data) {
+    // Position where division is set
+    const int set_pos = 600;
+    int current_pos = gtk_paned_get_position(panel);
+    if (current_pos != set_pos) {
+        gtk_paned_set_position(panel, set_pos);
+    }
+}
+
+//Main for program 3
 int main(int argc, char *argv[]) {
-    GtkBuilder *builder;            // Used to obtain the objects from glade
-    GtkWidget *ventana;             // Window
-    GtkWidget *boton_salida;        // Exit button
-    GtkWidget *panel;               // Panel used to divide the menu and the table created
-    GtkWidget *boton_objetos;       // Spin button where user enters amount of objects
-    GtkSpinButton *boton_mochila;   // Spin button where user enters weight of knapsack
-    GtkWidget *boton_guardar;       // Button to save the table in a text file
-    GtkWidget *boton_cargar;        // Button to upload a .txt file so that it can be read
-    GtkWidget *boton_crear_file;    // Button to create a LATEX and PDF file
+    GtkBuilder *builder;              // Used to obtain the objects from glade
+    GtkWidget *ventana;               // Window
+    GtkWidget *boton_salida;          // Exit button
+    GtkWidget *panel;                 // Panel used to divide the menu and the table created
+    GtkWidget *boton_precio;          // Spin button where user enters price of tool
+    GtkSpinButton *boton_periodo;     // Spin button where user enters amount of time periods
+    GtkWidget *boton_vida;            // Spin button where user enters the tool's lifespan
+    GtkSpinButton *boton_ganancia;    // Spin button where user enters the profit of using the tool
+    GtkSpinButton *boton_inflacion;   // Spin button where user enters the inflation price
+    GtkWidget *boton_guardar;         // Button to save the table in a text file
+    GtkWidget *boton_cargar;          // Button to upload a .txt file so that it can be read
+    GtkWidget *boton_crear_file;      // Button to create a LATEX and PDF file
 
     gtk_init(&argc, &argv);
 
@@ -974,14 +1013,25 @@ int main(int argc, char *argv[]) {
     panel = GTK_WIDGET(gtk_builder_get_object(builder, "panel"));
     g_signal_connect(panel, "notify::position", G_CALLBACK(set_panel), NULL);
 
-    // Spin button for objects
-    boton_objetos = GTK_WIDGET(gtk_builder_get_object(builder, "amount-objects"));
-    g_signal_connect(boton_objetos, "value-changed", G_CALLBACK(on_spin_value_changed), ui);
+    // Spin button for price of tool
+    boton_precio = GTK_WIDGET(gtk_builder_get_object(builder, "amount-price"));
+    g_signal_connect(boton_precio, "value-changed", G_CALLBACK(on_amount_price_changed), ui);
     
-    // Spin button for knapsack size
-    boton_mochila = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "amount-knapsack"));
-    ui->knapsack_value = gtk_spin_button_get_value_as_int(boton_mochila);
-    g_signal_connect(boton_mochila, "value-changed", G_CALLBACK(on_knapsack_changed), ui);
+    // Spin button for amount of time periods
+    boton_periodo = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "amount-period"));
+    g_signal_connect(boton_periodo, "value-changed", G_CALLBACK(on_amount_period_changed), ui);
+
+    // Spin button for tool's lifespan
+    boton_vida = GTK_WIDGET(gtk_builder_get_object(builder, "amount-lifespan"));
+    g_signal_connect(boton_vida, "value-changed", G_CALLBACK(on_amount_lifespan_changed), ui);
+    
+    // Spin button for profit gained from using tool
+    boton_ganancia = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "amount-profit"));
+    g_signal_connect(boton_ganancia, "value-changed", G_CALLBACK(on_amount_profit_changed), ui);
+
+    // Spin button for inflation
+    boton_inflacion = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "amount-inflation"));
+    g_signal_connect(boton_inflacion, "value-changed", G_CALLBACK(on_amount_inflation_changed), ui);
 
     // Save file button
     boton_guardar = GTK_WIDGET(gtk_builder_get_object(builder, "file-saved"));
@@ -1001,24 +1051,16 @@ int main(int argc, char *argv[]) {
     // Create LATEX file button
     boton_crear_file = GTK_WIDGET(gtk_builder_get_object(builder, "latex-file"));
     g_signal_connect(boton_crear_file, "clicked", G_CALLBACK(latex_file_clicked), ui);
-
     // Termination button
     boton_salida = GTK_WIDGET(gtk_builder_get_object(builder, "exit"));
     g_signal_connect(boton_salida, "clicked", G_CALLBACK(gtk_main_quit), NULL);
 
     // Initial build
-    gint n0 = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(boton_objetos));
+    gint n0 = 1;
+    if (boton_periodo)
+        n0 = gtk_spin_button_get_value_as_int(boton_periodo);
     if (n0 < 1) n0 = 1;
     rebuild_matrix_ui(ui, n0);
-
-    GdkPixbuf *pix = gdk_pixbuf_new_from_file_at_scale(
-        "backpack-map.png", // your image file
-        64,                 // desired width
-        -1,                 // height (-1 = auto to keep aspect ratio)
-        TRUE,               // preserve aspect ratio
-        NULL                // error
-    );
-    GtkWidget *img = gtk_image_new_from_pixbuf(pix);
 
     // Maximize window
     gtk_window_fullscreen(GTK_WINDOW(ventana));
@@ -1034,7 +1076,6 @@ int main(int argc, char *argv[]) {
     if (ui->col_headers) g_ptr_array_free(ui->col_headers, TRUE);
     if (ui->cells)       g_ptr_array_free(ui->cells, TRUE);
     g_free(ui);
-    //g_object_unref(pix);
     g_object_unref(builder);
 
     return 0;
