@@ -326,7 +326,7 @@ void problem(FILE* f,
     fprintf(f, "        \\hline\n");
     fprintf(f, "        \\cellcolor[HTML]{FFBFBF}\\textbf{C} ");
     for (int col = 0; col < years+1; ++col){
-        fprintf(f, "& \\cellcolor[HTML]{FFBFBF}\\textbf{j=%s} ", col);
+        fprintf(f, "& \\cellcolor[HTML]{FFBFBF}\\textbf{j=%d} ", col);
     }
     fprintf(f, "\\\\\n        \\hline\n");
     fprintf(f, "        \\hline\n");
@@ -360,34 +360,41 @@ void problem(FILE* f,
 
 void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, float* timeMaintenance, float inflation, float earnings){
 
+    
     FILE* f = fopen("programToLaTeX.tex", "w");
+
     if (f == NULL) {
         printf("Error: File null\n");
         return;
     }
 
+    printf("Maintenance");
     float* maintenance = malloc(sizeof(float)*lifespan);
     for (int x = 0; x < lifespan; ++x){ //Accumulative maintenance costs
         maintenance[x] = 0;
         for (int i = 0; i < x+1; ++x){
-            maintenance[x] += timeMaintenance[];
+            maintenance[x] += timeMaintenance[i];
         }
     }
 
     float* inflationValues = inflationCosts(buyPrice, inflation, years);
     float** C = calculateC(years, lifespan, buyPrice, sellPrice, maintenance, inflationValues, earnings);
 
-    problem(f, years, lifespan, buyPrice, sellPrice, timeMaintenance, maintenance, inflation, inflationRate, earnings, C);
+    printf("Problem");
+    problem(f, years, lifespan, buyPrice, sellPrice, timeMaintenance, maintenance, inflationValues, inflation, earnings, C);
 
     
 
+    printf("Replacement");
     Solution solution = replacement(f, C, years, lifespan);
     float* G = solution.G;
     int* GPos = solution.GPos;
 
+    
     fprintf(f, "\\subsection{Results}\n\n");
-    int solution = GPos[g];
+    
     for (int g = 0; g < years+1; ++g){
+        int solution = GPos[g];
         printf("G(%d) = %f (%d)\n", g, G[g], GPos[g]);
 
         fprintf(f, "G(%d) = %f \n",  g, G[g]);
@@ -442,7 +449,6 @@ void main(){
 
 
     float* sellPrice = malloc(sizeof(float)*lifespan);   //Selling price on the n year of use
-
     float* timeMaintenance = malloc(sizeof(float)*lifespan);
     
     sellPrice[0] = 400;
@@ -452,6 +458,7 @@ void main(){
     timeMaintenance[0] = 30;
     timeMaintenance[1] = 40;
     timeMaintenance[2] = 60;
+
 
     runReplacement(years, lifespan, buyPrice, sellPrice, timeMaintenance, inflationPercentage, earnings);
 }
