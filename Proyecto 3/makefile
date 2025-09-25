@@ -3,10 +3,10 @@ SRC := $(wildcard *.c)
 EXE := $(SRC:.c=)
 
 # Add programas
-#EXE += Programa_1/programa-1
-#EXE += Programa_2/programa-2
-#EXE += Programa_3/programa-3
-EXE += Programa_3/reemplazo
+EXE += Programa_1/programa-1
+EXE += Programa_2/programa-2
+EXE += Programa_3/programa-3
+#EXE += Programa_3/reemplazo
 
 all: $(EXE)
 
@@ -29,4 +29,4 @@ clean:
 	rm -f $(EXE)
 
 run:
-	./proyectoAAAAAAAAAAAAAAAAAAAAAAAAAAA
+	./proyecto_3

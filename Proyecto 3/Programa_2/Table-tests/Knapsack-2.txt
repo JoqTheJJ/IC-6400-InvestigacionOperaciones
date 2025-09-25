@@ -1,0 +1,5 @@
+K=3 Cost Value Amount
+A      3     1      ∞
+B      4     2      ∞
+C      5     3      ∞
+D      6     4      ∞

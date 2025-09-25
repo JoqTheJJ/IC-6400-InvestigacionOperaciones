@@ -1,0 +1,6 @@
+K=20            Cost Value Amount
+Agua            2     1     30
+Barrita        13     2      ∞
+Linterna       5     5     10
+Encendedor      3     3      ∞
+Kit de Costura  7     4      1

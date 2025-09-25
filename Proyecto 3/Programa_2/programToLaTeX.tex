@@ -1,0 +1,145 @@
+\documentclass{article}
+
+\PassOptionsToPackage{table,svgnames}{xcolor}\usepackage{graphicx}
+\usepackage{pdflscape}
+\usepackage{adjustbox}
+\usepackage{tikz-network}
+\usepackage{xcolor}
+
+\begin{document}
+\begin{titlepage}
+    \centering
+    % Logo
+    \includegraphics[width=0.6\textwidth]{logo-tec.png}\par\vspace{1cm}
+
+    % University and course
+    {\large Computer Science\par}
+    {\large Operations Research\par}
+    \vspace{2cm}
+
+    % Title
+    {\Large Knapsack Problem\par}
+    {\large Dynamic Programming\par}
+    \vspace{2cm}
+
+    % Group and professor
+    {\large Group 40\par}
+    {\large Professor: Francisco Torres Rojas\par}
+    \vspace{3cm}
+
+    % Student info
+    {\large Carmen Hidalgo Paz\par}
+    {\large Id: 2020030538\par}
+    \vspace{1cm}
+    {\large Melissa Carvajal Charpentier\par}
+    {\large Id: 2022197088\par}
+    \vspace{1cm}
+    {\large Josué Soto González\par}
+    {\large Id: 2023207915\par}
+    \vspace{1cm}
+
+    % Date
+    {\large 19 september 2025\par}
+\end{titlepage}
+\definecolor{KirbyPink}{HTML}{D74894}
+\definecolor{LightPink}{HTML}{FFBFBF}
+
+\newpage
+
+
+\section{Knapsack Problem}
+The \textit{Knapsack problem} is a classic optimization problem. The goal is to fill a backpack optimally with a set of objects, each with a weight and a profit, in order to maximize the total profit without exceeding the backpack's capacity.
+
+There are a few main types of knapsack problems:
+\begin{itemize}
+  \item \textbf{0/1 Knapsack:} Each object can be taken or not, only one copy per object.
+  \item \textbf{Bounded Knapsack:} Each object has a limited number of copies.
+  \item \textbf{Unbounded Knapsack:} Each object can be taken any number of times, as long as the total weight allows.
+\end{itemize}
+
+\subsection{Solution}
+A common way to solve these problems is using dynamic programming. We build a table to keep track of the optimal profit for different capacities and numbers of objects. By filling this table, we can find the maximum profit achievable for the given backpack capacity.
+The resulting table will show the exact quantity and which objets take in order to archive the optimal weight.
+\section{Problem}
+
+A: Amount:1, Profit:7, and Cost:3
+
+B: Amount:1, Profit:9, and Cost:4
+
+C: Amount:1, Profit:5, and Cost:2
+
+D: Amount:1, Profit:12, and Cost:6
+
+E: Amount:1, Profit:14, and Cost:7
+
+F: Amount:1, Profit:6, and Cost:3
+
+G: Amount:1, Profit:12, and Cost:5
+
+
+
+
+This translates to:
+
+Maximize $Z = 7X_{\text{A}} + 9X_{\text{B}} + 5X_{\text{C}} + 12X_{\text{D}} + 14X_{\text{E}} + 6X_{\text{F}} + 12X_{\text{G}}$
+
+
+
+Subject to:
+
+$9 \geq 3X_{\text{A}} + 4X_{\text{B}} + 2X_{\text{C}} + 6X_{\text{D}} + 7X_{\text{E}} + 3X_{\text{F}} + 5X_{\text{G}}$
+
+$X_{\text{A}} \leq 1$
+
+$X_{\text{B}} \leq 1$
+
+$X_{\text{C}} \leq 1$
+
+$X_{\text{D}} \leq 1$
+
+$X_{\text{E}} \leq 1$
+
+$X_{\text{F}} \leq 1$
+
+$X_{\text{G}} \leq 1$
+
+
+\section{Costs Table}
+\begin{center}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c||c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Capacity} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} \\
+        \hline
+        \hline
+        \textbf{0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}\\
+        \hline
+        \textbf{1}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}\\
+        \hline
+        \textbf{2}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{FC3F3F}$0$ x={0}& \cellcolor[HTML]{3FFC45}$5$ x={1} & \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{FC3F3F}$5$ x={0}& \cellcolor[HTML]{FC3F3F}$5$ x={0}\\
+        \hline
+        \textbf{3}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}& \cellcolor[HTML]{FC3F3F}$7$ x={0}\\
+        \hline
+        \textbf{4}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$9$ x={1} & \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{FC3F3F}$9$ x={0}& \cellcolor[HTML]{FC3F3F}$9$ x={0}\\
+        \hline
+        \textbf{5}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$9$ x={1} & \cellcolor[HTML]{3FFC45}$12$ x={1} & \cellcolor[HTML]{FC3F3F}$12$ x={0}& \cellcolor[HTML]{FC3F3F}$12$ x={0}& \cellcolor[HTML]{FC3F3F}$12$ x={0}& \cellcolor[HTML]{3F62FC}$12$ x={0,1}\\
+        \hline
+        \textbf{6}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$9$ x={1} & \cellcolor[HTML]{3FFC45}$14$ x={1} & \cellcolor[HTML]{FC3F3F}$14$ x={0}& \cellcolor[HTML]{FC3F3F}$14$ x={0}& \cellcolor[HTML]{FC3F3F}$14$ x={0}& \cellcolor[HTML]{FC3F3F}$14$ x={0}\\
+        \hline
+        \textbf{7}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{3FFC45}$17$ x={1} \\
+        \hline
+        \textbf{8}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{FC3F3F}$16$ x={0}& \cellcolor[HTML]{3FFC45}$17$ x={1} & \cellcolor[HTML]{FC3F3F}$17$ x={0}& \cellcolor[HTML]{3FFC45}$18$ x={1} & \cellcolor[HTML]{3FFC45}$19$ x={1} \\
+        \hline
+        \textbf{9}& \cellcolor[HTML]{3FFC45}$7$ x={1} & \cellcolor[HTML]{3FFC45}$16$ x={1} & \cellcolor[HTML]{3FFC45}$21$ x={1} & \cellcolor[HTML]{FC3F3F}$21$ x={0}& \cellcolor[HTML]{FC3F3F}$21$ x={0}& \cellcolor[HTML]{FC3F3F}$21$ x={0}& \cellcolor[HTML]{3F62FC}$21$ x={0,1}\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\end{center}
+
+
+\section{Optimal Solutions}
+$X_{\text{A}}=1 \:X_{\text{B}}=1 \:X_{\text{C}}=1 \:X_{\text{D}}=0 \:X_{\text{E}}=0 \:X_{\text{F}}=0 \:X_{\text{G}}=0 \:$ \newline
+$X_{\text{A}}=0 \:X_{\text{B}}=1 \:X_{\text{C}}=0 \:X_{\text{D}}=0 \:X_{\text{E}}=0 \:X_{\text{F}}=0 \:X_{\text{G}}=1 \:$ \newline
+\end{document}
