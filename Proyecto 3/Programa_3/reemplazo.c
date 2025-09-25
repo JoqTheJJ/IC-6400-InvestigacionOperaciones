@@ -68,7 +68,7 @@ float** calculateC(int years, int lifespan, float buyPrice, float* sellPrice, fl
     for (int dif = 1; dif <= lifespan; ++dif){
         for (int t = 0; t+dif <= years; ++t){
             C[t][t+dif] = buyPrice - sellPrice[dif-1] + maintenance[dif-1] + inflation[t];
-            printf("C[%d][%d]= %2.f = buy:%2.f - sell:%2.f + m:%2.f + inf:%2.f\n", t, t+dif, C[t][t+dif], buyPrice, sellPrice[dif-1], maintenance[dif-1], inflation[t]);
+            printf("C[%d][%d]= %.2f = buy:%2.f - sell:%.2f + m:%.2f + inf:%.2f\n", t, t+dif, C[t][t+dif], buyPrice, sellPrice[dif-1], maintenance[dif-1], inflation[t]);
         }
     }
 
@@ -114,24 +114,26 @@ Solution replacement(FILE* f, int years, int lifespan, float buyPrice, float* se
         GPos[g] = 0;
 
         float option;
+        printf("[ [ [ g=%d ] ] ]\n", g);
 
         //Print
         // minimo{
-        for (int dif = 1; g+dif < years; dif++){
+        for (int dif = 1; g+dif <= years && dif <= lifespan; dif++){
             //Marcar Proceso
             // Imprimir Calculo
             // G(4) = C[i][j] + G(j)
             // G(4) = %d + %d
 
-
             option = C[g][g+dif] + G[g+dif];
+            printf("option: %.2f = C[%d][%d] + G[%d] = %.2f + %.2f\n",
+                option, g, g+dif, g+dif, C[g][g+dif], G[g+dif]);
             
             if (option < G[g]){ //Better option
                 G[g] = option;
-                GPos[g] = ipow(2, g+dif); //Sets the digit of the candidate option
+                GPos[g] = ipow(2, dif); //Sets the digit of the candidate option
 
             } else if (option == G[g]) { //Tie option
-                GPos[g] += ipow(2, g+dif); //Adds the digit of the next candidate option
+                GPos[g] += ipow(2, dif); //Adds the digit of the next candidate option
             }
         }
         // }
@@ -179,6 +181,7 @@ void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, f
     }
 
     printf("\n\n");
+    fclose(f);
 }
 
 
@@ -190,7 +193,7 @@ void main(){
     int lifespan = 3;   //Lifespan
     float buyPrice = 500; //Buying price
     int years = 5;        //Years for the project
-    float inflationPercentage = 0; //Inflation percentage
+    float inflationPercentage = 0.05; //Inflation percentage
 
 
     float* sellPrice = malloc(sizeof(float)*lifespan);   //Selling price on the n year of use
