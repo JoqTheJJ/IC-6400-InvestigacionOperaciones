@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <float.h>
 
 #include <gtk/gtk.h>
 #include <cairo.h>
@@ -26,18 +27,37 @@ int ipow(int base, int exp) {
     return result;
 }
 
-
+typedef struct {
+    float* G;
+    int* GPos;
+} Solution;
 
 /* ################################## REPLACEMENT ################################## */
 
-int** calculateC(int lifespan){
+float* inflationCosts(float cost, float inflationPercentage, int years){
+    float inf = inflationPercentage + 1; //5% -> 105%
 
-    int** C = malloc(sizeof(int*) * (lifespan+1));
+    float* inflation = malloc(sizeof(float) * (years+1));
+
+    float currentCost = cost;
+    inflation[0] = 0;
+    for (int i = 1; i < years+1; i++){
+        currentCost *= inf;
+        inflation[i] = currentCost - cost;
+    }
+
+    return inflation;
+}
 
 
-    for (int i = 0; i < n; i++){
-        C[i] = malloc(sizeof(int) * (lifespan+1));
-        for (int j = 0; j < n; j++){
+float** calculateC(int years, int lifespan, float buyPrice, float* sellPrice, float* maintenance, float* inflation){
+
+    float** C = malloc(sizeof(float*) * (years+1));
+
+
+    for (int i = 0; i < years; i++){
+        C[i] = malloc(sizeof(float) * (years+1));
+        for (int j = 0; j < years; j++){
             C[i][j] = INT_MAX; // Infinite invalid cost
         }
     }
@@ -46,7 +66,7 @@ int** calculateC(int lifespan){
 
 
     for (int dif = 0; dif <= lifespan; ++dif){
-        for (int t = 0; t+dif < max; ++t){
+        for (int t = 0; t+dif < years; ++t){
             C[t][t+dif] = buyPrice - sellPrice[dif] + maintenance[dif] + inflation[t];
         }
     }
@@ -55,35 +75,65 @@ int** calculateC(int lifespan){
 }
 
 
-void replacement(){
+Solution replacement(FILE* f, int years, int lifespan, float buyPrice, float* sellPrice, float* maintenance, float* inflation){
 
-    int** C = calculateC();
+    float** C = calculateC(years, lifespan, buyPrice, sellPrice, maintenance, inflation);
 
-    int* G    = malloc(sizeof(int) * (max+1));
-    int* GPos = malloc(sizeof(int) * (max+1)); //Stores the binary code of the winners
+    for (int i = 0; i < years; i++){
+        for (int j = 0; j < years; j++){
+            printf("%2.f\t", C[i][j]);
+        }
+        printf("\n");
+    }
+
+    float* G    = malloc(sizeof(float) * (years+1));
+    int* GPos   = malloc(sizeof(int) * (years+1));   //Stores the binary code of the winners
 
     //Base case
-    G[max]    = 0;
-    GPos[max] = 0;
+    G[years]    = 0;
+    GPos[years] = 0;
 
 
-    for (int g = max-1; g >= 0; --g){
-        G[g] = INT_MAX;
+    for (int g = years-1; g >= 0; --g){
+
+        G[g] = FLT_MAX;
         GPos[g] = 0;
 
-        int option;
-        for (int dif = 1; g+dif < max; dif++){
+        float option;
+
+        //Print
+        // minimo{
+        for (int dif = 1; g+dif < years; dif++){
+            //Marcar Proceso
+            // Imprimir Calculo
+            // G(4) = C[i][j] + G(j)
+            // G(4) = %d + %d
+
+
             option = C[g][g+dif] + G[g+dif];
             
-            if (option < G[g]){ //Better
+            if (option < G[g]){ //Better option
                 G[g] = option;
-                Gpos[g] = ipow(2, g+dif); //Sets the digit of the candidate option
+                GPos[g] = ipow(2, g+dif); //Sets the digit of the candidate option
 
-            } else (option == G[g]) { //Draw
-                Gpos[g] += ipow(2, g+dif); //Adds the digit of the next candidate option
+            } else if (option == G[g]) { //Tie option
+                GPos[g] += ipow(2, g+dif); //Adds the digit of the next candidate option
             }
         }
+        // }
+
+        //Marcar G calculado
+        // G(algo) = x
+        // Ganadores son: 1, 2, 3
     }
+
+    free(C);
+
+    Solution sol;
+    sol.G = G;
+    sol.GPos = GPos;
+
+    return sol;
 }
 
 
@@ -98,25 +148,38 @@ void replacement(){
 
 /* ################################## MAIN ################################## */
 
-int main(int argc, char *argv[]) {
+void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, float* maintenance, float* inflation){
+
+    FILE* f = fopen("programToLaTeX.tex", "w");
+    if (f == NULL) {
+        printf("Error: File null\n");
+        return;
+    }
+
+    Solution solution = replacement(f, years, lifespan, buyPrice, sellPrice, maintenance, inflation);
+    float* G = solution.G;
+    int* GPos = solution.GPos;
+
+    for (int g = 0; g < years+1; ++g){
+        printf("G(%d) = %f (%d)\n", g, G[g], GPos[g]);
+    }
+
+    printf("\n\n");
+}
+
+
+
+void main(){
 
     int lifespan = 4;   //Lifespan
-    int buyPrice = 500; //Buying price
-    int max = 7;        //Years for the project
+    float buyPrice = 500; //Buying price
+    int years = 7;        //Years for the project
     float inflationPercentage = 0.05; //Inflation percentage
 
 
-    int* sellPrice = malloc(sizeof(int)*lifespan);   //Selling price on the n year of use
-    int* maintenance = malloc(sizeof(int)*lifespan); //Maintenance price (accumulative (?))
-    //(until lifespan+1 ???)
-
-
-    int* inflation = malloc(sizeof(int)*lifespan);   //Inflation to the year n (accumulative)
-    float currentCost = buyPrice;
-    float newCost;
-    for (int i = 0; i < max; ++i){
-        newCost = currentCost*; //???
-    }
+    float* sellPrice = malloc(sizeof(float)*lifespan);   //Selling price on the n year of use
+    float* maintenance = malloc(sizeof(float)*lifespan); //Maintenance price (accumulative)
+    float* inflation = inflationCosts(buyPrice, inflationPercentage, years);
 
 
     sellPrice[0] = 400;
@@ -127,10 +190,7 @@ int main(int argc, char *argv[]) {
     maintenance[1] = 300;
     maintenance[2] = 250;
     maintenance[3] = 100;
-    
-    
-    calculateC(); //Receives all of the above :P
 
 
-    return 0;
+    runReplacement(years, lifespan, buyPrice, sellPrice, maintenance, inflation);
 }
