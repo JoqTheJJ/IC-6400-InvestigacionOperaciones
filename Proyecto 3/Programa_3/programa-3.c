@@ -307,13 +307,14 @@ static void on_amount_period_changed(GtkSpinButton *spin, gpointer user_data) {
     Matrix *ui = (Matrix*)user_data;
     gint n = gtk_spin_button_get_value_as_int(spin);
     ui->amount_period = MAX(1, n);
-    rebuild_matrix_ui(ui, ui->amount_period);
 }
 
 // Check if the number on the spin button has changed
 static void on_amount_lifespan_changed(GtkSpinButton *spin, gpointer user_data) {
     Matrix *ui = (Matrix*)user_data;
+    gint n = gtk_spin_button_get_value_as_int(spin);
     ui->amount_lifespan = gtk_spin_button_get_value_as_int(spin);
+    rebuild_matrix_ui(ui, ui->amount_lifespan);
 }
 
 // Check if the number on the spin button has changed
