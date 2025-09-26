@@ -1,0 +1,205 @@
+\documentclass{article}
+
+\PassOptionsToPackage{table,svgnames}{xcolor}\usepackage{graphicx}
+\usepackage{pdflscape}
+\usepackage{adjustbox}
+\usepackage{tikz-network}
+\usepackage{xcolor}
+
+\begin{document}
+\begin{titlepage}
+    \centering
+    % Logo
+    \includegraphics[width=0.6\textwidth]{logo-tec.png}\par\vspace{1cm}
+
+    % University and course
+    {\large Computer Science\par}
+    {\large Operations Research\par}
+    \vspace{2cm}
+
+    % Title
+    {\Large Replacement Problem\par}
+    {\large Dynamic Programming\par}
+    \vspace{2cm}
+
+    % Group and professor
+    {\large Group 40\par}
+    {\large Professor: Francisco Torres Rojas\par}
+    \vspace{3cm}
+
+    % Student info
+    {\large Carmen Hidalgo Paz\par}
+    {\large Id: 2020030538\par}
+    \vspace{1cm}
+    {\large Melissa Carvajal Charpentier\par}
+    {\large Id: 2022197088\par}
+    \vspace{1cm}
+    {\large Josué Soto González\par}
+    {\large Id: 2023207915\par}
+    \vspace{1cm}
+
+    % Date
+    {\large 26 september 2025\par}
+\end{titlepage}
+\definecolor{DonCangrejo}{HTML}{F23D4C}
+\definecolor{CangrejoInside}{HTML}{BAD99C}
+\definecolor{KirbyPink}{HTML}{FFBFBF}
+
+\newpage
+
+
+\section{Replacement Problem}
+The \textit{Replacement Problem} involves determining the optimal time to replace a tool or piece of equipment that deteriorates with use. As equipment ages, its efficiency decreases and operating and maintenance costs rise, while replacing it incurs an immediate acquisition cost. The objective is to minimize the total accumulated cost over a given planning horizon by balancing these two factors.
+
+Several variations of the problem may include additional real-world considerations, such as:
+\begin{itemize}
+  \item Expected annual profits
+  \item Inflation rate
+  \item Emergence of more modern or efficient equipment
+\end{itemize}
+
+\subsection{Solution Approach}
+To solve this problem, a dynamic programming approach based on Bellman's equation is used. The Bellman equation is defined as:
+\begin{center}
+$G(t) = \min(C(t, x) + G(x))$
+\end{center}
+Where:
+\begin{itemize}
+  \item $G(t)$ is the minimum total cost from year $t$ to the end of the time horizon.
+  \item $C(t, x)$ represents the cost of operating the equipment from year $t$ to $x$, considering maintenance, replacement, and inflation.
+  \item $x$ is the next possible year for replacement.
+\end{itemize}
+The algorithm works backwards from the final year, evaluating two options at each step: keeping the current equipment or replacing it. The option with the lower cost is selected to build the optimal policy.
+
+\subsection{Data Structures}
+Three main tables are used in the implementation:
+\begin{itemize}
+  \item \textbf{C:} Stores individual operating costs between any two years, accounting for inflation and other variables.
+  \item \textbf{G:} Contains the minimum accumulated cost from each year onward, computed using dynamic programming.
+  \item \textbf{GPOS:} Stores the optimal replacement policy, indicating in which years replacements should occur.
+\end{itemize}
+
+\section{Problem}
+
+Time of the duration of the project: 3
+Lifespan of the equipment: 5
+
+Price of new equipment: 500.00
+Earnings: 0.00
+Inflation rate: 0.00
+
+\begin{center}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c||c|c|c|c|}
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{Time passed}}} & \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{Maintenance}}} & \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{Maintenance (accumulative)}}} & \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{Selling price}}} & \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{Additional cost for inflation}}} \\
+        \hline
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{1}}}& \cellcolor{CangrejoInside}{400.00}& \cellcolor{CangrejoInside}{30.00}& \cellcolor{CangrejoInside}{30.00}& \cellcolor{CangrejoInside}{0.00}\\
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{2}}}& \cellcolor{CangrejoInside}{300.00}& \cellcolor{CangrejoInside}{40.00}& \cellcolor{CangrejoInside}{70.00}& \cellcolor{CangrejoInside}{0.00}\\
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{3}}}& \cellcolor{CangrejoInside}{250.00}& \cellcolor{CangrejoInside}{60.00}& \cellcolor{CangrejoInside}{130.00}& \cellcolor{CangrejoInside}{0.00}\\
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{4}}}& \cellcolor{CangrejoInside}{0.00}& \cellcolor{CangrejoInside}{0.00}& \cellcolor{CangrejoInside}{130.00}& \cellcolor{CangrejoInside}{0.00}\\
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{5}}}& \cellcolor{CangrejoInside}{0.00}& \cellcolor{CangrejoInside}{0.00}& \cellcolor{CangrejoInside}{130.00}& \cellcolor{CangrejoInside}{0.00}\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\end{center}
+
+
+\subsection{Table of Costs $C_{\text{ij}}$}
+The table represents with a number the cost from buying a new bicicle on the year i and selling it on the year j where the maintenance costs are already included and the \"year 0\" marks the start of the project. The table has - where a value is invalid either due to the lifespan of the equipment or the dration of the project.
+\begin{center}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c||c|c|c|c|}
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{C}}} & \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{j=0}}} & \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{j=1}}} & \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{j=2}}} & \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{j=3}}} \\
+        \hline
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{i=0}}}& \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$130.00$ \$}& \cellcolor{CangrejoInside}{$270.00$ \$}& \cellcolor{CangrejoInside}{$380.00$ \$}\\
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{i=1}}}& \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$130.00$ \$}& \cellcolor{CangrejoInside}{$270.00$ \$}\\
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{i=2}}}& \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$130.00$ \$}\\
+        \hline
+        \cellcolor{DonCangrejo}{\textbf{\textcolor{white}{i=3}}}& \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$-$} & \cellcolor{CangrejoInside}{$-$} \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\end{center}
+
+
+
+\section{Solution}
+In the following text, you will find the needed operations to determinate the optimal solution for each year.
+
+G(2) = min \{ 
+
+\hspace{1cm} C[2][3] + G[3] = 130.00 + 0.00 = 130.00 
+
+ \} 
+
+
+G(1) = min \{ 
+
+\hspace{1cm} C[1][2] + G[2] = 130.00 + 130.00 = 260.00 
+
+\hspace{1cm} C[1][3] + G[3] = 270.00 + 0.00 = 270.00 
+
+ \} 
+
+
+G(0) = min \{ 
+
+\hspace{1cm} C[0][1] + G[1] = 130.00 + 260.00 = 390.00 
+
+\hspace{1cm} C[0][2] + G[2] = 270.00 + 130.00 = 400.00 
+
+\hspace{1cm} C[0][3] + G[3] = 380.00 + 0.00 = 380.00 
+
+ \} 
+
+
+\subsection{Results}
+
+\noindent G(0) = 380.000000 
+
+\noindent Winners: 3 
+
+\noindent G(1) = 260.000000 
+
+\noindent Winners: 2 
+
+\noindent G(2) = 130.000000 
+
+\noindent Winners: 3 
+
+\noindent G(3) = 0.000000 
+
+\noindent Nothing more to be done
+\section{Graph}
+\begin{center}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tikzpicture}
+ \Vertex[x=0, color=DonCangrejo, size=0.7, label=\textcolor{white}{0}]{A}
+ \Vertex[x=2, color=DonCangrejo, size=0.7, label=\textcolor{white}{1}]{B}
+ \Vertex[x=4, color=DonCangrejo, size=0.7, label=\textcolor{white}{2}]{C}
+ \Vertex[x=6, color=DonCangrejo, size=0.7, label=\textcolor{white}{3}]{D}
+ \Edge[bend=50, Direct](A)(D)
+\end{tikzpicture}
+\end{adjustbox}
+
+
+\end{center}
+
+
+
+
+\end{document}

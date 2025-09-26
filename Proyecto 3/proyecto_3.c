@@ -17,6 +17,8 @@
 #include <ctype.h>
 #include <pthread.h>
 
+
+
 typedef struct {
     const char *window_id;  // Window name
     const char *button_id;  // Exit button name

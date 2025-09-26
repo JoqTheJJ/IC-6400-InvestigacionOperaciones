@@ -14,6 +14,7 @@
 #include <cairo.h>
 #include <math.h>
 #include <glib/gstdio.h>
+#include "reemplazo.c"
 
 // - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix
@@ -945,6 +946,19 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
     // ----- Call Tool Replacement function here -----
     //     int price, int lifespan, int profit, int inflation, int periods,
     //     const int *maintenance, const int *resell
+
+    // runReplacement(years, lifespan, buyPrice, sellPrice, timeMaintenance, inflationPercentage, earnings);
+
+
+    float* maintenanceCost = malloc(sizeof(float)*md.lifespan);
+    float* sellingPrice = malloc(sizeof(float)*md.lifespan);
+    for (int x = 0; x < md.lifespan; ++x){
+        maintenanceCost[x] = (float)maintenance[x];
+        sellingPrice[x]    = (float)resell[x];
+    }
+
+    runReplacement(md.periods, md.lifespan, md.price, sellingPrice, maintenanceCost, md.inflation, md.profit);
+    //runReplacement(R, C, maintenance, resell);
 
     // Cleanup
     g_free(maintenance);

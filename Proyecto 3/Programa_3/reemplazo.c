@@ -98,7 +98,7 @@ Solution replacement(FILE* f, float** C, int years, int lifespan){
 
         //Print
         // minimo{
-        fprintf(f, "G(%d) = min(\n", g);
+        fprintf(f, "G(%d) = min \\{ \n\n", g);
         for (int dif = 1; g+dif <= years && dif <= lifespan; dif++){
             //Marcar Proceso
             // Imprimir Calculo
@@ -107,7 +107,7 @@ Solution replacement(FILE* f, float** C, int years, int lifespan){
 
             option = C[g][g+dif] + G[g+dif];
             printf("option: %.2f = C[%d][%d] + G[%d] = %.2f + %.2f\n", option, g, g+dif, g+dif, C[g][g+dif], G[g+dif]);
-            fprintf(f, "C[%d][%d] + G[%d] = %.2f + %.2f = %.2f\n", g, g+dif, g+dif, C[g][g+dif], G[g+dif], option);
+            fprintf(f, "\\hspace{1cm} C[%d][%d] + G[%d] = %.2f + %.2f = %.2f \n\n", g, g+dif, g+dif, C[g][g+dif], G[g+dif], option);
             
             if (option < G[g]){ //Better option
                 G[g] = option;
@@ -118,7 +118,7 @@ Solution replacement(FILE* f, float** C, int years, int lifespan){
             }
         }
         // }
-        fprintf(f, " ) \n");
+        fprintf(f, " \\} \n\n\n");
 
         //Marcar G calculado
         // G(algo) = x
@@ -196,8 +196,11 @@ void documentStart(FILE* f){
     makeTitle(f);
 
     //Colors
-    fprintf(f, "\\definecolor{KirbyPink}{HTML}{D74894}\n");
-    fprintf(f, "\\definecolor{LightPink}{HTML}{FFBFBF}\n\n");
+    fprintf(f, "\\definecolor{DonCangrejo}{HTML}{F23D4C}\n");
+    fprintf(f, "\\definecolor{CangrejoInside}{HTML}{BAD99C}\n");
+    fprintf(f, "\\definecolor{KirbyPink}{HTML}{FFBFBF}\n\n");
+
+    
     fprintf(f, "\\newpage\n\n\n");
 }
 
@@ -275,12 +278,13 @@ void problem(FILE* f,
     fprintf(f, "}\n");
 
     //first row
+    // \cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{
     fprintf(f, "        \\hline\n");
-    fprintf(f, "        \\cellcolor[HTML]{FFBFBF}\\textbf{Time passed} ");
-    fprintf(f, "& \\cellcolor[HTML]{FFBFBF}\\textbf{Maintenance} ");
-    fprintf(f, "& \\cellcolor[HTML]{FFBFBF}\\textbf{Maintenance (accumulative)} ");
-    fprintf(f, "& \\cellcolor[HTML]{FFBFBF}\\textbf{Selling price} ");
-    fprintf(f, "& \\cellcolor[HTML]{FFBFBF}\\textbf{Additional cost for inflation} ");
+    fprintf(f, "        \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{Time passed}}} ");
+    fprintf(f, "& \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{Maintenance}}} ");
+    fprintf(f, "& \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{Maintenance (accumulative)}}} ");
+    fprintf(f, "& \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{Selling price}}} ");
+    fprintf(f, "& \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{Additional cost for inflation}}} ");
 
     
 
@@ -289,13 +293,13 @@ void problem(FILE* f,
 
 
     //table
-    for (int i = 0; i < years+1; ++i){ 
-        fprintf(f, "        \\cellcolor[HTML]{FFBFBF}\\textbf{i=%d}", i+1);
+    for (int row = 0; row < lifespan; ++row){ 
+        fprintf(f, "        \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{%d}}}", row+1);
         
-        fprintf(f, "& %.2f", sellPrice[i]);
-        fprintf(f, "& %.2f", timeMaintenance[i]);
-        fprintf(f, "& %.2f", maintenance[i]);
-        fprintf(f, "& %.2f", inflation[i]);
+        fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", sellPrice[row]);
+        fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", timeMaintenance[row]);
+        fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", maintenance[row]);
+        fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", inflation[row]);
 
         fprintf(f, "\\\\\n        \\hline\n");
     }
@@ -310,7 +314,7 @@ void problem(FILE* f,
 
 
 
-    fprintf(f, "\\subsection{Table of Costs C_{\\text{ij}}}\n");
+    fprintf(f, "\\subsection{Table of Costs $C_{\\text{ij}}$}\n");
     fprintf(f, "The table represents with a number the cost from buying a new bicicle on the year i and selling it on the year j where the maintenance costs are already included and the \\\"year 0\\\" marks the start of the project. The table has - where a value is invalid either due to the lifespan of the equipment or the dration of the project.\n");
 
     //tabular
@@ -324,23 +328,24 @@ void problem(FILE* f,
 
     //first row
     fprintf(f, "        \\hline\n");
-    fprintf(f, "        \\cellcolor[HTML]{FFBFBF}\\textbf{C} ");
+    fprintf(f, "        \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{C}}} ");
     for (int col = 0; col < years+1; ++col){
-        fprintf(f, "& \\cellcolor[HTML]{FFBFBF}\\textbf{j=%d} ", col);
+        fprintf(f, "& \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{j=%d}}} ", col);
     }
     fprintf(f, "\\\\\n        \\hline\n");
     fprintf(f, "        \\hline\n");
 
+    //CangrejoInside
 
     //table
-    for (int i = 0; i < years+1; ++i){ 
-        fprintf(f, "        \\cellcolor[HTML]{FFBFBF}\\textbf{i=%d}", i);
-        for (int j = 1; j < years+1; ++j){ // start in 1 to skip 0s column
+    for (int i = 0; i <= years; ++i){ 
+        fprintf(f, "        \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{i=%d}}}", i);
+        for (int j = 0; j <= years; ++j){ // start in 1 to skip 0s column
 
             if (C[i][j] >= 2147483648){
-                fprintf(f, "& $-$ ");
+                fprintf(f, "& \\cellcolor{CangrejoInside}{$-$} ");
             } else {
-                fprintf(f, "& $%.2f$ \\$", C[i][j]);
+                fprintf(f, "& \\cellcolor{CangrejoInside}{$%.2f$ \\$}", C[i][j]);
             }
         }
         fprintf(f, "\\\\\n        \\hline\n");
@@ -353,6 +358,21 @@ void problem(FILE* f,
 }
 
 /* ################################## TEX ################################## */
+void rana(FILE* f, Solution sol, int years, int actual){
+    //fprintf(f, " \\Vertex[x=%d, y=%d, color=LightBlue, size=0.5, label={%s}]{%c}\n", 2*(k+1), 0, names[v], 'A' + v);
+    //fprintf(f, " \\Edge[label=$%d$, Direct](%c)(%c)\n", D[prev][v], 'A' + prev, 'A' + v);
+
+
+    int winners = sol.GPos[actual];
+    for(int y = 0; y <= years; ++y){
+        if (winners % 2){
+            fprintf(f, " \\Edge[bend=50, Direct](%c)(%c)\n", 'A' + actual, 'A' + (actual+y));
+            rana(f, sol, years, actual+y);
+        }
+        winners /= 2;
+
+    }    
+}
 
 
 
@@ -368,11 +388,16 @@ void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, f
         return;
     }
 
-    printf("Maintenance");
+    documentStart(f);
+    introduction(f);
+    
+
+
+    printf("Maintenance\n");
     float* maintenance = malloc(sizeof(float)*lifespan);
     for (int x = 0; x < lifespan; ++x){ //Accumulative maintenance costs
         maintenance[x] = 0;
-        for (int i = 0; i < x+1; ++x){
+        for (int i = 0; i < x+1; ++i){
             maintenance[x] += timeMaintenance[i];
         }
     }
@@ -380,12 +405,12 @@ void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, f
     float* inflationValues = inflationCosts(buyPrice, inflation, years);
     float** C = calculateC(years, lifespan, buyPrice, sellPrice, maintenance, inflationValues, earnings);
 
-    printf("Problem");
+    printf("Problem\n");
     problem(f, years, lifespan, buyPrice, sellPrice, timeMaintenance, maintenance, inflationValues, inflation, earnings, C);
 
     
 
-    printf("Replacement");
+    printf("Replacement\n");
     Solution solution = replacement(f, C, years, lifespan);
     float* G = solution.G;
     int* GPos = solution.GPos;
@@ -393,72 +418,82 @@ void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, f
     
     fprintf(f, "\\subsection{Results}\n\n");
     
-    for (int g = 0; g < years+1; ++g){
+    for (int g = 0; g < years; ++g){
         int solution = GPos[g];
         printf("G(%d) = %f (%d)\n", g, G[g], GPos[g]);
+        
+        fprintf(f, "\\noindent G(%d) = %f \n\n",  g, G[g]);
+        fprintf(f, "\\noindent Winners: ");
+        
+        for (int s = 0; s <= lifespan; ++s){
+            if(solution % 2)
+                fprintf(f, "%d ", g+s);
 
-        fprintf(f, "G(%d) = %f \n",  g, G[g]);
-        fprintf(f, "Winners: ");
-        
-        if(GPos[g] % 2)
-            fprintf(f, "%d ", g);
-        solution /= 2;
-        
+            solution /= 2;
+        }
+        fprintf(f, "\n\n");
     }
 
+    fprintf(f, "\\noindent G(%d) = %f \n\n",  years, G[years]);
+    fprintf(f, "\\noindent Nothing more to be done\n");
+
+
     
     
     
-    //fprintf(f, "\\section{Graph}\n");
-    //fprintf(f, "\\begin{tikzpicture}\n");
-    // for (int g = 0; g <= years; ++g){
-    //     fprintf(f, " \\Vertex[x=%d, size=0.5, label={%d}]{%c}\n", g,  g, 'A' + g);
-    // }
-    // rana(solution, years, 0);
-    // fprintf(f, "\\end{tikzpicture}\n");
+    fprintf(f, "\\section{Graph}\n");
+
+    fprintf(f, "\\begin{center}\n");
+    fprintf(f, "\\begin{adjustbox}{max width=\\textwidth}\n");
+    fprintf(f, "\\begin{tikzpicture}\n");
+    for (int g = 0; g <= years; ++g){
+        fprintf(f, " \\Vertex[x=%d, color=DonCangrejo, size=0.7, label=\\textcolor{white}{%d}]{%c}\n", g*2, g, 'A' + g);
+    }
+    rana(f, solution, years, 0);
+    fprintf(f, "\\end{tikzpicture}\n");
+    fprintf(f, "\\end{adjustbox}\n\n\n");
+    fprintf(f, "\\end{center}\n\n\n");
     
-    printf("\n\n");
+    fprintf(f, "\n\n");
+    fprintf(f, "\\end{document}\n");
     fclose(f);
+
+    free(sellPrice);
+    free(timeMaintenance);
+    free(inflationValues);
+
+    int responseCode = system("pdflatex programToLaTeX.tex");
+    if (responseCode == 0){
+        printf("\n\nLatex compiled without problems\n");
+        system("evince --presentation programToLaTeX.pdf &");
+    }
+
 }
 
 
-//void rana(Solution sol, int years, int winner){
-//     //fprintf(f, " \\Vertex[x=%d, y=%d, color=LightBlue, size=0.5, label={%s}]{%c}\n", 2*(k+1), 0, names[v], 'A' + v);
-//     //fprintf(f, " \\Edge[label=$%d$, Direct](%c)(%c)\n", D[prev][v], 'A' + prev, 'A' + v);
-    
-//     for(int y = 0; y <= years; ++y){
-//         winner = sol.GPos[y];
-//         if (winner % 2){
-//             fprintf(f, " \\Edge[Direct](%c)(%c)\n", 'A' + y, 'A' + (winner+y));
-//             rana(sol, years);
-//         }
-//         winner /= 2;
 
-//     }    
+
+
+
+// void test(){
+//     int lifespan = 3;   //Lifespan
+//     float buyPrice = 500; //Buying price
+//     int years = 5;        //Years for the project
+//     float inflationPercentage = 0; //Inflation percentage
+//     float earnings = 0;
+
+
+//     float* sellPrice = malloc(sizeof(float)*lifespan);   //Selling price on the n year of use
+//     float* timeMaintenance = malloc(sizeof(float)*lifespan);
+    
+//     sellPrice[0] = 400;
+//     sellPrice[1] = 300;
+//     sellPrice[2] = 250;
+
+//     timeMaintenance[0] = 30;
+//     timeMaintenance[1] = 40;
+//     timeMaintenance[2] = 60;
+
+
+//     runReplacement(years, lifespan, buyPrice, sellPrice, timeMaintenance, inflationPercentage, earnings);
 // }
-
-
-
-
-void main(){
-    int lifespan = 3;   //Lifespan
-    float buyPrice = 500; //Buying price
-    int years = 5;        //Years for the project
-    float inflationPercentage = 0.05; //Inflation percentage
-    float earnings = 0;
-
-
-    float* sellPrice = malloc(sizeof(float)*lifespan);   //Selling price on the n year of use
-    float* timeMaintenance = malloc(sizeof(float)*lifespan);
-    
-    sellPrice[0] = 400;
-    sellPrice[1] = 300;
-    sellPrice[2] = 250;
-
-    timeMaintenance[0] = 30;
-    timeMaintenance[1] = 40;
-    timeMaintenance[2] = 60;
-
-
-    runReplacement(years, lifespan, buyPrice, sellPrice, timeMaintenance, inflationPercentage, earnings);
-}

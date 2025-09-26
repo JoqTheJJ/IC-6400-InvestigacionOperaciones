@@ -6,7 +6,7 @@ EXE := $(SRC:.c=)
 EXE += Programa_1/programa-1
 EXE += Programa_2/programa-2
 EXE += Programa_3/programa-3
-EXE += Programa_3/reemplazo
+
 
 all: $(EXE)
 
