@@ -1,4 +1,4 @@
-# Knapsack Problem Project
+# Equipment Replacement Problem Project
 ### Members of the team
 Carmen Hidalgo Paz.
 
@@ -8,19 +8,16 @@ Melissa Carvajal Charpentier
 
 ## Description
 
-The *Knapsack problem* is a classic optimization problem. The goal is to fill a backpack optimally with a set of objects, each with a weight and a profit, in order to maximize the total profit without exceeding the backpack's capacity.
-
-There are a few main types of knapsack problems:
-
-- **0/1 Knapsack:** Each object can be taken or not, only one copy per object.
-- **Bounded Knapsack:** Each object has a limited number of copies.
-- **Unbounded Knapsack:** Each object can be taken any number of times, as long as the total weight allows.
+This program consists of solving The Tool Replacement for Equipment Replacement Problem with dynamic programming by defining a table where the entries are the cost of maintenance and the cost of selling the tool in a given time.
+DIRECTIONS:
+- Enter a positive number for the Maintenance and Resell Value columns.
+- If the cell becomes red, you've entered the wrong value.
 
 ### Solution
 
-A common way to solve these problems is using dynamic programming. We build a table to keep track of the optimal profit for different capacities and numbers of objects. By filling this table, we can find the maximum profit achievable for the given backpack capacity.
+A common way to solve these problems is using dynamic programming. We build a table to keep track of the cost for each iteration of buying and selling the equipment. Then it is iterated through from the end of the project to the start by picking the options with the least cost that satisfy the restrictions, eventually reaching the optimal cost and how to achieve it.
 
-The resulting table will show the exact quantity and which objects to take in order to achieve the optimal weight.
+The resulting document will indicate when to buy and sell the equipment in order to achieve the optimal cost for the duration of the whole project as well as generally describe the problem.
 
 ## How to Run
 
@@ -29,4 +26,4 @@ To compile and run the project, use the following commands in your terminal:
 ```bash
 make clean
 make
-./proyecto_2
+./proyecto_3
