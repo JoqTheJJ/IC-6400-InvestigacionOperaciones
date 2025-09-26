@@ -292,13 +292,13 @@ void problem(FILE* f,
     fprintf(f, "        \\hline\n");
 
 
-    //table
+    //table timeMaintenance
     for (int row = 0; row < lifespan; ++row){ 
         fprintf(f, "        \\cellcolor{DonCangrejo}{\\textbf{\\textcolor{white}{%d}}}", row+1);
         
-        fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", sellPrice[row]);
         fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", timeMaintenance[row]);
         fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", maintenance[row]);
+        fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", sellPrice[row]);
         fprintf(f, "& \\cellcolor{CangrejoInside}{%.2f}", inflation[row]);
 
         fprintf(f, "\\\\\n        \\hline\n");
@@ -378,8 +378,9 @@ void rana(FILE* f, Solution sol, int years, int actual){
 
 /* ################################## MAIN ################################## */
 
-void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, float* timeMaintenance, float inflation, float earnings){
+void runReplacement(int years, int lifespan, float buyPrice, float* sellPrice, float* timeMaintenance, int inflationPercentage, float earnings){
 
+    float inflation = ((float)inflationPercentage) / 100;
     
     FILE* f = fopen("programToLaTeX.tex", "w");
 
