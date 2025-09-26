@@ -835,42 +835,46 @@ static gboolean parse_number_strict(const gchar *txt, double *out) {
 gboolean collect_matrix_from_ui(Matrix *ui, MatrixData *out, GError **err) {
     g_return_val_if_fail(ui && out, FALSE);
 
-    const gint rows = ui->rows;
-    const gint cols = ui->cols;
+    const gint rows = ui->rows;     // table rows (driven by lifespan)
+    const gint cols = ui->cols;     // should be 3: Period, Maintenance, Resell
 
     matrix_data_init(out, rows, cols);
 
-    // Add Tool Replacement parameters from the UI spins
-    out->price     = ui->amount_price;
-    out->lifespan  = ui->amount_lifespan;
-    out->profit    = ui->amount_profit;
-    out->inflation = ui->amount_inflation;
-    out->periods   = ui->amount_period;
+    // Read spins directly
+    GtkSpinButton *sp_price     = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-price"));
+    GtkSpinButton *sp_period    = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-period"));
+    GtkSpinButton *sp_lifespan  = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-lifespan"));
+    GtkSpinButton *sp_profit    = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-profit"));
+    GtkSpinButton *sp_inflation = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-inflation"));
 
-    // Read the column names from the labels
+    out->price     = sp_price     ? gtk_spin_button_get_value_as_int(sp_price)     : ui->amount_price;
+    out->lifespan  = sp_lifespan  ? gtk_spin_button_get_value_as_int(sp_lifespan)  : ui->amount_lifespan;
+    out->profit    = sp_profit    ? gtk_spin_button_get_value_as_int(sp_profit)    : ui->amount_profit;
+    out->inflation = sp_inflation ? gtk_spin_button_get_value_as_int(sp_inflation) : ui->amount_inflation;
+    out->periods   = sp_period    ? gtk_spin_button_get_value_as_int(sp_period)    : ui->amount_period;
+
+    // Column names (labels)
     for (gint j = 0; j < cols; ++j) {
         GtkWidget *hdr = g_ptr_array_index(ui->col_headers, j);
         const gchar *h = gtk_label_get_text(GTK_LABEL(hdr));
         g_ptr_array_add(out->col_names, trimdup(h ? h : ""));
     }
 
-    // Read the row names
+    // Row names
     for (gint i = 0; i < rows; ++i) {
         GtkEntry *rh = GTK_ENTRY(g_ptr_array_index(ui->row_headers, i));
         const gchar *name = gtk_entry_get_text(rh);
         g_ptr_array_add(out->row_names, trimdup(name));
     }
 
-    // Read the cell values
+    // Cell values (Period, Maintenance, Resell)
     for (gint i = 0; i < rows; ++i) {
         for (gint j = 0; j < cols; ++j) {
             GtkEntry *cell = GTK_ENTRY(g_ptr_array_index(ui->cells, i*cols + j));
             const gchar *raw = gtk_entry_get_text(cell);
 
-            // Period column is read-only, but we still save it
             double v;
             if (!parse_number_strict(raw, &v)) {
-                GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(cell));
                 matrix_data_clear(out);
                 g_set_error(err, G_FILE_ERROR, G_FILE_ERROR_INVAL,
                             "Invalid number at row %d, column %d: “%s”",
@@ -888,12 +892,11 @@ gboolean collect_matrix_from_ui(Matrix *ui, MatrixData *out, GError **err) {
 static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
     Matrix *ui = (Matrix*)user_data;
 
-    // Re-validate focused entry if any
+    // Validate focused entry if any
     GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(btn));
     if (GTK_IS_WINDOW(toplevel)) {
         GtkWidget *focus = gtk_window_get_focus(GTK_WINDOW(toplevel));
-        if (focus && GTK_IS_ENTRY(focus))
-            mark_cell_validity(focus, ui);
+        if (focus && GTK_IS_ENTRY(focus)) mark_cell_validity(focus, ui);
     }
     if (ui->invalid_count > 0) {
         GtkWidget *d = gtk_message_dialog_new(
@@ -906,7 +909,6 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    // Collect everything from UI
     MatrixData md = {0};
     GError *err = NULL;
     if (!collect_matrix_from_ui(ui, &md, &err)) {
@@ -921,8 +923,8 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    const int R = md.rows;          // periods
-    const int C = md.cols;          // 3 (Period, Maintenance, Resell)
+    const int R = md.rows;  // number of table rows
+    const int C = md.cols;  // should be 3
     if (C < 3) {
         GtkWidget *d = gtk_message_dialog_new(
             GTK_WINDOW(toplevel),
@@ -935,39 +937,43 @@ static void latex_file_clicked(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    // Extract Maintenance and Resell as integer arrays for the algorithm
+    // Build Maintenance and Resell arrays from the table
     int *maintenance = g_new0(int, R);
     int *resell      = g_new0(int, R);
-
     for (int i = 0; i < R; ++i) {
-        double m = g_array_index(md.values, double, i*C + 1);
-        double s = g_array_index(md.values, double, i*C + 2);
+        double m = g_array_index(md.values, double, i*C + 1); // col 1 = Maintenance
+        double s = g_array_index(md.values, double, i*C + 2); // col 2 = Resell
         maintenance[i] = (int)m;
         resell[i]      = (int)s;
     }
 
-    // Row names
-    char **row_names   = (char **) md.row_names->pdata; // size R
-    char **column_names= (char **) md.col_names->pdata; // size 3
-
-    // ----- Call Tool Replacement function here -----
-    //     int price, int lifespan, int profit, int inflation, int periods,
-    //     const int *maintenance, const int *resell
-
-    // runReplacement(years, lifespan, buyPrice, sellPrice, timeMaintenance, inflationPercentage, earnings);
-
-
-    float* maintenanceCost = malloc(sizeof(float)*md.lifespan);
-    float* sellingPrice = malloc(sizeof(float)*md.lifespan);
-    for (int x = 0; x < md.lifespan; ++x){
-        maintenanceCost[x] = (float)maintenance[x];
-        sellingPrice[x]    = (float)resell[x];
+    // If lifespan disagrees with R, clamp to the min to avoid OOB
+    int L = R;
+    if (md.lifespan > 0 && md.lifespan != R) {
+        L = (md.lifespan < R) ? md.lifespan : R;
     }
 
-    runReplacement(md.periods, md.lifespan, md.price, sellingPrice, maintenanceCost, md.inflation, md.profit);
-    //runReplacement(R, C, maintenance, resell);
+    float *maintenanceCost = g_new0(float, L);
+    float *sellingPrice    = g_new0(float, L);
+    for (int i = 0; i < L; ++i) {
+        maintenanceCost[i] = (float)maintenance[i];
+        sellingPrice[i]    = (float)resell[i];
+    }
+
+    // ----- Call your Tool Replacement solver -----
+    // years     -> md.periods
+    // lifespan  -> md.lifespan (use L if you clamped)
+    // buyPrice  -> md.price
+    // sellPrice -> sellingPrice (length L)
+    // timeMaintenance -> maintenanceCost (length L)
+    // inflation -> md.inflation
+    // earnings  -> md.profit
+
+    runReplacement(md.periods, L, md.price, sellingPrice, maintenanceCost, md.inflation, md.profit);
 
     // Cleanup
+    g_free(maintenanceCost);
+    g_free(sellingPrice);
     g_free(maintenance);
     g_free(resell);
     matrix_data_clear(&md);
