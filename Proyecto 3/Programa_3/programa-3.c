@@ -365,6 +365,7 @@ static void fprint_padded(FILE *fp, const gchar *s, size_t width, gboolean right
 }
 
 // Save the table as a .txt file
+// Save the table as a .txt file
 static void save_file(GtkButton *btn, gpointer user_data) {
     Matrix *ui = (Matrix*)user_data;
     const gint rows = ui->rows;
@@ -387,6 +388,20 @@ static void save_file(GtkButton *btn, gpointer user_data) {
         gtk_widget_destroy(d);
         return;
     }
+
+    // --- Refresh spin values from UI (ensures latest values even if handlers didn't run) ---
+    GtkSpinButton *sp_price     = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-price"));
+    GtkSpinButton *sp_period    = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-period"));
+    GtkSpinButton *sp_lifespan  = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-lifespan"));
+    GtkSpinButton *sp_profit    = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-profit"));
+    GtkSpinButton *sp_inflation = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-inflation"));
+
+    if (sp_price)     ui->amount_price     = gtk_spin_button_get_value_as_int(sp_price);
+    if (sp_period)    ui->amount_period    = gtk_spin_button_get_value_as_int(sp_period);
+    if (sp_lifespan)  ui->amount_lifespan  = gtk_spin_button_get_value_as_int(sp_lifespan);
+    if (sp_profit)    ui->amount_profit    = gtk_spin_button_get_value_as_int(sp_profit);
+    if (sp_inflation) ui->amount_inflation = gtk_spin_button_get_value_as_int(sp_inflation);
+    // ---------------------------------------------------------------------------------------
 
     // Ask where to save
     GtkWidget *dialog = gtk_file_chooser_dialog_new(
@@ -450,16 +465,17 @@ static void save_file(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    // Stored in Matrix: amount_price, amount_lifespan, amount_profit, amount_inflation, amount_period
+    // Metadata block
     fprintf(fp, "# Tool Replacement Parameters\n");
     fprintf(fp, "Price: %d\n",      ui->amount_price);
     fprintf(fp, "Lifespan: %d\n",   ui->amount_lifespan);
     fprintf(fp, "Profit: %d\n",     ui->amount_profit);
     fprintf(fp, "Inflation: %d\n",  ui->amount_inflation);
-    fprintf(fp, "Periods: %d\n",    ui->rows);
+    // 🔧 Use the periods spin value (not ui->rows, which equals lifespan-driven rows)
+    fprintf(fp, "Periods: %d\n",    ui->amount_period);
     fputc('\n', fp);
 
-    // Print an empty slot for the row-name column (keeps alignment with saved row names)
+    // Header row (empty slot for row-name column) + column labels
     fprint_padded(fp, "", W[0], FALSE);
     if (cols > 0) fputc(' ', fp);
     for (gint j = 0; j < cols; ++j) {
@@ -470,7 +486,7 @@ static void save_file(GtkButton *btn, gpointer user_data) {
     }
     fputc('\n', fp);
 
-    // Rows
+    // Data rows
     for (gint i = 0; i < rows; ++i) {
         GtkEntry *rh = GTK_ENTRY(g_ptr_array_index(ui->row_headers, i));
         const gchar *rname = gtk_entry_get_text(rh);
@@ -589,40 +605,33 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // Parse the info block at top
-    // Accept either a block starting with "#" or plain "Key: value" lines.
-    // Stop parsing at the first blank line in the original file
-    // or when it hits a header-like line that ends with "Period Maintenance Resell".
+    // Parse metadata block
     gint price = -1, lifespan = -1, profit = -1, inflation = -1, periods = -1;
 
     guint idx = 0;
     for (; idx < rows->len; ++idx) {
         const gchar *L = rows->pdata[idx];
-        // Check if its the header line
+        // Header?
         gchar **tok = split_ws(L);
         guint tokc = g_strv_length(tok);
         gboolean is_header = header_matches_fixed(tok, tokc);
         g_strfreev(tok);
         if (is_header) break;
 
-        // Info line, starts with #
+        // Metadata (allow optional leading '#')
         const gchar *line = L;
-        if (*line == '#') {
-            line++; while (*line && g_ascii_isspace(*line)) line++;
-        }
+        if (*line == '#') { line++; while (*line && g_ascii_isspace(*line)) line++; }
 
-        gboolean any =
+        (void)(
             parse_int_field(line, "Price",     &price)     ||
             parse_int_field(line, "Lifespan",  &lifespan)  ||
             parse_int_field(line, "Profit",    &profit)    ||
             parse_int_field(line, "Inflation", &inflation) ||
-            parse_int_field(line, "Periods",   &periods);
-
-        // If it's not the info and not a header, it keeps advancing until header is found.
+            parse_int_field(line, "Periods",   &periods)
+        );
     }
 
     if (idx >= rows->len) {
-        // We a header line isnt found
         GtkWidget *d = gtk_message_dialog_new(
             GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -635,7 +644,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // Header
+    // Header line
     gchar **head = split_ws(rows->pdata[idx]);
     guint headc  = g_strv_length(head);
     if (!header_matches_fixed(head, headc)) {
@@ -666,8 +675,8 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         return;
     }
 
-    // If the "Periods" metadata exists, check it. If not infer from rows
-    gint target_rows = (periods > 0) ? periods : (gint)nrows;
+    // Lifespan now drives rows; fall back to Periods, then file row count
+    gint target_rows = (lifespan > 0) ? lifespan : ((periods > 0) ? periods : (gint)nrows);
     if (target_rows < 1) target_rows = (gint)nrows;
 
     // Build UI
@@ -682,12 +691,11 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
 
     // Fill rows
     guint to_fill = MIN(nrows, (guint)ui->rows);
-
     for (guint r = 0; r < to_fill; ++r) {
         gchar **tok = split_ws(rows->pdata[data0 + r]);
         guint tokc = g_strv_length(tok);
 
-        if (tokc < 1 + 3) { // the rowname plus 3 values
+        if (tokc < 1 + 3) { // row-name + 3 values
             GtkWidget *d = gtk_message_dialog_new(
                 GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(btn))),
                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -702,7 +710,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
 
         guint vstart = tokc - 3;
 
-        // The row name may contain spaces
+        // Row name may contain spaces
         gchar *saved = tok[vstart];
         tok[vstart] = NULL;
         gchar *rname = g_strjoinv(" ", tok);
@@ -718,15 +726,13 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
             GtkWidget *cell = GTK_WIDGET(g_ptr_array_index(ui->cells, r * ui->cols + j));
 
             if (j == PERIOD_COL_IDX) {
-                // Ignore file value and force Period = i+1
+                // Force Period = r+1 (read-only column)
                 gchar buf[16];
                 g_snprintf(buf, sizeof(buf), "%u", r + 1);
                 gtk_entry_set_text(GTK_ENTRY(cell), buf);
             } else {
                 const gchar *vstr = tok[vstart + j];
-                // digits-only expected
                 if (!integer_digits_only(vstr)) {
-                    // still show whatever is there so user can fix it but mark as invalid
                     gtk_entry_set_text(GTK_ENTRY(cell), vstr ? vstr : "");
                     mark_cell_validity(cell, ui);
                 } else {
@@ -739,8 +745,7 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
         g_strfreev(tok);
     }
 
-    // Reflect info in the spinbuttons
-    // IDs: amount-price, amount-period, amount-lifespan, amount-profit, amount-inflation
+    // Reflect metadata into spins (block lifespan handler to avoid rebuild wiping filled data)
     GtkSpinButton *sp_price     = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-price"));
     GtkSpinButton *sp_period    = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-period"));
     GtkSpinButton *sp_lifespan  = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-lifespan"));
@@ -748,15 +753,16 @@ static void file_chosen(GtkFileChooserButton *btn, gpointer user_data) {
     GtkSpinButton *sp_inflation = GTK_SPIN_BUTTON(gtk_builder_get_object(ui->builder, "amount-inflation"));
 
     if (price     >= 0 && sp_price)     gtk_spin_button_set_value(sp_price,     price);
-if (sp_period && periods >= 0) {
-    // prevent the matrix from rebuilding
-    g_signal_handlers_block_by_func(sp_period, G_CALLBACK(on_amount_period_changed), ui);
-    gtk_spin_button_set_value(sp_period, periods);
-    g_signal_handlers_unblock_by_func(sp_period, G_CALLBACK(on_amount_period_changed), ui);
-}
-if (lifespan  >= 0 && sp_lifespan)  gtk_spin_button_set_value(sp_lifespan,  lifespan);
-if (profit    >= 0 && sp_profit)    gtk_spin_button_set_value(sp_profit,    profit);
-if (inflation >= 0 && sp_inflation) gtk_spin_button_set_value(sp_inflation, inflation);
+    if (periods   >= 0 && sp_period)    gtk_spin_button_set_value(sp_period,    periods);
+
+    if (lifespan  >= 0 && sp_lifespan) {
+        g_signal_handlers_block_by_func(sp_lifespan, G_CALLBACK(on_amount_lifespan_changed), ui);
+        gtk_spin_button_set_value(sp_lifespan, lifespan);
+        g_signal_handlers_unblock_by_func(sp_lifespan, G_CALLBACK(on_amount_lifespan_changed), ui);
+    }
+
+    if (profit    >= 0 && sp_profit)    gtk_spin_button_set_value(sp_profit,    profit);
+    if (inflation >= 0 && sp_inflation) gtk_spin_button_set_value(sp_inflation, inflation);
 
     // Clean up
     g_strfreev(head);

@@ -1,11 +1,11 @@
 # Tool Replacement Parameters
-Price: 50
-Lifespan: 1
+Price: 600
+Lifespan: 3
 Profit: 10
-Inflation: 0
-Periods: 3
+Inflation: 2
+Periods: 1
 
-         Period Maintenance Resell
-January       1           5     30
-February      2          10     25
-March         3          20     20
+  Period Maintenance Resell
+A      1         500    350
+B      2         100    250
+C      3         200    200
