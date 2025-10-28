@@ -85,7 +85,14 @@ int fractions(double** matriz, int cols, int rows, int y){
     for (int r = 1; r < rows; ++r){
         double frac = matriz[r][cols-1] / matriz[r][y];
 
-        if (matriz[r][y] > 0 && frac >= 0 && frac < min){
+        if (matriz[r][y] > 0 && frac > 0 && frac < min){ //b positivo
+            // frac < min escoge en primero en caso de empate
+
+            min = frac;
+            x = r;
+            decisiones = 0;
+
+        } else if (matriz[r][y] > 0 && frac >= 0 && min == 1125899906842624){ //0 degenerado
             // frac < min escoge en primero en caso de empate
 
             min = frac;
@@ -125,8 +132,9 @@ Pivot escogerPivote(double** matriz, int cols, int rows, int maximize){
         }
     }
 
-
-    piv.x = fractions(matriz, cols, rows, piv.y);
+    if (piv.y != -1){
+        piv.x = fractions(matriz, cols, rows, piv.y);
+    }
 
     return piv;
 }
@@ -330,7 +338,7 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
 
 
     if (status == 2){
-            //Reporte no acotado
+        //Reporte no acotado
     }
     if (status < 0){
         //Soluciones multiples
@@ -652,7 +660,7 @@ void test7(){ //Soluciones multiples
     matriz[0][2] = -14;
     matriz[0][3] = 0;
     matriz[0][4] = 0;
-    matriz[0][5] = 21;
+    matriz[0][5] = 0;
 
     matriz[1][0] = 0;
     matriz[1][1] = 2;
@@ -666,7 +674,7 @@ void test7(){ //Soluciones multiples
     matriz[2][2] = 2;
     matriz[2][3] = 0;
     matriz[2][4] = 1;
-    matriz[2][5] = 0;
+    matriz[2][5] = 21;
 
     runSimplex(matriz, variables, cols, rows, 1); //max
 }
