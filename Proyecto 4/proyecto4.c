@@ -324,6 +324,16 @@ void extractSolutions(double** solucionOriginal, double** matriz, int amountOfVa
 
 void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int maximize){
 
+
+
+    //Title
+
+    //Introduction
+
+    //Problema (double** matriz, int amountOfVariables, int cols, int rows, int maximize)
+
+    //GuardarMatriz
+
     printMatriz(matriz, cols, rows);
 
     int status = 0;
@@ -331,11 +341,16 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
         status = pivot(matriz, cols, rows, maximize);
         
         printf("---------------------------\n");
+
+        // if (Guardar == activado)
+        // GuardarMatriz
+
         printMatriz(matriz, cols, rows);
 
         sleep(1);
     }
 
+    //GuardarMatriz Final
 
     if (status == 2){
         //Reporte no acotado
@@ -353,10 +368,23 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
         }
 
         solucionesMultiples(matriz, cols, rows, maximize, status);
+
+        //GuardarMatriz Solucion 2
         printMatriz(matriz, cols, rows);
 
-        extractSolutions(solucionOriginal, matriz, amountOfVariables, cols, rows, maximize);
+        extractSolutions(solucionOriginal, matriz, amountOfVariables, cols, rows, maximize); //Solucion es multiple...
+    } else {
+
+        //Solucion
+
     }
+
+
+    //Dibujo 2D
+
+    //Dibujo 3D
+
+    //CloseDocument
 
 }
 
