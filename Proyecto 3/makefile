@@ -29,4 +29,4 @@ clean:
 	rm -f $(EXE)
 
 run:
-	./proyecto_3
+	LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0 ./proyecto_3

@@ -33,8 +33,8 @@ void makeTitle(FILE* f){
         "    \\vspace{2cm}\n"
         "\n"
         "    %% Title\n"
-        "    {\\Large Replacement Problem\\par}\n"
-        "    {\\large Dynamic Programming\\par}\n"
+        "    {\\Simplex Algoritm\\par}\n"
+
         "    \\vspace{2cm}\n"
         "\n"
         "    %% Group and professor\n"
@@ -58,8 +58,43 @@ void makeTitle(FILE* f){
         "\\end{titlepage}\n"
     );
 }
+void documentStart(FILE* f){
+    fprintf(f, "\\documentclass{article}\n\n");
 
+    //Packages
+    fprintf(f, "\\PassOptionsToPackage{table,svgnames}{xcolor}");
+    fprintf(f, "\\usepackage{graphicx}\n");
+    fprintf(f, "\\usepackage{tikz-network}\n");
+    fprintf(f, "\\usepackage{xcolor}\n\n");
+    fprintf(f, "\\usepackage{pgfplots}\n\n");
+    //Document information
+    fprintf(f, "\\begin{document}\n");
 
+    makeTitle(f);
+    //fprintf(f, "\\title{Graph Theory - Operations Research}\n");
+    //fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo \\& Josu\\'e Soto}\n");
+    //fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
+    //fprintf(f, "\\date{2025}\n\n");
+
+    //begin
+    fprintf(f, "\\definecolor{KirbyPink}{HTML}{D74894}\n");
+    fprintf(f, "\\definecolor{LightPink}{HTML}{FFBFBF}\n\n");
+    //fprintf(f, "\\maketitle\n\n");
+    fprintf(f, "\\newpage\n\n\n");
+}
+
+void introduction(FILE* f){
+    fprintf(f, "\\section{The Simplex Algorithm}\n");
+
+    fprintf(f, "The simplex algorithm, developed by George Dantzig in 1947, arises from the need to solve linear programming problems.m\n");
+    fprintf(f, "This problem was fundamentally proposed by Kantorovich and Koopman, who developed the optimal location problem and the problem of resources.\n");
+
+    fprintf(f, "The Simplex method optimizes an objective function subject to linear constraints, using an iterative process to improve the value of the objective function until the optimal solution is reached. Its ability to solve complex problems and its use in various applications make it an essential tool in the optimization of resources and strategic decisions in industry, economics, and operations research.\\\\\n");
+    fprintf(f, "Given the time of its development, it was essentially thought to be solved by hand; however, now there are digital tools that allow the process to be automated. \n");
+
+    fprintf(f, "\\subsection{George Dantzig}\n");
+    fprintf(f, "The American mathematician was born in 1914 and died in 2005. In addition to being the creator of the Simplex algorithm, he was head of the Scientific Computing of Operations Research (SCOOP), where he promoted linear programming for strategic purposes during World War II.\n");
+}
 /* ################################ SIMPLEX ################################# */
 
 typedef struct {
@@ -335,7 +370,7 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
     //GuardarMatriz
 
     printMatriz(matriz, cols, rows);
-
+    fprintf(f, "\\section{Result Analysis}");
     int status = 0;
     while (status == 0){
         status = pivot(matriz, cols, rows, maximize);
@@ -354,10 +389,19 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
 
     if (status == 2){
         //Reporte no acotado
+        // fprintf(f, "\\subsection{Unbounded problems}\n");
+        // fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling.\\\\\n");
+        // fprintf(f, "In this case it is found in:");
+        //poner tabla?
     }
     if (status < 0){
         //Soluciones multiples
         // Con (-col) de codigo de status
+        // fprintf(f, "\\subsection{Multiple solutions}\n");
+        // fprintf(f, "It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\\\\n");
+        // fprintf(f, "This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\\\\n");
+        // fprintf(f, "Here is where it happens in this problem:\\\\\n");
+        //poner tabla?
 
         double** solucionOriginal = malloc(sizeof(double*) * rows);
         for (int r = 0; r < rows; ++r){
@@ -379,7 +423,7 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
 
     }
 
-
+    fprintf(f, "\\section{Graph}\n");
     //Dibujo 2D
 
     //Dibujo 3D
