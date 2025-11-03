@@ -17,7 +17,21 @@
 
 
 
+
+
+
+typedef struct {
+    int x;
+    int y;
+    int z;
+} Dot;
+
+
+
+
 /* ################################## TEX ################################### */
+
+
 
 void makeTitle(FILE* f){
 
@@ -33,7 +47,7 @@ void makeTitle(FILE* f){
         "    \\vspace{2cm}\n"
         "\n"
         "    %% Title\n"
-        "    {\\Simplex Algoritm\\par}\n"
+        "    {\\large Simplex Algoritm\\par}\n"
 
         "    \\vspace{2cm}\n"
         "\n"
@@ -58,6 +72,7 @@ void makeTitle(FILE* f){
         "\\end{titlepage}\n"
     );
 }
+
 void documentStart(FILE* f){
     fprintf(f, "\\documentclass{article}\n\n");
 
@@ -67,20 +82,22 @@ void documentStart(FILE* f){
     fprintf(f, "\\usepackage{tikz-network}\n");
     fprintf(f, "\\usepackage{xcolor}\n\n");
     fprintf(f, "\\usepackage{pgfplots}\n\n");
+
     //Document information
     fprintf(f, "\\begin{document}\n");
 
     makeTitle(f);
-    //fprintf(f, "\\title{Graph Theory - Operations Research}\n");
-    //fprintf(f, "\\author{Melissa Carvajal, Carmen Hidalgo \\& Josu\\'e Soto}\n");
-    //fprintf(f, "\\institute{Investigaci\\'on de Operaciones}\n");
-    //fprintf(f, "\\date{2025}\n\n");
 
     //begin
     fprintf(f, "\\definecolor{KirbyPink}{HTML}{D74894}\n");
     fprintf(f, "\\definecolor{LightPink}{HTML}{FFBFBF}\n\n");
-    //fprintf(f, "\\maketitle\n\n");
     fprintf(f, "\\newpage\n\n\n");
+}
+
+void documentEnd(FILE* f){
+    fprintf(f, "\n\n");
+    fprintf(f, "\\end{document}\n");
+    fclose(f);
 }
 
 void introduction(FILE* f){
@@ -95,6 +112,51 @@ void introduction(FILE* f){
     fprintf(f, "\\subsection{George Dantzig}\n");
     fprintf(f, "The American mathematician was born in 1914 and died in 2005. In addition to being the creator of the Simplex algorithm, he was head of the Scientific Computing of Operations Research (SCOOP), where he promoted linear programming for strategic purposes during World War II.\n");
 }
+
+
+void storeMatriz(FILE* f, double** matriz, int amountOfVariables, int cols, int rows){
+
+    fprintf(f, "\\begin{center}\n");
+
+    fprintf(f, "    \\begin{tabular}{|c|");
+    //Tex table structure
+    for (int col = 0; col < cols; ++col){
+        fprintf(f, "c|");
+    }
+    fprintf(f, "}\n");
+
+
+
+    fprintf(f, "        \\hline\n");
+    //Table headers
+    fprintf(f, "        Z ");
+    for (int x = 0; x < amountOfVariables; ++x){
+        fprintf(f, " & $x_{%d}$", x+1);
+    }
+    for (int s = 0; s < amountOfVariables; ++s){
+        fprintf(f, " & $s_{%d}$", s+1);
+    }
+    fprintf(f, " & b");
+    fprintf(f, "\\\\\n        \\hline\n");
+
+
+
+
+    fprintf(f, "        \\hline\n");
+    //Matrix cells
+    for (int row = 0; row < rows; ++row){
+        fprintf(f, "        %.3f", matriz[row][0]);
+        for (int col = 1; col < cols; col++){
+            fprintf(f, "& %.3f", matriz[row][col]);
+        }
+        fprintf(f, "\\\\\n        \\hline\n");
+    }
+    fprintf(f, "    \\end{tabular}\n");
+    fprintf(f, "\\end{center}\n\n\n");
+}
+
+
+
 /* ################################ SIMPLEX ################################# */
 
 typedef struct {
@@ -242,11 +304,7 @@ void printMatriz(double** matriz, int cols, int rows){
     printf("\n");
 }
 
-
-
-
-
-void solucionesMultiples(double** matriz, int cols, int rows, int maximize, double columnaPivoteNegativa){
+void solucionesMultiples(FILE* f, double** matriz, int cols, int rows, int maximize, double columnaPivoteNegativa){
 
     Pivot piv;
     piv.y = -columnaPivoteNegativa;
@@ -270,9 +328,14 @@ void solucionesMultiples(double** matriz, int cols, int rows, int maximize, doub
     }
 }
 
+
+
+
+
+
 /* ################################## SOLS ################################## */
 
-void extractSolutions(double** solucionOriginal, double** matriz, int amountOfVariables, int cols, int rows, int maximize){
+void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int amountOfVariables, int cols, int rows, int maximize){
 
     double* solution1 = malloc(sizeof(double) * amountOfVariables);
     double* solution2 = malloc(sizeof(double) * amountOfVariables);
@@ -290,7 +353,6 @@ void extractSolutions(double** solucionOriginal, double** matriz, int amountOfVa
             }
         }
 
-        printf("Sol[1] Suma: %.20f \n", suma);
         if (suma != 1){
             solution1[col - 1] = 0;
         } else {
@@ -357,19 +419,32 @@ void extractSolutions(double** solucionOriginal, double** matriz, int amountOfVa
 
 /* ################################## MAIN ################################## */
 
+
+void compileTex(){
+    int responseCode = system("pdflatex simplex.tex");
+    if (responseCode == 0){
+        printf("\n\nLatex compiled without problems\n");
+        system("evince --presentation simplex.pdf &");
+    }
+}
+
 void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int maximize){
 
+    FILE* f = fopen("simplex.tex", "w");
 
+    if (!f){
+        printf("Could not write file\n");
+    }
 
-    //Title
+    documentStart(f);
 
-    //Introduction
+    introduction(f);
 
     //Problema (double** matriz, int amountOfVariables, int cols, int rows, int maximize)
 
-    //GuardarMatriz
-
     printMatriz(matriz, cols, rows);
+    storeMatriz(f, matriz, amountOfVariables, cols, rows);
+
     fprintf(f, "\\section{Result Analysis}");
     int status = 0;
     while (status == 0){
@@ -381,6 +456,7 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
         // GuardarMatriz
 
         printMatriz(matriz, cols, rows);
+        storeMatriz(f, matriz, amountOfVariables, cols, rows);
 
         sleep(1);
     }
@@ -388,6 +464,9 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
     //GuardarMatriz Final
 
     if (status == 2){
+
+        fprintf(f, "\\section{Result Analysis}");
+
         //Reporte no acotado
         // fprintf(f, "\\subsection{Unbounded problems}\n");
         // fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling.\\\\\n");
@@ -395,6 +474,9 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
         //poner tabla?
     }
     if (status < 0){
+
+        fprintf(f, "\\section{Multiple Solutions}");
+
         //Soluciones multiples
         // Con (-col) de codigo de status
         // fprintf(f, "\\subsection{Multiple solutions}\n");
@@ -411,12 +493,18 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
             }
         }
 
-        solucionesMultiples(matriz, cols, rows, maximize, status);
+        solucionesMultiples(f, matriz, cols, rows, maximize, status);
+
+        //GuardarMatriz Solucion Original
+        printMatriz(solucionOriginal, cols, rows);
+        storeMatriz(f, solucionOriginal, amountOfVariables, cols, rows);
 
         //GuardarMatriz Solucion 2
         printMatriz(matriz, cols, rows);
+        storeMatriz(f, matriz, amountOfVariables, cols, rows);
 
-        extractSolutions(solucionOriginal, matriz, amountOfVariables, cols, rows, maximize); //Solucion es multiple...
+        extractSolutions(f, solucionOriginal, matriz, amountOfVariables, cols, rows, maximize); //Solucion es multiple...
+
     } else {
 
         //Solucion
@@ -424,12 +512,13 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
     }
 
     fprintf(f, "\\section{Graph}\n");
+
     //Dibujo 2D
 
     //Dibujo 3D
 
-    //CloseDocument
-
+    documentEnd(f);
+    compileTex();
 }
 
 
