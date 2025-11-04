@@ -80,8 +80,10 @@ void documentStart(FILE* f){
     fprintf(f, "\\PassOptionsToPackage{table,svgnames}{xcolor}");
     fprintf(f, "\\usepackage{graphicx}\n");
     fprintf(f, "\\usepackage{tikz-network}\n");
-    fprintf(f, "\\usepackage{xcolor}\n\n");
-    fprintf(f, "\\usepackage{pgfplots}\n\n");
+    fprintf(f, "\\usepackage{xcolor}\n");
+    fprintf(f, "\\usepackage{pgfplots}\n");
+    fprintf(f, "\\usepgfplotslibrary{fillbetween}\n");
+    fprintf(f, "\\usepackage{amsmath}\n\n");
 
     //Document information
     fprintf(f, "\\begin{document}\n");
@@ -114,7 +116,7 @@ void introduction(FILE* f){
 }
 
 
-void storeMatriz(FILE* f, double** matriz, int amountOfVariables, int cols, int rows){
+void storeMatriz(FILE* f, double** matriz, int amountOfVariables, int* restrictions, int cols, int rows){
 
     fprintf(f, "\\begin{center}\n");
 
@@ -133,8 +135,14 @@ void storeMatriz(FILE* f, double** matriz, int amountOfVariables, int cols, int 
     for (int x = 0; x < amountOfVariables; ++x){
         fprintf(f, " & $x_{%d}$", x+1);
     }
-    for (int s = 0; s < amountOfVariables; ++s){
+    for (int s = 0; s < restrictions[0]; ++s){
         fprintf(f, " & $s_{%d}$", s+1);
+    }
+    for (int e = 0; e < restrictions[2]; ++e){
+        fprintf(f, " & $e_{%d}$", e+1);
+    }
+    for (int a = 0; a < restrictions[1] + restrictions[2]; ++a){
+        fprintf(f, " & $a_{%d}$", a+1);
     }
     fprintf(f, " & b");
     fprintf(f, "\\\\\n        \\hline\n");
@@ -410,10 +418,72 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
 
 }
 
+void drawing2D(FILE* f, double** matriz, int x1, int b1, int x2, int b2){
+    fprintf(f, "\\begin{center} \n");
+    fprintf(f, "\\begin{tikzpicture} \n");
+    fprintf(f, "\\begin{axis}[ \n");
+    fprintf(f, "    axis lines = middle,");
+    fprintf(f, "    xlabel=$x$, ylabel=$y$,");
+    fprintf(f, "    xmin=0, xmax=50,");         
+    fprintf(f, "    ymin=0, ymax=50, ");        
+    fprintf(f, "    samples=200,  ");           
+    fprintf(f, "    domain=-5:5,");
+    fprintf(f, "    legend pos=outer north east,");
+    fprintf(f, "]");
 
 
+    fprintf(f, "\\addplot[name path=ineq1, thick, blue] {%d*x + %d}; ", x1, b1);
+    fprintf(f, "\\addplot[name path=lower, draw=none, domain=-50:50] {-5};");
+
+    fprintf(f, "\\addplot[fill=blue!30, opacity=0.5]");
+    fprintf(f, "fill between[of=ineq1 and lower, soft clip={domain=-5:5}];");
+    fprintf(f, "\\addlegendentry{$y \\leq %dx + %d$}", x1, b1);
+
+    fprintf(f, "\\addplot[name path=ineq2, thick, red] {%d*x + %d};", x2, b2);
+    fprintf(f, "\\addplot[name path=upper, draw=none, domain=-5:5] {5};");
+
+    fprintf(f, "\\addplot[fill=red!30, opacity=0.5]");
+    fprintf(f, "fill between[of=ineq2 and upper, soft clip={domain=-5:5}];");
+    fprintf(f, "\\addlegendentry{$y \\geq %dx + %d$}", x2, b2);
+
+    fprintf(f, "\\end{axis}");
+    fprintf(f, "\\end{tikzpicture}");
+    fprintf(f, "\\end{center}");
+
+}
+
+void drawing3D(FILE* f){
+
+    fprintf(f, "\\section{3D Drawing of the Problem}");
+
+    fprintf(f, "\\begin{center}");
+    fprintf(f, "\\begin{adjustbox}{max width=\\textwidth}\n");
+    fprintf(f, "\\begin{tikzpicture}\n");
 
 
+    fprintf(f, "\\begin{axis}[view={45}{45}, xlabel=$x$, ylabel=$y$, zlabel=$z$]\n");
+
+    fprintf(f, "\\addplot3[only marks, scatter, mark=*]\n");
+
+
+        
+    Dot* dots = malloc(sizeof(Dot)*10);
+
+    fprintf(f, "coordinates{\n");
+
+    for (;;){
+
+    }
+
+    fprintf(f, "}\n");
+
+    free(dots);
+
+
+    fprintf(f, "\\end{tikzpicture}\n");
+    fprintf(f, "\\end{adjustbox}\n\n\n");
+    fprintf(f, "\\end{center}\n\n\n");
+}
 
 
 
@@ -428,7 +498,8 @@ void compileTex(){
     }
 }
 
-void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int maximize){
+void runSimplex(double** matriz, int amountOfVariables, int saveMatrixes, int* restrictions, // [0:<, 1:=, 2:>]
+    int cols, int rows, int maximize){
 
     FILE* f = fopen("simplex.tex", "w");
 
@@ -443,7 +514,7 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
     //Problema (double** matriz, int amountOfVariables, int cols, int rows, int maximize)
 
     printMatriz(matriz, cols, rows);
-    storeMatriz(f, matriz, amountOfVariables, cols, rows);
+    storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
 
     fprintf(f, "\\section{Result Analysis}");
     int status = 0;
@@ -452,11 +523,10 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
         
         printf("---------------------------\n");
 
-        // if (Guardar == activado)
-        // GuardarMatriz
-
-        printMatriz(matriz, cols, rows);
-        storeMatriz(f, matriz, amountOfVariables, cols, rows);
+        if (saveMatrixes){
+            printMatriz(matriz, cols, rows);
+            storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
+        }
 
         sleep(1);
     }
@@ -497,11 +567,11 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
 
         //GuardarMatriz Solucion Original
         printMatriz(solucionOriginal, cols, rows);
-        storeMatriz(f, solucionOriginal, amountOfVariables, cols, rows);
+        storeMatriz(f, solucionOriginal, amountOfVariables, restrictions, cols, rows);
 
         //GuardarMatriz Solucion 2
         printMatriz(matriz, cols, rows);
-        storeMatriz(f, matriz, amountOfVariables, cols, rows);
+        storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
 
         extractSolutions(f, solucionOriginal, matriz, amountOfVariables, cols, rows, maximize); //Solucion es multiple...
 
@@ -522,17 +592,8 @@ void runSimplex(double** matriz, int amountOfVariables, int cols, int rows, int 
 }
 
 
-
+/*
 void test1(){
-
-    //Test
-
-    /*
-    double matriz[3][6] = {
-        {1, -3, -4, 0, 0, 0},
-        {0, 1, 1, 1, 0, 40},
-        {0, 1, 2, 0, 1, 60}
-    };*/
 
     int rows = 3;
     int cols = 6;
@@ -805,6 +866,7 @@ void test6(){ //Soluciones multiples
 
     runSimplex(matriz, variables, cols, rows, 1); //max
 }
+*/
 
 void test7(){ //Soluciones multiples
 
@@ -815,6 +877,10 @@ void test7(){ //Soluciones multiples
     for (int r = 0; r < rows; ++r){
         matriz[r] = malloc(sizeof(double) * cols);
     }
+    int* restrictions = malloc(sizeof(int) * 3);
+    restrictions[0] = 2;
+    restrictions[1] = 0;
+    restrictions[2] = 0;
 
     matriz[0][0] = 1;
     matriz[0][1] = -4;
@@ -837,7 +903,7 @@ void test7(){ //Soluciones multiples
     matriz[2][4] = 1;
     matriz[2][5] = 21;
 
-    runSimplex(matriz, variables, cols, rows, 1); //max
+    runSimplex(matriz, variables, 1, restrictions, cols, rows, 1); //max
 }
 
 int main(){
