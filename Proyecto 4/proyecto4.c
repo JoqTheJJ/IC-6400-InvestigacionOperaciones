@@ -386,7 +386,6 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
 
     Pivot piv = escogerPivote(matriz, cols, rows, maximize, tableData);
 
-    printf("Pivote: x:%d, y:%d\n", piv.x, piv.y);
     tableData->x_pivot = piv.x;
     tableData->y_pivot = piv.y;
     tableData->pivot = INVALID_FRACTION;
@@ -404,7 +403,6 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
                     suma += matriz[row][col];
                 }
 
-                printf("Col:%d  Double %.20f\n", col, suma);
                 if (suma != 1){
                     return -col; //Soluciones Multiples
                 }
@@ -439,17 +437,6 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
     return 0; //Pivoteado
 }
 
-void printMatriz(double** matriz, int cols, int rows){
-
-    for (int r = 0; r < rows; ++r){
-        for (int c = 0; c < cols; ++c){
-            printf("%.2f\t", matriz[r][c]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
-
 void solucionesMultiples(FILE* f, double** matriz, int cols, int rows, int maximize, double columnaPivoteNegativa){
 
     Pivot piv;
@@ -459,8 +446,6 @@ void solucionesMultiples(FILE* f, double** matriz, int cols, int rows, int maxim
     piv.x = fractions(matriz, cols, rows, piv.y, tableData);
     free(tableData->fractions);
     free(tableData);
-
-    printf("Pivote Especial: x:%d, y:%d\n", piv.x, piv.y);
 
     pivotRow(matriz[piv.x], piv, cols);
 
@@ -533,30 +518,6 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
         }
     }
 
-
-
-
-    //solution1
-    for (int x = 0; x < amountOfVariables; x++){
-        printf("x%d = %.2f\t", x, solution1[x]);
-    }
-    printf("\n");
-
-    for (int x = 0; x < amountOfVariables; x++){
-        printf("x%d = %.2f\t", x, solution2[x]);
-    }
-    printf("\n");
-
-
-    // double alpha = 0.25;
-    // for (int sol = 0; sol < 3; sol++){
-    //     for (int x = 0; x < amountOfVariables; x++){
-    //         double value = solution1[x]*alpha + solution2[x]*(1-alpha);
-    //         printf("x%d = %.2f\t", x, value);
-    //     }
-    //     printf("\n");
-    //     alpha += 0.25;
-    // }
 
     fprintf(f, "\\textbf{Ecuation} \n");
     fprintf(f, "$$\n");
@@ -666,9 +627,10 @@ void drawing3D(FILE* f){
 
 
 void compileTex(){
-    int responseCode = system("pdflatex simplex.tex");
+    printf("->] Compiling...\n");
+    int responseCode = system("pdflatex -file-line-error -interaction=batchmode -halt-on-error simplex.tex >/dev/null 2>&1");
     if (responseCode == 0){
-        printf("\n\nLatex compiled without problems\n");
+        printf("->] Latex compiled without problems\n");
         system("evince --presentation simplex.pdf &");
     }
 }
@@ -704,19 +666,8 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         tableData->pivot = INVALID_FRACTION;
 
         status = pivot(matriz, cols, rows, maximize, tableData);
-        
-        printf("---------------------------\n");
 
-        //printMatriz(matriz, rows, cols);
-
-        printf("x: %d\n", tableData->x_pivot);
-        printf("y: %d\n", tableData->y_pivot);
-        for (int row = 0; row < rows-1; ++row){
-            printf("fraction%d: %.2f\n", row, tableData->fractions[row]);
-        }
-        printf("pivot: %.2f\n", tableData->pivot);
-
-        if (saveMatrixes){
+        if (saveMatrixes && status == 0){
             storeIntermediateMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows, tableData);
         }
 
