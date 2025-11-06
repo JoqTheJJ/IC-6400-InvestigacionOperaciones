@@ -13,10 +13,7 @@
 #include <cairo.h>
 #include <ctype.h>
 
-
-
-
-
+#define INVALID_FRACTION 1125899906842624
 
 
 
@@ -179,7 +176,7 @@ void problem(FILE* f, double** matriz, char* problemName, char** variableNames, 
 
 }
 
-void storeMatriz(FILE* f, double** matriz, int amountOfVariables, int* restrictions, int cols, int rows){
+void storeMatriz(FILE* f, double** matriz, char** varNames, int amountOfVariables, int* restrictions, int cols, int rows){
 
     fprintf(f, "\\begin{center}\n");
 
@@ -195,9 +192,14 @@ void storeMatriz(FILE* f, double** matriz, int amountOfVariables, int* restricti
     fprintf(f, "        \\hline\n");
     //Table headers
     fprintf(f, "        Z ");
+    /*
     for (int x = 0; x < amountOfVariables; ++x){
         fprintf(f, " & $x_{%d}$", x+1);
+    }*/
+    for (int x = 0; x < amountOfVariables; ++x){
+        fprintf(f, " & $%s$", varNames[x]);
     }
+
     for (int s = 0; s < restrictions[0]; ++s){
         fprintf(f, " & $s_{%d}$", s+1);
     }
@@ -226,6 +228,76 @@ void storeMatriz(FILE* f, double** matriz, int amountOfVariables, int* restricti
     fprintf(f, "\\end{center}\n\n\n");
 }
 
+void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amountOfVariables, int* restrictions, int cols, int rows, TableData* td){
+
+    fprintf(f, "\\begin{center}\n");
+
+    fprintf(f, "    \\begin{tabular}{|c|");
+    //Tex table structure
+    for (int col = 0; col < cols; ++col){
+        fprintf(f, "c|");
+    }
+    fprintf(f, "}\n");
+
+
+
+    fprintf(f, "        \\hline\n");
+    //Table headers
+    fprintf(f, "        Z ");
+    /*
+    for (int x = 0; x < amountOfVariables; ++x){
+        fprintf(f, " & $x_{%d}$", x+1);
+    }*/
+    for (int x = 0; x < amountOfVariables; ++x){
+        fprintf(f, " & $%s$", varNames[x]);
+    }
+
+    for (int s = 0; s < restrictions[0]; ++s){
+        fprintf(f, " & $s_{%d}$", s+1);
+    }
+    for (int e = 0; e < restrictions[2]; ++e){
+        fprintf(f, " & $e_{%d}$", e+1);
+    }
+    for (int a = 0; a < restrictions[1] + restrictions[2]; ++a){
+        fprintf(f, " & $a_{%d}$", a+1);
+    }
+    fprintf(f, " & b");
+    fprintf(f, "\\\\\n        \\hline\n");
+
+    
+
+
+
+
+    fprintf(f, "        \\hline\n");
+    //Matrix cells
+    for (int row = 0; row < rows; ++row){
+        fprintf(f, "        %.3f", matriz[row][0]);
+        for (int col = 1; col < cols; col++){
+
+            double value = matriz[row][col];
+            int x = td->x_pivot;
+            int y = td->y_pivot;
+
+            if (y == col){
+                if (x == row){ //Pivote
+                    fprintf(f, "& \\cellcolor{KirbyPink}$%.3f$ ", value);
+                } else { //Columna seleccionada
+                    fprintf(f, "& \\cellcolor{LightPink}$%.3f$ ", value);
+                }
+            } else { //Celda normal
+                fprintf(f, "& %.3f", value);
+            }
+            
+        }
+        fprintf(f, "\\\\\n        \\hline\n");
+    }
+    fprintf(f, "    \\end{tabular}\n");
+    fprintf(f, "\\end{center}\n\n\n");
+
+
+}
+
 
 
 /* ################################ SIMPLEX ################################# */
@@ -245,17 +317,13 @@ void pivotRow(double* fila, Pivot piv, int cols){
     }
 }
 
-int fractions(double** matriz, int cols, int rows, int y, TableData tableData){
+int fractions(double** matriz, int cols, int rows, int y, TableData* tableData){
 
-    double min = 1125899906842624;
+    double min = INVALID_FRACTION; //Big number for overwrite
     int decisiones = 0;
     int x = -1;
     for (int r = 1; r < rows; ++r){
         double frac = matriz[r][cols-1] / matriz[r][y];
-
-        if (frac == INVALID){
-            frac = INVALID;
-        }
 
         tableData->fractions[r-1] = frac;
 
@@ -266,7 +334,7 @@ int fractions(double** matriz, int cols, int rows, int y, TableData tableData){
             x = r;
             decisiones = 0;
 
-        } else if (matriz[r][y] > 0 && frac >= 0 && min == 1125899906842624){ //0 degenerado
+        } else if (matriz[r][y] > 0 && frac >= 0 && min == INVALID_FRACTION){ //0 degenerado
             // frac < min escoge en primero en caso de empate
 
             min = frac;
@@ -281,7 +349,7 @@ int fractions(double** matriz, int cols, int rows, int y, TableData tableData){
     return x;
 }
 
-Pivot escogerPivote(double** matriz, int cols, int rows, int maximize, TableData tableData){
+Pivot escogerPivote(double** matriz, int cols, int rows, int maximize, TableData* tableData){
 
     Pivot piv;
     piv.x = -1;
@@ -319,9 +387,9 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
     Pivot piv = escogerPivote(matriz, cols, rows, maximize, tableData);
 
     printf("Pivote: x:%d, y:%d\n", piv.x, piv.y);
-    tableData->x = piv.x;
-    tableData->y = piv.y;
-    tableData->pivot = matriz[piv.x][piv.y];
+    tableData->x_pivot = piv.x;
+    tableData->y_pivot = piv.y;
+    tableData->pivot = INVALID_FRACTION;
 
     if (piv.x == -1 && piv.y == -1){
         //Revisar soluciones multiples
@@ -342,8 +410,6 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
                 }
             }
         }
-
-
     }
 
     if (piv.y == -1){
@@ -352,7 +418,7 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
     if (piv.x == -1){
         return 2; //No acotado
     }
-
+    tableData->pivot = matriz[piv.x][piv.y];
 
 
     pivotRow(matriz[piv.x], piv, cols);
@@ -388,7 +454,11 @@ void solucionesMultiples(FILE* f, double** matriz, int cols, int rows, int maxim
 
     Pivot piv;
     piv.y = -columnaPivoteNegativa;
-    piv.x = fractions(matriz, cols, rows, piv.y);
+    TableData* tableData = malloc(sizeof(TableData));
+    tableData->fractions = malloc(sizeof(double)*(rows-1));
+    piv.x = fractions(matriz, cols, rows, piv.y, tableData);
+    free(tableData->fractions);
+    free(tableData);
 
     printf("Pivote Especial: x:%d, y:%d\n", piv.x, piv.y);
 
@@ -620,23 +690,39 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     cols, rows, maximize);
 
     fprintf(f, "\\section{Initial Matrix}");
-    storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
+    storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
 
     fprintf(f, "\\section{Result Analysis}");
     int status = 0;
     TableData* tableData = malloc(sizeof(TableData));
-    tableData.fractions = malloc(sizeof(double)*(rows-1));
+    tableData->fractions = malloc(sizeof(double)*(rows-1));
     while (status == 0){
+
+        for (int row = 0; row < rows-1; ++row){
+            tableData->fractions[row] = INVALID_FRACTION;
+        }
+        tableData->pivot = INVALID_FRACTION;
+
         status = pivot(matriz, cols, rows, maximize, tableData);
         
         printf("---------------------------\n");
 
+        //printMatriz(matriz, rows, cols);
+
+        printf("x: %d\n", tableData->x_pivot);
+        printf("y: %d\n", tableData->y_pivot);
+        for (int row = 0; row < rows-1; ++row){
+            printf("fraction%d: %.2f\n", row, tableData->fractions[row]);
+        }
+        printf("pivot: %.2f\n", tableData->pivot);
+
         if (saveMatrixes){
-            storeIntermediateMatriz(f, matriz, amountOfVariables, restrictions, cols, rows, tableData);
+            storeIntermediateMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows, tableData);
         }
 
         sleep(1);
     }
+    free(tableData);
 
     //GuardarMatriz Final
 
@@ -649,7 +735,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling.\\\\\n");
         fprintf(f, "In this case it is found in:");
         //poner tabla?
-        storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
+        storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
     }
     if (status < 0){
 
@@ -663,7 +749,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         fprintf(f, "This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\\\\n");
         fprintf(f, "Here is where it happens in this problem: \n");
 
-
+        
         double** solucionOriginal = malloc(sizeof(double*) * rows);
         for (int r = 0; r < rows; ++r){
             solucionOriginal[r] = malloc(sizeof(double) * cols);
@@ -677,11 +763,11 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
         //GuardarMatriz Solucion Original
         fprintf(f, "\\subsection{First solution table}\n");
-        storeMatriz(f, solucionOriginal, amountOfVariables, restrictions, cols, rows);
+        storeMatriz(f, solucionOriginal, variableNames, amountOfVariables, restrictions, cols, rows);
 
         //GuardarMatriz Solucion 2
         fprintf(f, "\\subsection{Second solution table}\n");
-        storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
+        storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
 
         //Multiple solutions with alpha
         fprintf(f, "\\subsection{Equation and Solutions}\n");
@@ -710,282 +796,6 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     compileTex();
 }
 
-
-/*
-void test1(){
-
-    int rows = 3;
-    int cols = 6;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    matriz[0][0] = 1;
-    matriz[0][1] = -3;
-    matriz[0][2] = -4;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 1;
-    matriz[1][2] = 1;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 40;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 1;
-    matriz[2][2] = 2;
-    matriz[2][3] = 0;
-    matriz[2][4] = 1;
-    matriz[2][5] = 60;
-
-
-    runSimplex(matriz, 0, cols, rows, 1);
-}
-
-void test2(){
-
-    int rows = 3;
-    int cols = 6;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    matriz[0][0] = 1;
-    matriz[0][1] = -2;
-    matriz[0][2] = 3;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 1;
-    matriz[1][2] = 1;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 4;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 1;
-    matriz[2][2] = -1;
-    matriz[2][3] = 0;
-    matriz[2][4] = 1;
-    matriz[2][5] = 6;
-
-
-    runSimplex(matriz, 0, cols, rows, 0);
-}
-
-void test3(){
-
-    int rows = 4;
-    int cols = 10;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    matriz[0][0] = 1;
-    matriz[0][1] = 5;
-    matriz[0][2] = 10;
-    matriz[0][3] = -1;
-    matriz[0][4] = -5;
-    matriz[0][5] = -20;
-    matriz[0][6] = 0;
-    matriz[0][7] = 0;
-    matriz[0][8] = 0;
-    matriz[0][9] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 2;
-    matriz[1][2] = 1;
-    matriz[1][3] = 0;
-    matriz[1][4] = 0;
-    matriz[1][5] = 0;
-    matriz[1][6] = 1;
-    matriz[1][7] = 0;
-    matriz[1][8] = 0;
-    matriz[1][9] = 10;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 5;
-    matriz[2][2] = 0;
-    matriz[2][3] = -1;
-    matriz[2][4] = 0;
-    matriz[2][5] = -3;
-    matriz[2][6] = 0;
-    matriz[2][7] = 1;
-    matriz[2][8] = 0;
-    matriz[2][9] = 10;
-
-    matriz[3][0] = 0;
-    matriz[3][1] = 0;
-    matriz[3][2] = 2;
-    matriz[3][3] = 0;
-    matriz[3][4] = -1;
-    matriz[3][5] = 0;
-    matriz[3][6] = 0;
-    matriz[3][7] = 0;
-    matriz[3][8] = 1;
-    matriz[3][9] = 2;
-
-
-    runSimplex(matriz, 0, cols, rows, 0);
-}
-
-void test4(){
-
-    int rows = 3;
-    int cols = 8;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    matriz[0][0] = 1;
-    matriz[0][1] = -36;
-    matriz[0][2] = -30;
-    matriz[0][3] = 3;
-    matriz[0][4] = 4;
-    matriz[0][5] = 0;
-    matriz[0][6] = 0;
-    matriz[0][7] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 1;
-    matriz[1][2] = 1;
-    matriz[1][3] = -1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 1;
-    matriz[1][6] = 0;
-    matriz[1][7] = 5;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 6;
-    matriz[2][2] = 5;
-    matriz[2][3] = 0;
-    matriz[2][4] = -1;
-    matriz[2][5] = 0;
-    matriz[2][6] = 1;
-    matriz[2][7] = 10;
-
-
-    runSimplex(matriz, 0, cols, rows, 1); //max
-}
-
-void test5(){
-
-    int rows = 4;
-    int cols = 7;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    matriz[0][0] = 1;
-    matriz[0][1] = -2;
-    matriz[0][2] = -1;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-    matriz[0][6] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 3;
-    matriz[1][2] = 1;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 0;
-    matriz[1][6] = 6;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 1;
-    matriz[2][2] = -1;
-    matriz[2][3] = 0;
-    matriz[2][4] = 1;
-    matriz[2][5] = 0;
-    matriz[2][6] = 2;
-
-    matriz[3][0] = 0;
-    matriz[3][1] = 0;
-    matriz[3][2] = 1;
-    matriz[3][3] = 0;
-    matriz[3][4] = 0;
-    matriz[3][5] = 1;
-    matriz[3][6] = 3;
-
-
-    runSimplex(matriz, 0, cols, rows, 1); //max
-}
-
-void test6(){ //Soluciones multiples
-
-    int rows = 5;
-    int cols = 9;
-    int variables = 3;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    matriz[0][0] = 1;
-    matriz[0][1] = -60;
-    matriz[0][2] = -35;
-    matriz[0][3] = -20;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-    matriz[0][6] = 0;
-    matriz[0][7] = 0;
-    matriz[0][8] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 8;
-    matriz[1][2] = 6;
-    matriz[1][3] = 1;
-    matriz[1][4] = 1;
-    matriz[1][5] = 0;
-    matriz[1][6] = 0;
-    matriz[1][7] = 0;
-    matriz[1][8] = 48;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 4;
-    matriz[2][2] = 2;
-    matriz[2][3] = 1.5;
-    matriz[2][4] = 0;
-    matriz[2][5] = 1;
-    matriz[2][6] = 0;
-    matriz[2][7] = 0;
-    matriz[2][8] = 20;
-
-    matriz[3][0] = 0;
-    matriz[3][1] = 2;
-    matriz[3][2] = 1.5;
-    matriz[3][3] = 0.5;
-    matriz[3][4] = 0;
-    matriz[3][5] = 0;
-    matriz[3][6] = 1;
-    matriz[3][7] = 0;
-    matriz[3][8] = 8;
-
-    matriz[4][0] = 0;
-    matriz[4][1] = 0;
-    matriz[4][2] = 1;
-    matriz[4][3] = 0;
-    matriz[4][4] = 0;
-    matriz[4][5] = 0;
-    matriz[4][6] = 0;
-    matriz[4][7] = 1;
-    matriz[4][8] = 5;
-
-
-    runSimplex(matriz, variables, cols, rows, 1); //max
-}
-*/
 
 void test7(){ //Soluciones multiples
 
