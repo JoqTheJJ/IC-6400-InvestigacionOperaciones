@@ -55,6 +55,22 @@ Given the time of its development, it was essentially thought to be solved by ha
 \subsection{George Dantzig}
 The American mathematician was born in 1914 and died in 2005. In addition to being the creator of the Simplex algorithm, he was head of the Scientific Computing of Operations Research (SCOOP), where he promoted linear programming for strategic purposes during World War II.
 \begin{center}
+\includegraphics[width=0.25\textwidth]{R.jpg}
+\end{center}
+\section{Problem: Hi I am testy the test}
+The problem inputted by the user is called \textquotedblleft Hi I am testy the test\textquotedblright and consists of maximizing the following fuction:
+
+$Z = AA \cdot -4.000000 + BB \cdot -14.000000$
+
+
+Subject to:
+
+
+$AA \cdot 2.000000 + BB \cdot 7.000000 \leq 21.000000$
+
+$AA \cdot 7.000000 + BB \cdot 2.000000 \leq 21.000000$
+
+\section{Initial Matrix}\begin{center}
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
         Z  & $x_{1}$ & $x_{2}$ & $s_{1}$ & $s_{2}$ & b\\
@@ -102,7 +118,12 @@ The American mathematician was born in 1914 and died in 2005. In addition to bei
 \end{center}
 
 
-\section{Multiple Solutions}\begin{center}
+\section{Multiple Solutions}\subsection{Explanation}
+It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\
+This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\
+Here is where it happens in this problem: 
+\subsection{First solution table}
+\begin{center}
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
         Z  & $x_{1}$ & $x_{2}$ & $s_{1}$ & $s_{2}$ & b\\
@@ -118,6 +139,7 @@ The American mathematician was born in 1914 and died in 2005. In addition to bei
 \end{center}
 
 
+\subsection{Second solution table}
 \begin{center}
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
@@ -133,6 +155,35 @@ The American mathematician was born in 1914 and died in 2005. In addition to bei
     \end{tabular}
 \end{center}
 
+
+\subsection{Equation and Solutions}
+\textbf{Ecuation} 
+$$
+x = \alpha \cdot 
+\begin{bmatrix}
+3.00 \\ 0.00 \\ \end{bmatrix}
++ (1 - \alpha) \cdot 
+\begin{bmatrix}
+2.33 \\ 0.00 \\  \end{bmatrix}
+$$
+\textbf{Other solutions} 
+$$\alpha = 0.25 \Rightarrow x = 
+\begin{bmatrix}
+1.75 \\ 2.50 \\ 
+\end{bmatrix}
+$$
+
+$$\alpha = 0.50 \Rightarrow x = 
+\begin{bmatrix}
+1.17 \\ 2.67 \\ 
+\end{bmatrix}
+$$
+
+$$\alpha = 0.75 \Rightarrow x = 
+\begin{bmatrix}
+0.58 \\ 2.83 \\ 
+\end{bmatrix}
+$$
 
 \section{Graph}
 

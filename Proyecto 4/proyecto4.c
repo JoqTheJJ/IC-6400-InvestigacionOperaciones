@@ -26,6 +26,12 @@ typedef struct {
     int z;
 } Dot;
 
+typedef struct {
+    int x_pivot, y_pivot;
+    double* fractions;
+    double pivot;
+} TableData;
+
 
 
 
@@ -113,8 +119,65 @@ void introduction(FILE* f){
 
     fprintf(f, "\\subsection{George Dantzig}\n");
     fprintf(f, "The American mathematician was born in 1914 and died in 2005. In addition to being the creator of the Simplex algorithm, he was head of the Scientific Computing of Operations Research (SCOOP), where he promoted linear programming for strategic purposes during World War II.\n");
+
+       
+    fprintf(f, "\\begin{center}\n");
+    fprintf(f, "\\includegraphics[width=0.25\\textwidth]{R.jpg}\n");
+    fprintf(f, "\\end{center}\n");
+
 }
 
+void problem(FILE* f, double** matriz, char* problemName, char** variableNames, int amountOfVariables, int saveMatrixes, int* restrictions, // [0:<, 1:=, 2:>]
+    int cols, int rows, int maximize){
+
+    fprintf(f, "\\section{Problem: %s}\n", problemName);
+
+
+    char* verb = maximize ? "maximizing\0" : "minimizing\0" ;
+
+    fprintf(f, "The problem inputted by the user is called \\textquotedblleft %s\\textquotedblright and consists of %s the following fuction:\n\n", problemName, verb);
+
+    
+
+    fprintf(f, "$");
+    fprintf(f, "Z = %s \\cdot %2f", variableNames[0], matriz[0][1]);
+    for (int var = 1; var < amountOfVariables; ++var){
+        fprintf(f, " + %s \\cdot %2f", variableNames[var], matriz[0][var+1]);
+    }
+    fprintf(f, "$\n\n\n");
+
+    fprintf(f, "Subject to:\n\n\n");
+
+
+
+    //row0 does not have restriction (Z)
+    for (int restriction = 1; restriction < rows; ++restriction){
+        fprintf(f, "$");
+        int first = 1;
+
+        for (int var = 1; var < amountOfVariables + 1; ++var){
+            if (var != 0){
+                if (first){
+                    first = 0;
+                } else {
+                    fprintf(f, " + ");
+                }
+                
+                fprintf(f, "%s \\cdot %2f", variableNames[var-1], matriz[restriction][var]);
+            }
+        }
+        
+        if (1){ // leq
+            fprintf(f, " \\leq ");
+        }
+        fprintf(f, "%2f", matriz[restriction][cols-1]);
+
+        fprintf(f, "$\n\n");
+    }
+
+
+
+}
 
 void storeMatriz(FILE* f, double** matriz, int amountOfVariables, int* restrictions, int cols, int rows){
 
@@ -182,13 +245,19 @@ void pivotRow(double* fila, Pivot piv, int cols){
     }
 }
 
-int fractions(double** matriz, int cols, int rows, int y){
+int fractions(double** matriz, int cols, int rows, int y, TableData tableData){
 
     double min = 1125899906842624;
     int decisiones = 0;
     int x = -1;
     for (int r = 1; r < rows; ++r){
         double frac = matriz[r][cols-1] / matriz[r][y];
+
+        if (frac == INVALID){
+            frac = INVALID;
+        }
+
+        tableData->fractions[r-1] = frac;
 
         if (matriz[r][y] > 0 && frac > 0 && frac < min){ //b positivo
             // frac < min escoge en primero en caso de empate
@@ -212,7 +281,7 @@ int fractions(double** matriz, int cols, int rows, int y){
     return x;
 }
 
-Pivot escogerPivote(double** matriz, int cols, int rows, int maximize){
+Pivot escogerPivote(double** matriz, int cols, int rows, int maximize, TableData tableData){
 
     Pivot piv;
     piv.x = -1;
@@ -238,18 +307,21 @@ Pivot escogerPivote(double** matriz, int cols, int rows, int maximize){
     }
 
     if (piv.y != -1){
-        piv.x = fractions(matriz, cols, rows, piv.y);
+        piv.x = fractions(matriz, cols, rows, piv.y, tableData);
     }
 
     return piv;
 }
 
-int pivot(double** matriz, int cols, int rows, int maximize){
+int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableData){
     //maximize defines if true maximizes the z function
 
-    Pivot piv = escogerPivote(matriz, cols, rows, maximize);
+    Pivot piv = escogerPivote(matriz, cols, rows, maximize, tableData);
 
     printf("Pivote: x:%d, y:%d\n", piv.x, piv.y);
+    tableData->x = piv.x;
+    tableData->y = piv.y;
+    tableData->pivot = matriz[piv.x][piv.y];
 
     if (piv.x == -1 && piv.y == -1){
         //Revisar soluciones multiples
@@ -406,13 +478,46 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
     printf("\n");
 
 
+    // double alpha = 0.25;
+    // for (int sol = 0; sol < 3; sol++){
+    //     for (int x = 0; x < amountOfVariables; x++){
+    //         double value = solution1[x]*alpha + solution2[x]*(1-alpha);
+    //         printf("x%d = %.2f\t", x, value);
+    //     }
+    //     printf("\n");
+    //     alpha += 0.25;
+    // }
+
+    fprintf(f, "\\textbf{Ecuation} \n");
+    fprintf(f, "$$\n");
+    fprintf(f, "x = \\alpha \\cdot \n");
+    fprintf(f, "\\begin{bmatrix}\n");
+    for (int i = 1; i <= amountOfVariables; ++i){
+        fprintf(f, "%.2f \\\\ ", solution1[i]);
+    }
+    fprintf(f, "\\end{bmatrix}\n");
+    fprintf(f, "+ (1 - \\alpha) \\cdot \n");
+    fprintf(f, "\\begin{bmatrix}\n");
+    for (int i = 1; i <= amountOfVariables; ++i){
+        fprintf(f, "%.2f \\\\ ", solution2[i]);
+    }
+    fprintf(f, " \\end{bmatrix}\n");
+    fprintf(f, "$$\n");
+
+
+    fprintf(f, "\\textbf{Other solutions} \n");
     double alpha = 0.25;
     for (int sol = 0; sol < 3; sol++){
+        fprintf(f, "$$\\alpha = %.2f \\Rightarrow x = \n", alpha);
+        fprintf(f, "\\begin{bmatrix}\n");
+
         for (int x = 0; x < amountOfVariables; x++){
-            double value = solution1[x]*alpha + solution2[x]*(1-alpha);
-            printf("x%d = %.2f\t", x, value);
+            double value = solution1[x] * alpha + solution2[x] * (1 - alpha);
+            fprintf(f, "%.2f \\\\ ", value);
         }
-        printf("\n");
+
+        fprintf(f, "\n\\end{bmatrix}\n");
+        fprintf(f, "$$\n\n");
         alpha += 0.25;
     }
 
@@ -498,7 +603,7 @@ void compileTex(){
     }
 }
 
-void runSimplex(double** matriz, int amountOfVariables, int saveMatrixes, int* restrictions, // [0:<, 1:=, 2:>]
+void runSimplex(double** matriz, char* problemName, char** variableNames, int amountOfVariables, int saveMatrixes, int* restrictions, // [0:<, 1:=, 2:>]
     int cols, int rows, int maximize){
 
     FILE* f = fopen("simplex.tex", "w");
@@ -511,21 +616,23 @@ void runSimplex(double** matriz, int amountOfVariables, int saveMatrixes, int* r
 
     introduction(f);
 
-    //Problema (double** matriz, int amountOfVariables, int cols, int rows, int maximize)
+    problem(f, matriz, problemName, variableNames, amountOfVariables, saveMatrixes, restrictions, // [0:<, 1:=, 2:>]
+    cols, rows, maximize);
 
-    printMatriz(matriz, cols, rows);
+    fprintf(f, "\\section{Initial Matrix}");
     storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
 
     fprintf(f, "\\section{Result Analysis}");
     int status = 0;
+    TableData* tableData = malloc(sizeof(TableData));
+    tableData.fractions = malloc(sizeof(double)*(rows-1));
     while (status == 0){
-        status = pivot(matriz, cols, rows, maximize);
+        status = pivot(matriz, cols, rows, maximize, tableData);
         
         printf("---------------------------\n");
 
         if (saveMatrixes){
-            printMatriz(matriz, cols, rows);
-            storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
+            storeIntermediateMatriz(f, matriz, amountOfVariables, restrictions, cols, rows, tableData);
         }
 
         sleep(1);
@@ -538,10 +645,11 @@ void runSimplex(double** matriz, int amountOfVariables, int saveMatrixes, int* r
         fprintf(f, "\\section{Result Analysis}");
 
         //Reporte no acotado
-        // fprintf(f, "\\subsection{Unbounded problems}\n");
-        // fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling.\\\\\n");
-        // fprintf(f, "In this case it is found in:");
+        fprintf(f, "\\subsection{Unbounded problems}\n");
+        fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling.\\\\\n");
+        fprintf(f, "In this case it is found in:");
         //poner tabla?
+        storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
     }
     if (status < 0){
 
@@ -549,11 +657,12 @@ void runSimplex(double** matriz, int amountOfVariables, int saveMatrixes, int* r
 
         //Soluciones multiples
         // Con (-col) de codigo de status
-        // fprintf(f, "\\subsection{Multiple solutions}\n");
-        // fprintf(f, "It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\\\\n");
-        // fprintf(f, "This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\\\\n");
-        // fprintf(f, "Here is where it happens in this problem:\\\\\n");
-        //poner tabla?
+        
+        fprintf(f, "\\subsection{Explanation}\n");
+        fprintf(f, "It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\\\\n");
+        fprintf(f, "This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\\\\n");
+        fprintf(f, "Here is where it happens in this problem: \n");
+
 
         double** solucionOriginal = malloc(sizeof(double*) * rows);
         for (int r = 0; r < rows; ++r){
@@ -563,21 +672,31 @@ void runSimplex(double** matriz, int amountOfVariables, int saveMatrixes, int* r
             }
         }
 
+        //Calculate multiple solutions
         solucionesMultiples(f, matriz, cols, rows, maximize, status);
 
         //GuardarMatriz Solucion Original
-        printMatriz(solucionOriginal, cols, rows);
+        fprintf(f, "\\subsection{First solution table}\n");
         storeMatriz(f, solucionOriginal, amountOfVariables, restrictions, cols, rows);
 
         //GuardarMatriz Solucion 2
-        printMatriz(matriz, cols, rows);
+        fprintf(f, "\\subsection{Second solution table}\n");
         storeMatriz(f, matriz, amountOfVariables, restrictions, cols, rows);
 
-        extractSolutions(f, solucionOriginal, matriz, amountOfVariables, cols, rows, maximize); //Solucion es multiple...
+        //Multiple solutions with alpha
+        fprintf(f, "\\subsection{Equation and Solutions}\n");
+        extractSolutions(f, solucionOriginal, matriz, amountOfVariables, cols, rows, maximize);
 
     } else {
 
         //Solucion
+
+        fprintf(f, "\\section{Unique Solution}");
+
+        fprintf(f, "\\subsection{Multiple solutions}\n");
+        fprintf(f, "It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\\\\n");
+        fprintf(f, "This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\\\\n");
+        fprintf(f, "Here is where it happens in this problem: \n");
 
     }
 
@@ -877,6 +996,11 @@ void test7(){ //Soluciones multiples
     for (int r = 0; r < rows; ++r){
         matriz[r] = malloc(sizeof(double) * cols);
     }
+
+    char* varNames[2];
+    varNames[0] = "AA";
+    varNames[1] = "BB";
+
     int* restrictions = malloc(sizeof(int) * 3);
     restrictions[0] = 2;
     restrictions[1] = 0;
@@ -903,7 +1027,7 @@ void test7(){ //Soluciones multiples
     matriz[2][4] = 1;
     matriz[2][5] = 21;
 
-    runSimplex(matriz, variables, 1, restrictions, cols, rows, 1); //max
+    runSimplex(matriz, "Hi I am testy the test", varNames, variables, 1, restrictions, cols, rows, 1); //max
 }
 
 int main(){
