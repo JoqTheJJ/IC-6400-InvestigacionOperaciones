@@ -249,10 +249,11 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
     for (int x = 0; x < amountOfVariables; ++x){
         fprintf(f, " & $x_{%d}$", x+1);
     }*/
-    for (int x = 0; x < amountOfVariables; ++x){
+    for (int x = 0; x < cols - 2; ++x){
         fprintf(f, " & $%s$", varNames[x]);
     }
 
+    /*
     for (int s = 0; s < restrictions[0]; ++s){
         fprintf(f, " & $s_{%d}$", s+1);
     }
@@ -261,7 +262,7 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
     }
     for (int a = 0; a < restrictions[1] + restrictions[2]; ++a){
         fprintf(f, " & $a_{%d}$", a+1);
-    }
+    }*/
     fprintf(f, " & b");
     fprintf(f, "\\\\\n        \\hline\n");
 
@@ -638,33 +639,36 @@ void compileTex(){
 
 char** processNames(char** variableNames, int rows, int cols, int amountOfVariables, int* restrictions){
 
-    char** names = malloc(sizeof(char*)*(cols-1));
-    for (int name = 0; name < cols-1; ++name){
-        names[name] = malloc(sizeof(char)*50);
-    }
+    char** names = malloc(sizeof(char*)*(cols-2));
+    int totalRestrictions = cols - 1 - amountOfVariables - 1;
 
     int index = 0;
     for (int x = 0; x < amountOfVariables; ++x){
-        names[x] = variableNames[x];
-        index = x;
+        names[index] = variableNames[x];
+        index++;
     }
 
-    for (int restrictionIndex = 0; index < cols ; ++restrictionIndex){
+    for (int r = 0; r < totalRestrictions; ++r){
 
-        if (restrictions[restrictionIndex] == 0){
-            char* oldname = variableNames[restrictionIndex];
+        if (restrictions[r] == 0){
+            char* oldname = variableNames[r];
             size_t need = strlen(oldname) + 3; //"S_" + \0
             names[index] = malloc(need);
             snprintf(names[index], need, "S_%s", oldname);
 
-        } else if (restrictions[restrictionIndex] == 1){
-            //NOT IMPLEMENTED YET
+        } else if (restrictions[r] == 1){
+            char* oldname = variableNames[r];
+            size_t need = strlen(oldname) + 3; //"A_" + \0
+            names[index] = malloc(need);
+            snprintf(names[index], need, "A_%s", oldname);
 
-        } else if (restrictions[restrictionIndex] == 2){
-            //NOT IMPLEMENTED YET
+        } else if (restrictions[r] == 2){
+            char* oldname = variableNames[r];
+            size_t need = strlen(oldname) + 3; //"E_" + \0
+            names[index] = malloc(need);
+            snprintf(names[index], need, "E_%s", oldname);
 
         }
-
         index++;
     }
 
