@@ -1302,7 +1302,7 @@ static void on_latex_file_clicked(GtkButton *btn, gpointer user_data) {
     print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
 
     // Call Simplex routine
-    runSimplex(A, pname, vnames, nvars + rows - 1, saveInter, ops, cols, rows, maximize);
+    runSimplex(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
 
     // Cleanup
     free_dmatrix(A);
