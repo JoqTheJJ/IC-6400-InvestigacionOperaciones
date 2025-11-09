@@ -791,9 +791,9 @@ void test7(){ //Soluciones multiples
     runSimplex(matriz, "Hi I am testy the test", varNames, variables, 1, restrictions, cols, rows, 1); //max
 }
 
-int main(){
+/*int main(){
 
     test7();
 
     return 0;
-}
+}*/

@@ -1,4 +1,5 @@
-SRC := $(wildcard *.c)
+SRC := $(filter-out proyecto4.c,$(wildcard *.c))
+%SRC := $(wildcard *.c)
 
 EXE := $(SRC:.c=)
 
@@ -15,4 +16,4 @@ clean:
 	rm -f $(EXE)
 
 run:
-	./proyecto4
+	./programa-4
