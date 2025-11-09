@@ -639,7 +639,7 @@ void compileTex(){
 char** processNames(char** variableNames, int rows, int cols, int amountOfVariables, int* restrictions){
 
     char** names = malloc(sizeof(char*)*(cols-1));
-    for (int name = 0; name < cols-1; ++name){
+    for (int name; name < cols-1; ++name){
         names[name] = malloc(sizeof(char)*50);
     }
 
@@ -830,9 +830,10 @@ void test7(){ //Soluciones multiples
     runSimplex(matriz, "Hi I am testy the test", varNames, variables, 1, restrictions, cols, rows, 1); //max
 }
 
-/*int main(){
+
+int main(){
 
     test7();
 
     return 0;
-}*/
+}
