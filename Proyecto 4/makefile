@@ -1,4 +1,4 @@
-SRC := $(filter-out proyecto4.c,$(wildcard *.c))
+SRC := $(filter-out simplex.c,$(wildcard *.c))
 %SRC := $(wildcard *.c)
 
 EXE := $(SRC:.c=)

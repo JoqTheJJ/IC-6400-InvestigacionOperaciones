@@ -14,7 +14,7 @@
 #include <cairo.h>
 #include <math.h>
 #include <glib/gstdio.h>
-#include  "proyecto4.c"
+#include  "simplex.c"
 
 // - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix
@@ -704,6 +704,7 @@ static gchar *str_trim_dup(const gchar *s) {
     g_strstrip(t);
     return t;
 }
+
 static gboolean parse_int(const gchar *s, int *out) {
     if (!s) return FALSE;
     gchar *end = NULL; errno = 0;
@@ -714,14 +715,17 @@ static gboolean parse_int(const gchar *s, int *out) {
     if (out) *out = (int)v;
     return TRUE;
 }
+
 // any real number
 static gboolean parse_real_str(const gchar *s, double *out) {
     return parse_real(s, out);
 }
+
 // positive real number
 static gboolean parse_nonneg_real_str(const gchar *s, double *out) {
     return parse_nonneg_real(s, out);
 }
+
 static gchar **split_ws_trim(const gchar *line) {
     if (!line) return g_new0(gchar*,1);
     gchar *t = g_strdup(line);
@@ -730,6 +734,7 @@ static gchar **split_ws_trim(const gchar *line) {
     g_free(t);
     return v;
 }
+
 static gchar *dup_after_prefix(const gchar *line, const gchar *prefix) {
     if (!line || !g_str_has_prefix(line, prefix)) return NULL;
     return str_trim_dup(line + strlen(prefix));
@@ -1011,35 +1016,56 @@ static void force_focus_out_of_current_entry(GtkWidget *any_widget_in_window) {
     }
 }
 
-static void make_subscripted_label(char prefix, int idx1_based, char out[32]) {
-    static const gunichar subs[] = {0x2080,0x2081,0x2082,0x2083,0x2084,0x2085,0x2086,0x2087,0x2088,0x2089};
-    // build "S" + subscript digits of idx
-    GString *g = g_string_new(NULL);
-    g_string_append_c(g, prefix);
-    int k = idx1_based;
-    if (k == 0) g_string_append_unichar(g, subs[0]);
-    else {
-        // collect digits reversed
-        GString *tmp = g_string_new(NULL);
-        while (k > 0) { g_string_append_unichar(tmp, subs[k % 10]); k /= 10; }
-        // reverse (tmp currently least->most)
-        for (int i = (int)g_utf8_strlen(tmp->str, -1)-1; i >= 0; --i) {
-            gunichar u = g_utf8_get_char(g_utf8_offset_to_pointer(tmp->str, i));
-            g_string_append_unichar(g, u);
-        }
-        g_string_free(tmp, TRUE);
-    }
-    g_strlcpy(out, g->str, 32);
-    g_string_free(g, TRUE);
+static void make_ascii_label(char prefix, int idx1_based, char out[32]) {
+    g_snprintf(out, 32, "%c_%d", prefix, idx1_based);
 }
 
-static const char* op_to_str(int op) {
+static const char* op_to_str_ascii(int op) {
     switch (op) {
-        case 0: return "≤";
-        case 1: return "≥";
+        case 0: return "<=";
+        case 1: return ">=";
         case 2: return "=";
         default: return "?";
     }
+}
+
+static char* sanitize_name_ascii(const char *in) {
+    if (!in) return g_strdup("");
+
+    GString *g = g_string_new(NULL);
+    const char *p = in;
+    while (*p) {
+        gunichar u = g_utf8_get_char(p);
+        p = g_utf8_next_char(p);
+
+        // Subscript digits U+2080..U+2089
+        if (u >= 0x2080 && u <= 0x2089) {
+            char d = '0' + (char)(u - 0x2080);
+            g_string_append_c(g, d);
+            continue;
+        }
+
+        // Allow common ASCII identifier chars; drop others
+        if ((u >= 0x20 && u <= 0x7E)) { // printable ASCII
+            // (optional) tighten to [A-Za-z0-9_]
+            if (g_ascii_isalnum((int)u) || u=='_' ) {
+                g_string_append_c(g, (char)u);
+            } else {
+                // keep dashes/spaces if you want; or convert to underscore:
+                if (u=='-' || u==' ') g_string_append_c(g, '_');
+                // else drop
+            }
+        }
+        // else drop non-ASCII entirely
+    }
+    char *out = g_string_free(g, FALSE);
+    return out;
+}
+
+static void free_names_array(char **names, int count) {
+    if (!names) return;
+    for (int i = 0; i < count; ++i) g_free(names[i]);
+    g_free(names);
 }
 
 // Builds the Simplex matrix from the UI.
@@ -1087,9 +1113,20 @@ static gboolean build_simplex_payload(SimplexUI *ui,
     *problemName_out = g_strdup(pname ? pname : "");
 
     // 2) variable names
-    for (int j=0; j<n_vars; ++j) {
-        const gchar *nm = gtk_entry_get_text(GTK_ENTRY(g_ptr_array_index(ui->var_name_entries, j)));
-        varnames[j] = g_strdup(nm ? nm : "");
+    char **varnames_all = g_new0(char*, n_vars + n_restr);
+
+    // first: decision variable names from the UI, sanitized
+    for (int j = 0; j < n_vars; ++j) {
+        const gchar *nm = gtk_entry_get_text(
+            GTK_ENTRY(g_ptr_array_index(ui->var_name_entries, j)));
+        varnames_all[j] = sanitize_name_ascii(nm ? nm : "");
+    }
+
+    // then: slack names
+    for (int s = 0; s < n_restr; ++s) {
+        char buf[32];
+        make_ascii_label('S', s+1, buf);
+        varnames_all[n_vars + s] = g_strdup(buf);
     }
 
     // 3) top controls
@@ -1111,7 +1148,7 @@ static gboolean build_simplex_payload(SimplexUI *ui,
                 "Invalid objective coefficient at column %d: “%s”.", j+1, t?t:"");
             gtk_dialog_run(GTK_DIALOG(d)); gtk_widget_destroy(d);
             free_dmatrix(M);
-            for (int k=0;k<n_vars;k++) g_free(varnames[k]); g_free(varnames);
+            free_names_array(varnames_all, n_vars + n_restr);
             g_free(restr_ops);
             g_free(*problemName_out); *problemName_out=NULL;
             return FALSE;
@@ -1141,7 +1178,7 @@ static gboolean build_simplex_payload(SimplexUI *ui,
                     "Invalid constraint coefficient at R%d,C%d: “%s”.", r+1, j+1, t?t:"");
                 gtk_dialog_run(GTK_DIALOG(d)); gtk_widget_destroy(d);
                 free_dmatrix(M);
-                for (int k=0;k<n_vars;k++) g_free(varnames[k]); g_free(varnames);
+                free_names_array(varnames_all, n_vars + n_restr);
                 g_free(restr_ops);
                 g_free(*problemName_out); *problemName_out=NULL;
                 return FALSE;
@@ -1168,7 +1205,7 @@ static gboolean build_simplex_payload(SimplexUI *ui,
                 "Invalid RHS at row R%d: “%s”. Must be ≥ 0.", r+1, rt?rt:"");
             gtk_dialog_run(GTK_DIALOG(d)); gtk_widget_destroy(d);
             free_dmatrix(M);
-            for (int k=0;k<n_vars;k++) g_free(varnames[k]); g_free(varnames);
+            free_names_array(varnames_all, n_vars + n_restr);
             g_free(restr_ops);
             g_free(*problemName_out); *problemName_out=NULL;
             return FALSE;
@@ -1178,7 +1215,8 @@ static gboolean build_simplex_payload(SimplexUI *ui,
 
     // return outs
     *matriz_out        = M;
-    *variableNames_out = varnames;
+    *variableNames_out = varnames_all;
+    *amountOfVariables_out = n_vars;
     *restrictions_out  = restr_ops;
     *cols_out          = cols;
     *rows_out          = rows;
@@ -1188,21 +1226,23 @@ static gboolean build_simplex_payload(SimplexUI *ui,
 
 static void print_simplex_matrix(double **A, int rows, int cols, const char **vnames) {
     int m = rows - 1;               // constraints
-    int n = cols - 1 /*Z*/ - m - 1; // variables
+    int n = cols - 1 /*Z*/ - m - 1; // original decision vars (for layout math)
 
     printf("\n===== SIMPLEX MATRIX (%d x %d) =====\n", rows, cols);
 
-    // Header row
+    // Header row: Z, then *all* variable columns (n + m), then RHS
     printf("%10s", "Z");
-    for (int j = 0; j < n; ++j)
-        printf(" %8s", vnames ? vnames[j] : "x");
-    for (int s = 0; s < m; ++s) {
-        char sname[32]; make_subscripted_label('S', s+1, sname);
-        printf(" %8s", sname);
+
+    // total named variable columns = n + m
+    int total_named = n + m;
+    for (int j = 0; j < total_named; ++j) {
+        const char *name = (vnames && vnames[j]) ? vnames[j] : "x";
+        printf(" %8s", name);
     }
+
     printf(" %8s\n", "RHS");
 
-    // Rows
+    // Rows data
     for (int i = 0; i < rows; ++i) {
         printf("Row %2d |", i);
         for (int j = 0; j < cols; ++j)
@@ -1225,15 +1265,16 @@ static void print_simplex_payload(double **A, const char *pname, char **vnames,
     printf("cols x rows  : %d x %d\n", cols, rows);
 
     printf("Var Names    : ");
-    for (int j = 0; j < nvars; ++j) {
-        printf("%s%s", vnames[j], (j==nvars-1) ? "" : ", ");
+    int total_names = nvars + (rows - 1);
+    for (int j = 0; j < total_names; ++j) {
+        printf("%s%s", vnames[j], (j == total_names - 1) ? "" : ", ");
     }
     printf("\n");
 
     // Operators
     printf("Ops per row  : ");
     for (int r = 0; r < rows-1; ++r) {
-        printf("%s%s", op_to_str(ops[r]), (r==rows-2) ? "" : ", ");
+        printf("%s%s", op_to_str_ascii(ops[r]), (r==rows-2) ? "" : ", ");
     }
     printf("\n");
 
@@ -1261,11 +1302,11 @@ static void on_latex_file_clicked(GtkButton *btn, gpointer user_data) {
     print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
 
     // Call Simplex routine
-    runSimplex(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
+    runSimplex(A, pname, vnames, nvars + rows - 1, saveInter, ops, cols, rows, maximize);
 
     // Cleanup
     free_dmatrix(A);
-    for (int j = 0; j < nvars; ++j) g_free(vnames[j]);
+    for (int j = 0; j < nvars + rows - 1; ++j) g_free(vnames[j]);
     g_free(vnames);
     g_free(ops);
     g_free(pname);

@@ -60,22 +60,22 @@ The American mathematician was born in 1914 and died in 2005. In addition to bei
 \section{Problem: Fábrica de Puertas y Ventanas}
 The problem inputted by the user is called \textquotedblleft Fábrica de Puertas y Ventanas\textquotedblright and consists of maximizing the following fuction:
 
-$Z = x₁ \cdot -3,000000 + x₂ \cdot -5,000000$
+$Z = x1 \cdot -3,000000 + x2 \cdot -5,000000 + S_1 \cdot 0,000000 + S_2 \cdot 0,000000 + S_3 \cdot 0,000000$
 
 
 Subject to:
 
 
-$x₁ \cdot 1,000000 + x₂ \cdot 0,000000 \leq 4,000000$
+$x1 \cdot 1,000000 + x2 \cdot 0,000000 + S_1 \cdot 1,000000 + S_2 \cdot 0,000000 + S_3 \cdot 0,000000 \leq 4,000000$
 
-$x₁ \cdot 0,000000 + x₂ \cdot 2,000000 \leq 12,000000$
+$x1 \cdot 0,000000 + x2 \cdot 2,000000 + S_1 \cdot 0,000000 + S_2 \cdot 1,000000 + S_3 \cdot 0,000000 \leq 12,000000$
 
-$x₁ \cdot 3,000000 + x₂ \cdot 2,000000 \leq 18,000000$
+$x1 \cdot 3,000000 + x2 \cdot 2,000000 + S_1 \cdot 0,000000 + S_2 \cdot 0,000000 + S_3 \cdot 1,000000 \leq 18,000000$
 
 \section{Initial Matrix}\begin{center}
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Z  & $x₁$ & $x₂$ & b\\
+        Z  & $x1$ & $x2$ & $S_1$ & $S_2$ & $S_3$ & b\\
         \hline
         \hline
         1,000& -3,000& -5,000& 0,000& 0,000& 0,000& 0,000\\
