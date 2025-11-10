@@ -8,6 +8,7 @@
 #include <string.h>
 #include <float.h>
 #include <unistd.h>
+#include <math.h>
 
 #include <gtk/gtk.h>
 #include <cairo.h>
@@ -134,8 +135,6 @@ void problem(FILE* f, double** matriz, char* problemName, char** variableNames, 
 
     fprintf(f, "The problem inputted by the user is called \\textquotedblleft %s\\textquotedblright and consists of %s the following fuction:\n\n", problemName, verb);
 
-    fprintf(f, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
     fprintf(f, "$");
     fprintf(f, "Z = %s \\cdot %2f", variableNames[0], matriz[0][1]*-1);
     for (int var = 1; var < amountOfVariables; ++var){
@@ -192,13 +191,17 @@ void storeMatriz(FILE* f, double** matriz, char** varNames, int amountOfVariable
     fprintf(f, "        \\hline\n");
     //Table headers
     fprintf(f, "        Z ");
-    /*
     for (int x = 0; x < amountOfVariables; ++x){
         fprintf(f, " & $x_{%d}$", x+1);
-    }*/
+    }
+    for (int x = 0; x < amountOfVariables; ++x){
+        fprintf(f, " & $s_{%d}$", x+1);
+    }
+
+    /*
     for (int x = 0; x < cols - 2; ++x){
         fprintf(f, " & $%s$", varNames[x]);
-    }
+    }*/
 
     /**
     for (int s = 0; s < restrictions[0]; ++s){
@@ -238,6 +241,7 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
     for (int col = 0; col < cols; ++col){
         fprintf(f, "c|");
     }
+    fprintf(f, "c|"); //Fraction column
     fprintf(f, "}\n");
 
 
@@ -245,13 +249,18 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
     fprintf(f, "        \\hline\n");
     //Table headers
     fprintf(f, "        Z ");
-    /*
+    
     for (int x = 0; x < amountOfVariables; ++x){
         fprintf(f, " & $x_{%d}$", x+1);
-    }*/
+    }
+    for (int x = 0; x < amountOfVariables; ++x){
+        fprintf(f, " & $s_{%d}$", x+1);
+    }
+
+    /*
     for (int x = 0; x < cols - 2; ++x){
         fprintf(f, " & $%s$", varNames[x]);
-    }
+    }*/
 
     /*
     for (int s = 0; s < restrictions[0]; ++s){
@@ -264,22 +273,27 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
         fprintf(f, " & $a_{%d}$", a+1);
     }*/
     fprintf(f, " & b");
+    fprintf(f, " & Fractions");
     fprintf(f, "\\\\\n        \\hline\n");
 
     
 
 
-
+    double* fractions = td->fractions;
+    int x = td->x_pivot;
+    int y = td->y_pivot;
 
     fprintf(f, "        \\hline\n");
     //Matrix cells
     for (int row = 0; row < rows; ++row){
         fprintf(f, "        %.3f", matriz[row][0]);
-        for (int col = 1; col < cols; col++){
+
+
+
+        for (int col = 1; col < cols+1; col++){ //+1 to store fractions
 
             double value = matriz[row][col];
-            int x = td->x_pivot;
-            int y = td->y_pivot;
+            
 
             if (y == col){
                 if (x == row){ //Pivote
@@ -287,6 +301,17 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
                 } else { //Columna seleccionada
                     fprintf(f, "& \\cellcolor{LightPink}$%.3f$ ", value);
                 }
+
+            } else if (col == cols){ //Fraction
+                double fraction = fractions[row-1];
+                if (fraction == INVALID_FRACTION || isinf(fraction)){
+                    fprintf(f, "& :c ");
+                } else if (x == row){
+                    fprintf(f, "& \\cellcolor{KirbyPink}$%.3f$ ", fraction);
+                } else {
+                    fprintf(f, "& $%.3f$ ", fraction);
+                }
+            
             } else { //Celda normal
                 fprintf(f, "& %.3f", value);
             }
@@ -296,6 +321,9 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
     }
     fprintf(f, "    \\end{tabular}\n");
     fprintf(f, "\\end{center}\n\n\n");
+
+
+
 
 
 }
@@ -637,44 +665,6 @@ void compileTex(){
     }
 }
 
-char** processNames(char** variableNames, int rows, int cols, int amountOfVariables, int* restrictions){
-
-    char** names = malloc(sizeof(char*)*(cols-2));
-    int totalRestrictions = cols - 1 - amountOfVariables - 1;
-
-    int index = 0;
-    for (int x = 0; x < amountOfVariables; ++x){
-        names[index] = variableNames[x];
-        index++;
-    }
-
-    for (int r = 0; r < totalRestrictions; ++r){
-
-        if (restrictions[r] == 0){
-            char* oldname = variableNames[r];
-            size_t need = strlen(oldname) + 3; //"S_" + \0
-            names[index] = malloc(need);
-            snprintf(names[index], need, "S_%s", oldname);
-
-        } else if (restrictions[r] == 1){
-            char* oldname = variableNames[r];
-            size_t need = strlen(oldname) + 3; //"A_" + \0
-            names[index] = malloc(need);
-            snprintf(names[index], need, "A_%s", oldname);
-
-        } else if (restrictions[r] == 2){
-            char* oldname = variableNames[r];
-            size_t need = strlen(oldname) + 3; //"E_" + \0
-            names[index] = malloc(need);
-            snprintf(names[index], need, "E_%s", oldname);
-
-        }
-        index++;
-    }
-
-    return names;
-}
-
 void runSimplex(double** matriz, char* problemName, char** names, int amountOfVariables, int saveMatrixes, int* restrictions, // [0:<, 1:=, 2:>]
     int cols, int rows, int maximize){
 
@@ -685,7 +675,20 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
         printf("Could not write file\n");
     }
 
-    char** variableNames = processNames(names, rows, cols, amountOfVariables, restrictions);
+    for (int i = 0; i < cols-2-amountOfVariables; ++i){
+        printf("Restriction[%d] = %d\n", i, restrictions[i]);
+    }
+
+    char** variableNames = malloc(sizeof(char*)*(cols-2));
+    int index = 0;
+    for (int x = 0; x < amountOfVariables; ++x){
+        variableNames[x] = names[x];
+        index = x;
+    }
+    for (true; index < cols - 2 - amountOfVariables; index++){
+        variableNames[index] = "SSS";
+    }
+
 
     documentStart(f);
 
@@ -694,8 +697,11 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
     problem(f, matriz, problemName, variableNames, amountOfVariables, saveMatrixes, restrictions, // [0:<, 1:=, 2:>]
     cols, rows, maximize);
 
+    printf("Paso Problem\n");
+
     fprintf(f, "\\section{Initial Matrix}");
     storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
+    printf("Paso Initial Matrix\n");
 
     fprintf(f, "\\section{Result Analysis}");
     int status = 0;
@@ -719,6 +725,7 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
     free(tableData);
 
     //GuardarMatriz Final
+    printf("Paso Simplex?\n");
 
     if (status == 2){
 
@@ -731,6 +738,7 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
         //poner tabla?
         storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
     }
+
     if (status < 0){
 
         fprintf(f, "\\section{Multiple Solutions}");
@@ -773,10 +781,12 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
 
         fprintf(f, "\\section{Unique Solution}");
 
-        fprintf(f, "\\subsection{Multiple solutions}\n");
-        fprintf(f, "It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\\\\n");
-        fprintf(f, "This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\\\\n");
-        fprintf(f, "Here is where it happens in this problem: \n");
+        fprintf(f, "\\subsection{Explanation}\n");
+
+        //REDACTAR
+
+        fprintf(f, "\\subsection{Solution table}\n");
+        storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
 
     }
 
