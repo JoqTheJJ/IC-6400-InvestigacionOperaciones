@@ -1,5 +1,5 @@
 # SIMPLEX-UI v1
-Name: puertas, ventanas y escritorios
+Name: puertas, sillas y escritorios
 Sense: MIN
 Variables: 3
 Constraints: 4

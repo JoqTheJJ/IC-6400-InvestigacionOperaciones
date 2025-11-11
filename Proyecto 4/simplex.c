@@ -192,28 +192,11 @@ void storeMatriz(FILE* f, double** matriz, char** varNames, int amountOfVariable
     fprintf(f, "        \\hline\n");
     //Table headers
     fprintf(f, "        Z ");
-    for (int x = 0; x < amountOfVariables; ++x){
-        fprintf(f, " & $x_{%d}$", x+1);
-    }
-    for (int x = 0; x < amountOfVariables; ++x){
-        fprintf(f, " & $s_{%d}$", x+1);
-    }
 
-    /*
     for (int x = 0; x < cols - 2; ++x){
         fprintf(f, " & $%s$", varNames[x]);
-    }*/
+    }
 
-    /**
-    for (int s = 0; s < restrictions[0]; ++s){
-        fprintf(f, " & $s_{%d}$", s+1);
-    }
-    for (int e = 0; e < restrictions[2]; ++e){
-        fprintf(f, " & $e_{%d}$", e+1);
-    }
-    for (int a = 0; a < restrictions[1] + restrictions[2]; ++a){
-        fprintf(f, " & $a_{%d}$", a+1);
-    }**/
     fprintf(f, " & b");
     fprintf(f, "\\\\\n        \\hline\n");
 
@@ -251,28 +234,10 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
     //Table headers
     fprintf(f, "        Z ");
     
-    for (int x = 0; x < amountOfVariables; ++x){
-        fprintf(f, " & $x_{%d}$", x+1);
-    }
-    for (int x = 0; x < amountOfVariables; ++x){
-        fprintf(f, " & $s_{%d}$", x+1);
-    }
-
-    /*
     for (int x = 0; x < cols - 2; ++x){
         fprintf(f, " & $%s$", varNames[x]);
-    }*/
+    }
 
-    /*
-    for (int s = 0; s < restrictions[0]; ++s){
-        fprintf(f, " & $s_{%d}$", s+1);
-    }
-    for (int e = 0; e < restrictions[2]; ++e){
-        fprintf(f, " & $e_{%d}$", e+1);
-    }
-    for (int a = 0; a < restrictions[1] + restrictions[2]; ++a){
-        fprintf(f, " & $a_{%d}$", a+1);
-    }*/
     fprintf(f, " & b");
     fprintf(f, " & Fractions");
     fprintf(f, "\\\\\n        \\hline\n");
@@ -725,10 +690,13 @@ void compileTex(){
     if (responseCode == 0){
         printf("->] Latex compiled without problems\n");
         system("evince --presentation simplex.pdf &");
+    } else {
+        printf("->] Error in LaTex compilation, check simplex.log for details\n");
+        printf("> Terminating program...\n");
     }
 }
 
-void runSimplex(double** matriz, char* problemName, char** names, int amountOfVariables, int saveMatrixes, int* restrictions, // [0:<, 1:=, 2:>]
+void runSimplex(double** matriz, char* problemName, char** variableNames, int amountOfVariables, int saveMatrixes, int* restrictions, // [0:<, 1:=, 2:>]
     int cols, int rows, int maximize){
 
 
@@ -738,26 +706,11 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
         printf("Could not write file\n");
     }
 
-    if (!maximize){
-        for (int col = 0; col < cols; ++col){
+    if (!maximize){ //Invert first row (except Z and B)
+        for (int col = 1; col < 1 + amountOfVariables; ++col){
             matriz[0][col] *= -1;
         }
     }
-
-    for (int i = 0; i < cols-2-amountOfVariables; ++i){
-        printf("Restriction[%d] = %d\n", i, restrictions[i]);
-    }
-
-    char** variableNames = malloc(sizeof(char*)*(cols-2));
-    int index = 0;
-    for (int x = 0; x < amountOfVariables; ++x){
-        variableNames[x] = names[x];
-        index = x;
-    }
-    for (true; index < cols - 2 - amountOfVariables; index++){
-        variableNames[index] = "SSS";
-    }
-
 
     documentStart(f);
 
