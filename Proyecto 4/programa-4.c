@@ -1224,9 +1224,10 @@ static gboolean build_simplex_payload(SimplexUI *ui,
     return TRUE;
 }
 
+/*
 static void print_simplex_matrix(double **A, int rows, int cols, const char **vnames) {
     int m = rows - 1;               // constraints
-    int n = cols - 1 /*Z*/ - m - 1; // original decision vars (for layout math)
+    int n = cols - 1 - m - 1; // original decision vars (for layout math)
 
     printf("\n===== SIMPLEX MATRIX (%d x %d) =====\n", rows, cols);
 
@@ -1282,6 +1283,7 @@ static void print_simplex_payload(double **A, const char *pname, char **vnames,
     print_simplex_matrix(A, rows, cols, (const char**)vnames);
     printf("--- End Payload ---\n\n");
 }
+*/
 
 static void on_latex_file_clicked(GtkButton *btn, gpointer user_data) {
     SimplexUI *ui = (SimplexUI*)user_data;
@@ -1299,7 +1301,7 @@ static void on_latex_file_clicked(GtkButton *btn, gpointer user_data) {
     }
 
     // Print everything being sent
-    print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
+    //print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
 
     // Call Simplex routine
     runSimplex(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
