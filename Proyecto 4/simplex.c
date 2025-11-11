@@ -530,22 +530,33 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
         int index = -1;
         ones = 0; //La cantidad de 1s
         nonZero = 0; //Flag de valores no 0 y no 1
+
+        printf("[ Col: %d ]\n", col);
+
         for (int row = 1; row < rows; ++row){
 
             double valor = solucionOriginal[row][col];
+            printf("Valor de la fila %d: %.10f", row, valor);
 
             if (fabs(valor - 1.0) < eps){ // ==1
                 ones++; //1s found
                 index = row;
+                printf(" FOUND 1!!!\n");
 
             } else if (!(fabs(valor) < eps)){ // != 0
                 nonZero = 1; //Non zero (non one) value found
+                printf(" Uno'nt\n");
+                break;
+            } else {
+                printf(" Found 0!\n");
             }
         }
 
         if (ones == 1 && !nonZero){
+            printf("Vector canonico\n");
             solution1[col - 1] = solucionOriginal[index][cols-1];
         } else {
+            printf("Canonico'nt\n");
             solution1[col - 1] = 0;
         }
     }
@@ -581,13 +592,13 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
     fprintf(f, "$$\n");
     fprintf(f, "x = \\alpha \\cdot \n");
     fprintf(f, "\\begin{bmatrix}\n");
-    for (int i = 1; i <= amountOfVariables; ++i){
+    for (int i = 0; i < amountOfVariables; ++i){
         fprintf(f, "%.2f \\\\ ", solution1[i]);
     }
     fprintf(f, "\\end{bmatrix}\n");
     fprintf(f, "+ (1 - \\alpha) \\cdot \n");
     fprintf(f, "\\begin{bmatrix}\n");
-    for (int i = 1; i <= amountOfVariables; ++i){
+    for (int i = 0; i < amountOfVariables; ++i){
         fprintf(f, "%.2f \\\\ ", solution2[i]);
     }
     fprintf(f, " \\end{bmatrix}\n");

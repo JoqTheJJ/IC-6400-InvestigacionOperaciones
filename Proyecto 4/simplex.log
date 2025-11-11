@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2025.9.4)  11 NOV 2025 14:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2025.9.4)  11 NOV 2025 14:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -769,31 +769,16 @@ File: R.jpg Graphic file (type jpg)
 <use R.jpg>
 Package pdftex.def Info: R.jpg  used on input line 58.
 (pdftex.def)             Requested size: 86.25pt x 131.28989pt.
-
-Overfull \hbox (2.00061pt too wide) in paragraph at lines 78--94
- [] 
- []
-
 [1 <./R.jpg (PNG copy)>]
-Underfull \hbox (badness 10000) in paragraph at lines 97--98
+Underfull \hbox (badness 10000) in paragraph at lines 89--90
 
- []
-
-
-Overfull \hbox (47.95625pt too wide) in paragraph at lines 99--115
- [] 
- []
-
-
-Overfull \hbox (47.95625pt too wide) in paragraph at lines 119--135
- [] 
  []
 
 [2] [3] (./simplex.aux) ) 
 Here is how much of TeX's memory you used:
  28207 strings out of 477950
  712303 string characters out of 5838505
- 1877388 words of memory out of 6000000
+ 1868388 words of memory out of 6000000
  47926 multiletter control sequences out of 15000+600000
  514259 words of font info for 39 fonts, out of 8000000 for 9000
  34 hyphenation exceptions out of 8191
@@ -806,7 +791,7 @@ m/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on simplex.pdf (4 pages, 186628 bytes).
+Output written on simplex.pdf (4 pages, 182318 bytes).
 PDF statistics:
  64 PDF objects out of 1000 (max. 8388607)
  38 compressed objects within 1 object stream
