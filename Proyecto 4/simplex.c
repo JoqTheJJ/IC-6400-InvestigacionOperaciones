@@ -503,6 +503,54 @@ void solucionesMultiples(FILE* f, double** matriz, int cols, int rows, int maxim
 
 /* ################################## SOLS ################################## */
 
+
+void extractSolution(FILE* f, double** matriz, int amountOfVariables, char** variableNames, int cols, int rows, int maximize){
+
+    double* solution = malloc(sizeof(double) * amountOfVariables);
+    double eps = 1e-2;
+
+    int ones;
+    int nonZero;
+    for (int col = 1; col <= amountOfVariables; ++col){
+
+        int index = -1;
+        ones = 0; //La cantidad de 1s
+        nonZero = 0; //Flag de valores no 0 y no 1
+        for (int row = 1; row < rows; ++row){
+
+            double valor = matriz[row][col];
+
+            if (fabs(valor - 1.0) < eps){ // ==1
+                ones++; //1s found
+                index = row;
+
+            } else if (!(fabs(valor) < eps)){ // != 0
+                nonZero = 1; //Non zero (non one) value found
+            }
+        }
+
+        if (ones == 1 && !nonZero){
+            solution[col - 1] = matriz[index][cols-1];
+        } else {
+            solution[col - 1] = 0;
+        }
+    }
+
+
+    fprintf(f, "\\textbf{Solution} \n");
+    fprintf(f, "$$\n");
+    fprintf(f, "\\begin{bmatrix}\n");
+
+    for (int x = 0; x < amountOfVariables; x++){
+        fprintf(f, "%s = %.2f \\\\ ", variableNames[x], solution[x]);
+    }
+    fprintf(f, "\n\\end{bmatrix}\n");
+    fprintf(f, "$$\n\n");
+    
+
+}
+
+
 void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int amountOfVariables, int cols, int rows, int maximize){
 
     double* solution1 = malloc(sizeof(double) * amountOfVariables);
@@ -827,8 +875,13 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
         fprintf(f, "In this case, the problem has a single optimal solution that satisfies the established constraints.\\\\\n");
         //REDACTAR
 
+        //Solution Matrix
         fprintf(f, "\\subsection{Solution table}\n");
         storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
+
+        //Solution
+        fprintf(f, "\\subsection{Unique Solution}\n");
+        extractSolution(f, matriz, amountOfVariables, variableNames, cols, rows, maximize);
 
     }
 
