@@ -1,0 +1,17 @@
+# SIMPLEX-UI v1
+Name: Panaderia BreadCO
+Sense: MAX
+Variables: 4
+Constraints: 2
+IntermediateTables: 1
+
+[Objective]
+names: x₁ x₂ x₃ x₄
+coeffs: 36 30 -3 -4
+
+[Constraints]
+       x₁ x₂ x₃ x₄   | op | rhs
+R1     1  1 -1  0 | ≤ | 5
+R2     6  5  0 -1 | ≤ | 10
+
+# End

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2025.9.4)  10 NOV 2025 16:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2025.9.4)  10 NOV 2025 19:59
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -769,23 +769,37 @@ File: R.jpg Graphic file (type jpg)
 <use R.jpg>
 Package pdftex.def Info: R.jpg  used on input line 58.
 (pdftex.def)             Requested size: 86.25pt x 131.28989pt.
-[1 <./R.jpg (PNG copy)>] [2] (./simplex.aux) ) 
+[1 <./R.jpg (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 112--114
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--116
+
+ []
+
+[2] (./simplex.aux) ) 
 Here is how much of TeX's memory you used:
  28205 strings out of 477950
  712282 string characters out of 5838505
- 1872388 words of memory out of 6000000
+ 1868388 words of memory out of 6000000
  47925 multiletter control sequences out of 15000+600000
  513951 words of font info for 38 fonts, out of 8000000 for 9000
  34 hyphenation exceptions out of 8191
  117i,9n,118p,735b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy1
-0.pfb>
-Output written on simplex.pdf (3 pages, 161818 bytes).
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+mi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on simplex.pdf (3 pages, 161421 bytes).
 PDF statistics:
  51 PDF objects out of 1000 (max. 8388607)
  30 compressed objects within 1 object stream

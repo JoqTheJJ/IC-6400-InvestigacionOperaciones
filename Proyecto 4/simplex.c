@@ -72,7 +72,7 @@ void makeTitle(FILE* f){
         "    \\vspace{1cm}\n"
         "\n"
         "    %% Date\n"
-        "    {\\large 26 september 2025\\par}\n"
+        "    {\\large November 12 2025\\par}\n"
         "\\end{titlepage}\n"
     );
 }
@@ -302,10 +302,10 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
                     fprintf(f, "& \\cellcolor{LightPink}$%.3f$ ", value);
                 }
 
-            } else if (col == cols){ //Fraction
+            } else if (col == cols && row != 0){ //Fraction
                 double fraction = fractions[row-1];
-                if (fraction == INVALID_FRACTION || isinf(fraction)){
-                    fprintf(f, "& :c ");
+                if (fraction == INVALID_FRACTION || isinf(fraction) || fraction < 0){
+                    fprintf(f, "& $Invalid$ ");
                 } else if (x == row){
                     fprintf(f, "& \\cellcolor{KirbyPink}$%.3f$ ", fraction);
                 } else {
@@ -321,10 +321,6 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
     }
     fprintf(f, "    \\end{tabular}\n");
     fprintf(f, "\\end{center}\n\n\n");
-
-
-
-
 
 }
 
@@ -449,6 +445,9 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
     tableData->pivot = matriz[piv.x][piv.y];
 
 
+
+    double oldZ = matriz[0][cols-1];
+
     pivotRow(matriz[piv.x], piv, cols);
 
     for (int r = 0; r < rows; ++r){
@@ -464,7 +463,11 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
         }
     }
 
-    return 0; //Pivoteado
+    if (oldZ == matriz[0][cols-1]){
+        return 3; //Degenerate (Pivot succesful)
+    }
+
+    return 0; //Pivot succesful
 }
 
 void solucionesMultiples(FILE* f, double** matriz, int cols, int rows, int maximize, double columnaPivoteNegativa){
@@ -504,49 +507,60 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
 
     double* solution1 = malloc(sizeof(double) * amountOfVariables);
     double* solution2 = malloc(sizeof(double) * amountOfVariables);
+    double eps = 1e-2;
 
+    int ones;
+    int nonZero;
     for (int col = 1; col <= amountOfVariables; ++col){
 
         int index = -1;
-        double suma = 0;
+        ones = 0; //La cantidad de 1s
+        nonZero = 0; //Flag de valores no 0 y no 1
         for (int row = 1; row < rows; ++row){
 
             double valor = solucionOriginal[row][col];
-            if (valor != 0){
-                suma += valor;
+
+            if (fabs(valor - 1.0) < eps){ // ==1
+                ones++; //1s found
                 index = row;
+
+            } else if (!(fabs(valor) < eps)){ // != 0
+                nonZero = 1; //Non zero (non one) value found
             }
         }
 
-        if (suma != 1){
-            solution1[col - 1] = 0;
-        } else {
+        if (ones == 1 && !nonZero){
             solution1[col - 1] = solucionOriginal[index][cols-1];
+        } else {
+            solution1[col - 1] = 0;
         }
     }
-
-    
 
     for (int col = 1; col <= amountOfVariables; ++col){
 
         int index = -1;
-        double suma = 0;
+        ones = 0; //La cantidad de 1s
+        nonZero = 0; //Flag de valores no 0 y no 1
         for (int row = 1; row < rows; ++row){
 
-
             double valor = matriz[row][col];
-            if (valor != 0){
-                suma += valor;
+
+            if (fabs(valor - 1.0) < eps){ // ==1
+                ones++; //1s found
                 index = row;
+
+            } else if (!(fabs(valor) < eps)){ // != 0
+                nonZero = 1; //Non zero (non one) value found
             }
         }
 
-        if (suma != 1){
-            solution2[col - 1] = 0;
-        } else {
+        if (ones == 1 && !nonZero){
             solution2[col - 1] = matriz[index][cols-1];
+        } else {
+            solution2[col - 1] = 0;
         }
     }
+
 
 
     fprintf(f, "\\textbf{Ecuation} \n");
@@ -675,6 +689,12 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
         printf("Could not write file\n");
     }
 
+    if (!maximize){
+        for (int col = 0; col < cols; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
     for (int i = 0; i < cols-2-amountOfVariables; ++i){
         printf("Restriction[%d] = %d\n", i, restrictions[i]);
     }
@@ -697,16 +717,19 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
     problem(f, matriz, problemName, variableNames, amountOfVariables, saveMatrixes, restrictions, // [0:<, 1:=, 2:>]
     cols, rows, maximize);
 
-    printf("Paso Problem\n");
 
     fprintf(f, "\\section{Initial Matrix}");
     storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
-    printf("Paso Initial Matrix\n");
 
-    fprintf(f, "\\section{Result Analysis}");
-    int status = 0;
+    int status = 0; //En ejecucion
+    int degenerate = 0;
     TableData* tableData = malloc(sizeof(TableData));
     tableData->fractions = malloc(sizeof(double)*(rows-1));
+    if (saveMatrixes){
+        fprintf(f, "\\section{Intermediate Matrixes}");
+        fprintf(f, "The intermediate tables are shown below. A column is added to show the fractions of each row. The selected column to enter the basis is colored in pink while the pivot and selected fraction value are colored in a darker shade of pink.\\\\\n");
+    }
+
     while (status == 0){
 
         for (int row = 0; row < rows-1; ++row){
@@ -717,29 +740,48 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
         status = pivot(matriz, cols, rows, maximize, tableData);
 
         if (saveMatrixes && status == 0){
+            fprintf(f, "\\subsection{Pivot Table}");
             storeIntermediateMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows, tableData);
         }
 
-        sleep(1);
+        if (status == 3){
+            degenerate = 1;
+            fprintf(f, "\\section{Degenerate Table}");
+            fprintf(f, "In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\\\\n");
+            storeIntermediateMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows, tableData);
+            status = 0;
+            if (saveMatrixes){
+                fprintf(f, "\\section{Intermediate Matrixes}");
+            }
+        }
     }
-    free(tableData);
 
     //GuardarMatriz Final
-    printf("Paso Simplex?\n");
+
+    if (degenerate){
+        fprintf(f, "\\section{Degenerate Problem}");
+
+        fprintf(f, "Sometimes the simplex algorithm may be faced with a degenerate problem, indicated by the presence of variables inside the base that have a value of 0 which in turn makes objetive function not get closer to the objective. In the simplex table is represented by a column where the minimal value taken is 0.\\\\\n");
+        fprintf(f, "In this situation the program will take the first fraction that satisfies the restrictions. \\\\\n");
+
+    }
 
     if (status == 2){
 
         fprintf(f, "\\section{Result Analysis}");
 
         //Reporte no acotado
+        int unboundedColumn = tableData->y_pivot;
         fprintf(f, "\\subsection{Unbounded problems}\n");
-        fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling.\\\\\n");
-        fprintf(f, "In this case it is found in:");
-        //poner tabla?
-        storeMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows);
-    }
+        fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling. In the simplex table is represented by a column full of negatives\\\\\n");
+        fprintf(f, "In this case it is found in the column %d where there are no valid fractions:", unboundedColumn);
 
-    if (status < 0){
+        
+
+        //Last table
+        storeIntermediateMatriz(f, matriz, variableNames, amountOfVariables, restrictions, cols, rows, tableData);
+    
+    } else if (status < 0){
 
         fprintf(f, "\\section{Multiple Solutions}");
 
@@ -782,7 +824,7 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
         fprintf(f, "\\section{Unique Solution}");
 
         fprintf(f, "\\subsection{Explanation}\n");
-
+        fprintf(f, "In this case, the problem has a single optimal solution that satisfies the established constraints.\\\\\n");
         //REDACTAR
 
         fprintf(f, "\\subsection{Solution table}\n");
@@ -790,7 +832,8 @@ void runSimplex(double** matriz, char* problemName, char** names, int amountOfVa
 
     }
 
-    fprintf(f, "\\section{Graph}\n");
+    //fprintf(f, "\\section{Graph}\n");
+    free(tableData);
 
     //Dibujo 2D
 

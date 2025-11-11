@@ -1,0 +1,17 @@
+# SIMPLEX-UI v1
+Name: Multiples v2
+Sense: MAX
+Variables: 2
+Constraints: 2
+IntermediateTables: 1
+
+[Objective]
+names: x₁ x₂
+coeffs:  4 14
+
+[Constraints]
+       x₁ x₂   | op | rhs
+R1     2  7 | ≤ | 21
+R2     7  2 | ≤ | 21
+
+# End

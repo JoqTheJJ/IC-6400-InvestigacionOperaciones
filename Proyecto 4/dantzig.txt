@@ -1,0 +1,17 @@
+# SIMPLEX-UI v1
+Name: Dantzig Nightmare
+Sense: MAX
+Variables: 4
+Constraints: 2
+IntermediateTables: 1
+
+[Objective]
+names: x₁ x₂ x₃ x₄ 
+coeffs:  2  3 -1 -12
+
+[Constraints]
+       x₁ x₂ x₃ x₄    | op | rhs
+R1    -2 -9  1   9 | ≤ | 0
+R2    0.3333  1 -0.3333  -2 | ≤ | 0
+
+# End
