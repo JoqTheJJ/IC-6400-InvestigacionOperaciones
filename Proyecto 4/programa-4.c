@@ -1112,11 +1112,21 @@ static gboolean build_simplex_payload(SimplexUI *ui,
     const gchar *pname = gtk_entry_get_text(GTK_ENTRY(ui->name_problem));
     *problemName_out = g_strdup(pname ? pname : "");
 
-    // 2) variable names (decision only; ASCII-safe)
+    // 2) variable names
+    char **varnames_all = g_new0(char*, n_vars + n_restr);
+
+    // first: decision variable names from the UI, sanitized
     for (int j = 0; j < n_vars; ++j) {
         const gchar *nm = gtk_entry_get_text(
             GTK_ENTRY(g_ptr_array_index(ui->var_name_entries, j)));
-        varnames[j] = sanitize_name_ascii(nm ? nm : "");
+        varnames_all[j] = sanitize_name_ascii(nm ? nm : "");
+    }
+
+    // then: slack names
+    for (int s = 0; s < n_restr; ++s) {
+        char buf[32];
+        make_ascii_label('S', s+1, buf);
+        varnames_all[n_vars + s] = g_strdup(buf);
     }
 
     // 3) top controls
@@ -1138,8 +1148,7 @@ static gboolean build_simplex_payload(SimplexUI *ui,
                 "Invalid objective coefficient at column %d: “%s”.", j+1, t?t:"");
             gtk_dialog_run(GTK_DIALOG(d)); gtk_widget_destroy(d);
             free_dmatrix(M);
-            for (int k = 0; k < n_vars; ++k) g_free(varnames[k]);
-                g_free(varnames);   
+            free_names_array(varnames_all, n_vars + n_restr);
             g_free(restr_ops);
             g_free(*problemName_out); *problemName_out=NULL;
             return FALSE;
@@ -1169,8 +1178,7 @@ static gboolean build_simplex_payload(SimplexUI *ui,
                     "Invalid constraint coefficient at R%d,C%d: “%s”.", r+1, j+1, t?t:"");
                 gtk_dialog_run(GTK_DIALOG(d)); gtk_widget_destroy(d);
                 free_dmatrix(M);
-                for (int k = 0; k < n_vars; ++k) g_free(varnames[k]);
-                    g_free(varnames);  
+                free_names_array(varnames_all, n_vars + n_restr);
                 g_free(restr_ops);
                 g_free(*problemName_out); *problemName_out=NULL;
                 return FALSE;
@@ -1197,8 +1205,7 @@ static gboolean build_simplex_payload(SimplexUI *ui,
                 "Invalid RHS at row R%d: “%s”. Must be ≥ 0.", r+1, rt?rt:"");
             gtk_dialog_run(GTK_DIALOG(d)); gtk_widget_destroy(d);
             free_dmatrix(M);
-            for (int k = 0; k < n_vars; ++k) g_free(varnames[k]);
-                g_free(varnames);  
+            free_names_array(varnames_all, n_vars + n_restr);
             g_free(restr_ops);
             g_free(*problemName_out); *problemName_out=NULL;
             return FALSE;
@@ -1208,7 +1215,7 @@ static gboolean build_simplex_payload(SimplexUI *ui,
 
     // return outs
     *matriz_out        = M;
-    *variableNames_out = varnames;
+    *variableNames_out = varnames_all;
     *amountOfVariables_out = n_vars;
     *restrictions_out  = restr_ops;
     *cols_out          = cols;
@@ -1226,17 +1233,10 @@ static void print_simplex_matrix(double **A, int rows, int cols, const char **vn
     // Header row: Z, then *all* variable columns (n + m), then RHS
     printf("%10s", "Z");
 
-    int total_named = n + m; // decision + slack columns
+    // total named variable columns = n + m
+    int total_named = n + m;
     for (int j = 0; j < total_named; ++j) {
-        char namebuf[32];
-        const char *name;
-        if (j < n) {
-            name = (vnames && vnames[j]) ? vnames[j] : "x";
-        } else {
-            // generate S_(j-n+1) on the fly
-            make_ascii_label('S', (j - n) + 1, namebuf);
-            name = namebuf;
-        }
+        const char *name = (vnames && vnames[j]) ? vnames[j] : "x";
         printf(" %8s", name);
     }
 
@@ -1265,8 +1265,9 @@ static void print_simplex_payload(double **A, const char *pname, char **vnames,
     printf("cols x rows  : %d x %d\n", cols, rows);
 
     printf("Var Names    : ");
-    for (int j = 0; j < nvars; ++j) {
-        printf("%s%s", vnames[j], (j == nvars - 1) ? "" : ", ");
+    int total_names = nvars + (rows - 1);
+    for (int j = 0; j < total_names; ++j) {
+        printf("%s%s", vnames[j], (j == total_names - 1) ? "" : ", ");
     }
     printf("\n");
 
@@ -1305,7 +1306,7 @@ static void on_latex_file_clicked(GtkButton *btn, gpointer user_data) {
 
     // Cleanup
     free_dmatrix(A);
-    for (int j = 0; j < nvars; ++j) g_free(vnames[j]);
+    for (int j = 0; j < nvars + rows - 1; ++j) g_free(vnames[j]);
     g_free(vnames);
     g_free(ops);
     g_free(pname);
@@ -1385,6 +1386,6 @@ int main(int argc, char *argv[]) {
     if (ui->con_header_labels) g_ptr_array_free(ui->con_header_labels, TRUE);
     g_object_unref(builder);
     g_free(ui);
+
     return 0;
 }
-

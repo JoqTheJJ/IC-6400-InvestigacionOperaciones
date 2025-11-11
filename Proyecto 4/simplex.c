@@ -9,6 +9,7 @@
 #include <float.h>
 #include <unistd.h>
 #include <math.h>
+#include <stdbool.h>
 
 #include <gtk/gtk.h>
 #include <cairo.h>
