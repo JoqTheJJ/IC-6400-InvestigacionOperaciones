@@ -1,0 +1,18 @@
+# SIMPLEX-UI v1
+Name: Fábrica de Juguetes Geppetto
+Sense: MAX
+Variables: 2
+Constraints: 3
+IntermediateTables: 1
+
+[Objective]
+names: x₁ x₂
+coeffs:  3  2
+
+[Constraints]
+       x₁ x₂   | op | rhs
+R1     2  1 | ≤ | 80
+R2     1  1 | ≤ | 100
+R3     1  0 | ≤ | 40
+
+# End

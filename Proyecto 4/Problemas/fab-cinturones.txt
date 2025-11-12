@@ -1,17 +1,17 @@
 # SIMPLEX-UI v1
-Name: 
+Name: Fábrica de Cinturones
 Sense: MAX
 Variables: 2
 Constraints: 2
-IntermediateTables: 1
+IntermediateTables: 0
 
 [Objective]
 names: x₁ x₂
-coeffs: -1  2
+coeffs:  3  4
 
 [Constraints]
        x₁ x₂   | op | rhs
-R1     1  0 | ≤ | 4
-R2     0 -2 | ≤ | 5
+R1     1  1 | ≤ | 40
+R2     1  2 | ≤ | 60
 
 # End
