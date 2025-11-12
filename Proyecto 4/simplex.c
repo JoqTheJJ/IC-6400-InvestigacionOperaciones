@@ -258,10 +258,8 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
 
         for (int col = 1; col < cols+1; col++){ //+1 to store fractions
 
-            double value = matriz[row][col];
-            
-
             if (y == col){
+                double value = matriz[row][col];
                 if (x == row){ //Pivote
                     fprintf(f, "& \\cellcolor{KirbyPink}$%.3f$ ", value);
                 } else { //Columna seleccionada
@@ -279,6 +277,7 @@ void storeIntermediateMatriz(FILE* f, double** matriz, char** varNames, int amou
                 }
             
             } else { //Celda normal
+                double value = matriz[row][col];
                 fprintf(f, "& %.3f", value);
             }
             
@@ -469,6 +468,40 @@ void solucionesMultiples(FILE* f, double** matriz, int cols, int rows, int maxim
 
 /* ################################## SOLS ################################## */
 
+void writeSolution(FILE* f, double** matriz, char** variableNames, double* solution, int cols, int rows, int maximize){
+
+    fprintf(f, "The final result of ");
+    if (maximize){
+        fprintf(f, "maximizing ");
+    } else {
+        fprintf(f, "minimizing ");
+    }
+    fprintf(f, " the given function is %.3f as a result of setting the variables to the values: \n\n", matriz[0][cols-1]);
+
+    fprintf(f, "\\begin{itemize}\n");
+    for (int var = 1; var < cols-1; ++var){
+        fprintf(f, "\\item $%s = %.3f$\n", variableNames[var-1], solution[var-1]);
+    }
+    fprintf(f, "\\end{itemize}\n");
+}
+
+
+void writeSolution2(FILE* f, double** matriz, char** variableNames, double* solution, int cols, int rows, int maximize){
+
+    fprintf(f, "Another possible result of ");
+    if (maximize){
+        fprintf(f, "maximizing ");
+    } else {
+        fprintf(f, "minimizing ");
+    }
+    fprintf(f, " the given function with the same value is a result of setting the variables to the values: \n\n");
+
+    fprintf(f, "\\begin{itemize}\n");
+    for (int var = 1; var < cols-1; ++var){
+        fprintf(f, "\\item $%s = %.3f$\n", variableNames[var-1], solution[var-1]);
+    }
+    fprintf(f, "\\end{itemize}\n");
+}
 
 void extractSolution(FILE* f, double** matriz, int amountOfVariables, char** variableNames, int cols, int rows, int maximize){
 
@@ -477,7 +510,7 @@ void extractSolution(FILE* f, double** matriz, int amountOfVariables, char** var
 
     int ones;
     int nonZero;
-    for (int col = 1; col <= amountOfVariables; ++col){
+    for (int col = 1; col < cols-1; ++col){
 
         int index = -1;
         ones = 0; //La cantidad de 1s
@@ -513,11 +546,14 @@ void extractSolution(FILE* f, double** matriz, int amountOfVariables, char** var
     fprintf(f, "\n\\end{bmatrix}\n");
     fprintf(f, "$$\n\n");
     
+    fprintf(f, "\\subsection{Optimal Solution}\n");
+    writeSolution(f, matriz, variableNames, solution, cols, rows, maximize);
 
+    free(solution);
 }
 
 
-void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int amountOfVariables, int cols, int rows, int maximize){
+void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int amountOfVariables, char** variableNames, int cols, int rows, int maximize){
 
     double* solution1 = malloc(sizeof(double) * amountOfVariables);
     double* solution2 = malloc(sizeof(double) * amountOfVariables);
@@ -525,7 +561,7 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
 
     int ones;
     int nonZero;
-    for (int col = 1; col <= amountOfVariables; ++col){
+    for (int col = 1; col < cols-1; ++col){
 
         int index = -1;
         ones = 0; //La cantidad de 1s
@@ -552,7 +588,7 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
         }
     }
 
-    for (int col = 1; col <= amountOfVariables; ++col){
+    for (int col = 1; col < cols-1; ++col){
 
         int index = -1;
         ones = 0; //La cantidad de 1s
@@ -581,16 +617,16 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
 
     fprintf(f, "\\textbf{Ecuation} \n");
     fprintf(f, "$$\n");
-    fprintf(f, "x = \\alpha \\cdot \n");
+    fprintf(f, "\\alpha \\cdot \n");
     fprintf(f, "\\begin{bmatrix}\n");
     for (int i = 0; i < amountOfVariables; ++i){
-        fprintf(f, "%.2f \\\\ ", solution1[i]);
+        fprintf(f, "%s = %.2f \\\\ ", variableNames[i], solution1[i]);
     }
     fprintf(f, "\\end{bmatrix}\n");
     fprintf(f, "+ (1 - \\alpha) \\cdot \n");
     fprintf(f, "\\begin{bmatrix}\n");
     for (int i = 0; i < amountOfVariables; ++i){
-        fprintf(f, "%.2f \\\\ ", solution2[i]);
+        fprintf(f, "%s = %.2f \\\\ ", variableNames[i], solution2[i]);
     }
     fprintf(f, " \\end{bmatrix}\n");
     fprintf(f, "$$\n");
@@ -599,88 +635,25 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int a
     fprintf(f, "\\textbf{Other solutions} \n");
     double alpha = 0.25;
     for (int sol = 0; sol < 3; sol++){
-        fprintf(f, "$$\\alpha = %.2f \\Rightarrow x = \n", alpha);
+        fprintf(f, "$$\\alpha = %.2f \\Rightarrow \n", alpha);
         fprintf(f, "\\begin{bmatrix}\n");
 
         for (int x = 0; x < amountOfVariables; x++){
             double value = solution1[x] * alpha + solution2[x] * (1 - alpha);
-            fprintf(f, "%.2f \\\\ ", value);
+            fprintf(f, "%s = %.2f \\\\ ", variableNames[x], value);
         }
 
         fprintf(f, "\n\\end{bmatrix}\n");
         fprintf(f, "$$\n\n");
         alpha += 0.25;
     }
+    fprintf(f, "\\subsection{Optimal Solutions}\n");
+    writeSolution(f, matriz, variableNames, solution1, cols, rows, maximize);
+    writeSolution2(f, matriz, variableNames, solution2, cols, rows, maximize);
 
+    free(solution1);
+    free(solution2);
 }
-
-void drawing2D(FILE* f, double** matriz, int x1, int b1, int x2, int b2){
-    fprintf(f, "\\begin{center} \n");
-    fprintf(f, "\\begin{tikzpicture} \n");
-    fprintf(f, "\\begin{axis}[ \n");
-    fprintf(f, "    axis lines = middle,");
-    fprintf(f, "    xlabel=$x$, ylabel=$y$,");
-    fprintf(f, "    xmin=0, xmax=50,");         
-    fprintf(f, "    ymin=0, ymax=50, ");        
-    fprintf(f, "    samples=200,  ");           
-    fprintf(f, "    domain=-5:5,");
-    fprintf(f, "    legend pos=outer north east,");
-    fprintf(f, "]");
-
-
-    fprintf(f, "\\addplot[name path=ineq1, thick, blue] {%d*x + %d}; ", x1, b1);
-    fprintf(f, "\\addplot[name path=lower, draw=none, domain=-50:50] {-5};");
-
-    fprintf(f, "\\addplot[fill=blue!30, opacity=0.5]");
-    fprintf(f, "fill between[of=ineq1 and lower, soft clip={domain=-5:5}];");
-    fprintf(f, "\\addlegendentry{$y \\leq %dx + %d$}", x1, b1);
-
-    fprintf(f, "\\addplot[name path=ineq2, thick, red] {%d*x + %d};", x2, b2);
-    fprintf(f, "\\addplot[name path=upper, draw=none, domain=-5:5] {5};");
-
-    fprintf(f, "\\addplot[fill=red!30, opacity=0.5]");
-    fprintf(f, "fill between[of=ineq2 and upper, soft clip={domain=-5:5}];");
-    fprintf(f, "\\addlegendentry{$y \\geq %dx + %d$}", x2, b2);
-
-    fprintf(f, "\\end{axis}");
-    fprintf(f, "\\end{tikzpicture}");
-    fprintf(f, "\\end{center}");
-
-}
-
-void drawing3D(FILE* f){
-
-    fprintf(f, "\\section{3D Drawing of the Problem}");
-
-    fprintf(f, "\\begin{center}");
-    fprintf(f, "\\begin{adjustbox}{max width=\\textwidth}\n");
-    fprintf(f, "\\begin{tikzpicture}\n");
-
-
-    fprintf(f, "\\begin{axis}[view={45}{45}, xlabel=$x$, ylabel=$y$, zlabel=$z$]\n");
-
-    fprintf(f, "\\addplot3[only marks, scatter, mark=*]\n");
-
-
-        
-    Dot* dots = malloc(sizeof(Dot)*10);
-
-    fprintf(f, "coordinates{\n");
-
-    for (;;){
-
-    }
-
-    fprintf(f, "}\n");
-
-    free(dots);
-
-
-    fprintf(f, "\\end{tikzpicture}\n");
-    fprintf(f, "\\end{adjustbox}\n\n\n");
-    fprintf(f, "\\end{center}\n\n\n");
-}
-
 
 
 /* ################################## MAIN ################################## */
@@ -713,6 +686,19 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
             matriz[0][col] *= -1;
         }
     }
+
+    /*
+    const char *newNameTemplate = "x_%d";
+    for (int x = 0; x < amountOfVariables; ++x){
+
+        if (variableNames[x][0] == 'x'){
+            int len = snprintf(NULL, 0, newNameTemplate, x+1);
+            char* newName = malloc(len + 2);
+            snprintf(newName, len + 1, newNameTemplate, x+1);
+
+            variableNames[x] = newName;
+        }
+    }*/
 
     documentStart(f);
 
@@ -819,7 +805,12 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
         //Multiple solutions with alpha
         fprintf(f, "\\subsection{Equation and Solutions}\n");
-        extractSolutions(f, solucionOriginal, matriz, amountOfVariables, cols, rows, maximize);
+        extractSolutions(f, solucionOriginal, matriz, amountOfVariables, variableNames, cols, rows, maximize);
+
+        for (int r = 0; r < rows; ++r){
+            free(solucionOriginal[r]);
+        }
+        free(solucionOriginal);
 
     } else {
 
@@ -841,64 +832,10 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
     }
 
-    //fprintf(f, "\\section{Graph}\n");
+    free(tableData->fractions);
     free(tableData);
-
-    //Dibujo 2D
-
-    //Dibujo 3D
 
     documentEnd(f);
     compileTex();
 }
 
-
-void test7(){ //Soluciones multiples
-
-    int rows = 3;
-    int cols = 6;
-    int variables = 2;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    char* varNames[2];
-    varNames[0] = "AA";
-    varNames[1] = "BB";
-
-    int* restrictions = malloc(sizeof(int) * 3);
-    restrictions[0] = 2;
-    restrictions[1] = 0;
-    restrictions[2] = 0;
-
-    matriz[0][0] = 1;
-    matriz[0][1] = -4;
-    matriz[0][2] = -14;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 2;
-    matriz[1][2] = 7;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 21;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 7;
-    matriz[2][2] = 2;
-    matriz[2][3] = 0;
-    matriz[2][4] = 1;
-    matriz[2][5] = 21;
-
-    runSimplex(matriz, "Hi I am testy the test", varNames, variables, 1, restrictions, cols, rows, 1); //max
-}
-
-/*int main(){
-
-    test7();
-
-    return 0;
-}*/
