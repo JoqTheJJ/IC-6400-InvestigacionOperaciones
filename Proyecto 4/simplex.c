@@ -505,7 +505,7 @@ void writeSolution2(FILE* f, double** matriz, char** variableNames, double* solu
 
 void extractSolution(FILE* f, double** matriz, int amountOfVariables, char** variableNames, int cols, int rows, int maximize){
 
-    double* solution = malloc(sizeof(double) * amountOfVariables);
+    double* solution = malloc(sizeof(double) * (cols - 2));
     double eps = 1e-2;
 
     int ones;
@@ -555,8 +555,8 @@ void extractSolution(FILE* f, double** matriz, int amountOfVariables, char** var
 
 void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, int amountOfVariables, char** variableNames, int cols, int rows, int maximize){
 
-    double* solution1 = malloc(sizeof(double) * amountOfVariables);
-    double* solution2 = malloc(sizeof(double) * amountOfVariables);
+    double* solution1 = malloc(sizeof(double) * (cols - 2));
+    double* solution2 = malloc(sizeof(double) * (cols - 2));
     double eps = 1e-2;
 
     int ones;
