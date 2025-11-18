@@ -11,8 +11,8 @@
 #include <math.h>
 #include <stdbool.h>
 
-#include <gtk/gtk.h>
-#include <cairo.h>
+//#include <gtk/gtk.h>
+//#include <cairo.h>
 #include <ctype.h>
 
 #define INVALID_FRACTION 1125899906842624
@@ -164,8 +164,12 @@ void problem(FILE* f, double** matriz, char* problemName, char** variableNames, 
             }
         }
         
-        if (1){ // leq
+        if (restrictions[restriction-1] == 0){ // leq <=
             fprintf(f, " \\leq ");
+        } else if (restrictions[restriction-1] == 2){ // geq >=
+            fprintf(f, " \\geq ");
+        } else if (restrictions[restriction-1] == 1){ // eq ==
+            fprintf(f, " = ");
         }
         fprintf(f, "%2f", matriz[restriction][cols-1]);
 
@@ -328,9 +332,6 @@ int fractions(double** matriz, int cols, int rows, int y, TableData* tableData){
             x = r;
 
         }
-
-        printf("Dividiendo: %.17f ENTRE %.17f\n", matriz[r][cols-1], matriz[r][y]);
-        printf("La fraccion en la fila [%d] da: %.17f\n", r, frac);
     }
 
     //piv->decisiones = decisiones;
@@ -377,8 +378,6 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
     tableData->x_pivot = piv.x;
     tableData->y_pivot = piv.y;
     tableData->pivot = INVALID_FRACTION;
-
-    printf("HOLA EL PIVOTE ES: x:%d, y:%d\n", piv.x, piv.y);
 
     if (piv.x == -1 && piv.y == -1){
         //Revisar soluciones multiples
@@ -692,7 +691,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     }
 
     if (!maximize){ //Invert first row (except Z and B)
-        for (int col = 1; col < 1 + amountOfVariables; ++col){
+        for (int col = 1; col < cols-1; ++col){
             matriz[0][col] *= -1;
         }
     }
@@ -849,3 +848,92 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     compileTex();
 }
 
+void test1(){
+
+
+    int maximize = 0; //Minimizar
+
+    int rows = 4;
+    int cols = 8;
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0;
+    restrictions[1] = 2;
+    restrictions[2] = 1;
+
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1";
+    variableNames[1] = "x2";
+    variableNames[2] = "s1";
+    variableNames[3] = "e1";
+    variableNames[4] = "a1";
+    variableNames[5] = "a2";
+
+
+    matriz[0][0] = 1;
+    matriz[0][1] = -2;
+    matriz[0][2] = -3;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+
+    matriz[1][0] = 0;
+    matriz[1][1] = 0.5;
+    matriz[1][2] = 0.25;
+    matriz[1][3] = 1;
+    matriz[1][4] = 0;
+    matriz[1][5] = 0;
+    matriz[1][6] = 0;
+    matriz[1][7] = 4;
+
+    matriz[2][0] = 0;
+    matriz[2][1] = 1;
+    matriz[2][2] = 3;
+    matriz[2][3] = 0;
+    matriz[2][4] = -1;
+    matriz[2][5] = 1;
+    matriz[2][6] = 0;
+    matriz[2][7] = 20;
+
+    matriz[3][0] = 0;
+    matriz[3][1] = 1;
+    matriz[3][2] = 1;
+    matriz[3][3] = 0;
+    matriz[3][4] = 0;
+    matriz[3][5] = 0;
+    matriz[3][6] = 1;
+    matriz[3][7] = 10;
+
+    if (!maximize){ //Invert first row (except Z and B)
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    
+
+
+
+    printf("Holi, compile UwU\n");
+
+    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+    cols, rows, maximize);
+}
+
+int main(){
+
+    test1();
+
+    return 0;
+}

@@ -17,3 +17,8 @@ clean:
 
 run:
 	./programa-4
+
+test:
+	rm -f $(EXE)
+	gcc -o simplex simplex.c
+	./simplex
