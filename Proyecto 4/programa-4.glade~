@@ -72,7 +72,9 @@ maximize.
 - When entering your constraints, make sure to choose the correct
 relational operator. The right side numbers have to be real numbers
 greater than or equal to 0. If the cell becomes red, you've entered
-the wrong value.</property>
+the wrong value.
+- Keep in mind that all variables will have the constraint of being equal
+to or greater than 0 as well.</property>
                 <attributes>
                   <attribute name="font-desc" value="Sans 9"/>
                 </attributes>
