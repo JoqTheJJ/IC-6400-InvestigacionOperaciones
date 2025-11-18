@@ -31,7 +31,7 @@ typedef struct {
     double pivot;
 } TableData;
 
-
+double eps = 1e-2;
 
 
 /* ################################## TEX ################################### */
@@ -311,29 +311,26 @@ void pivotRow(double* fila, Pivot piv, int cols){
 int fractions(double** matriz, int cols, int rows, int y, TableData* tableData){
 
     double min = INVALID_FRACTION; //Big number for overwrite
-    int decisiones = 0;
     int x = -1;
     for (int r = 1; r < rows; ++r){
         double frac = matriz[r][cols-1] / matriz[r][y];
 
         tableData->fractions[r-1] = frac;
 
-        if (matriz[r][y] > 0 && frac > 0 && frac < min){ //b positivo
+        if (matriz[r][y] > 0 && fabs(frac) > -eps && frac < min){ //b positivo o 0
             // frac < min escoge en primero en caso de empate
-
             min = frac;
             x = r;
-            decisiones = 0;
 
-        } else if (matriz[r][y] > 0 && frac >= 0 && min == INVALID_FRACTION){ //0 degenerado
+        } else if (matriz[r][y] > 0 && fabs(frac) > -eps && min == INVALID_FRACTION){ //0 degenerado (???) INVALID_FRACTION
             // frac < min escoge en primero en caso de empate
-
             min = frac;
             x = r;
-            decisiones = 0;
-        } else if (matriz[r][y] > 0 && frac >= 0 && frac == min){
-            decisiones++;
+
         }
+
+        printf("Dividiendo: %.17f ENTRE %.17f\n", matriz[r][cols-1], matriz[r][y]);
+        printf("La fraccion en la fila [%d] da: %.17f\n", r, frac);
     }
 
     //piv->decisiones = decisiones;
@@ -381,21 +378,34 @@ int pivot(double** matriz, int cols, int rows, int maximize, TableData* tableDat
     tableData->y_pivot = piv.y;
     tableData->pivot = INVALID_FRACTION;
 
+    printf("HOLA EL PIVOTE ES: x:%d, y:%d\n", piv.x, piv.y);
+
     if (piv.x == -1 && piv.y == -1){
         //Revisar soluciones multiples
 
         for (int col = 1; col < cols-1; ++col){
+
+
             
-            if (matriz[0][col] == 0){ //Variable con 0
+            if (fabs(matriz[0][col]) < eps){ //Variable con 0
 
-
-                double suma = 0;
+                int ones = 0; //La cantidad de 1s
+                int nonZero = 0; //Flag de valores no 0 y no 1
                 for (int row = 1; row < rows; ++row){
-                    suma += matriz[row][col];
+                    double valor = matriz[row][col];
+
+                    if (fabs(valor - 1.0) < eps){ // ==1
+                        ones++; //1s found
+
+                    } else if (!(fabs(valor) < eps)){ // != 0
+                        nonZero = 1; //Non zero (non one) value found
+                        break;
+                    }
                 }
 
-                if (suma != 1){
-                    return -col; //Soluciones Multiples
+
+                if (!(ones == 1 && !nonZero)){
+                    return -col;
                 }
             }
         }
