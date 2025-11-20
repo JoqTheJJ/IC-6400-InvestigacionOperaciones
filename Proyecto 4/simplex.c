@@ -244,7 +244,7 @@ void storeMatriz(FILE* f, double** matriz, double* M, char** varNames, int amoun
 
 void storeIntermediateMatriz(FILE* f, double** matriz, double* M, char** varNames, int amountOfVariables, int* restrictions, int cols, int rows, TableData* td){
 
-    fprintf(f, "\\begin{center}\n");
+    fprintf(f, "\\begin{adjustbox}{max width=\\textwidth}\n");;
 
     fprintf(f, "    \\begin{tabular}{|c|");
     //Tex table structure
@@ -276,8 +276,24 @@ void storeIntermediateMatriz(FILE* f, double** matriz, double* M, char** varName
     int y = td->y_pivot;
 
     fprintf(f, "        \\hline\n");
+    fprintf(f, "        $%.3f$", matriz[0][0]);
+    for (int col = 1; col < cols; col++){
+
+        if (fabs(M[col])){
+            if (y == col){
+                fprintf(f, "& \\cellcolor{LightPink}$%.3f + %.1fM$ ", matriz[0][col], M[col]);
+            } else {
+                fprintf(f, "& %.3f + %.1fM ", matriz[0][col], M[col]);
+            }
+        } else {
+            fprintf(f, "& %.3f", matriz[0][col]);
+        }
+    }
+
+    fprintf(f, "\\\\\n        \\hline\n");
+
     //Matrix cells
-    for (int row = 0; row < rows; ++row){
+    for (int row = 1; row < rows; ++row){
         fprintf(f, "        %.3f", matriz[row][0]);
 
 
@@ -311,7 +327,7 @@ void storeIntermediateMatriz(FILE* f, double** matriz, double* M, char** varName
         fprintf(f, "\\\\\n        \\hline\n");
     }
     fprintf(f, "    \\end{tabular}\n");
-    fprintf(f, "\\end{center}\n\n\n");
+    fprintf(f, "\\end{adjustbox}\n\n\n");
 
 }
 
@@ -328,7 +344,7 @@ void pivotRow(double* fila, Pivot piv, int cols){
     }
 }
 
-int fractions(double** matriz, double* M, int cols, int rows, int y, TableData* tableData){
+int fractions(double** matriz, double* M, int cols, int rows, int y, Pivot* piv, TableData* tableData){
 
     double min = INVALID_FRACTION; //Big number for overwrite
     int x = -1;
@@ -341,11 +357,15 @@ int fractions(double** matriz, double* M, int cols, int rows, int y, TableData* 
             // frac < min escoge en primero en caso de empate
             min = frac;
             x = r;
+            piv->pivot = matriz[r][y];
+            piv->pivotM = M[y];
 
         } else if (matriz[r][y] > 0 && fabs(frac) > -eps && min == INVALID_FRACTION){ //0 degenerado (???) INVALID_FRACTION
             // frac < min escoge en primero en caso de empate
             min = frac;
             x = r;
+            piv->pivot = matriz[r][y];
+            piv->pivotM = M[y];
 
         }
     }
@@ -354,7 +374,7 @@ int fractions(double** matriz, double* M, int cols, int rows, int y, TableData* 
     return x;
 }
 
-Pivot escogerPivote(double** matriz, double* M, int cols, int rows, int maximize, TableData* tableData){
+Pivot escogerPivote(double** matriz, double* M, int cols, int rows, int maximize, TableData* tableData, int artificials){
 
     Pivot piv;
     piv.x = -1;
@@ -362,33 +382,54 @@ Pivot escogerPivote(double** matriz, double* M, int cols, int rows, int maximize
 
     if (maximize){ //Maximize
         double mostNegative = 0.1;
-        for (int c = 1; c < cols-1; ++c){
-            if (matriz[0][c] < 0 && matriz[0][c] < mostNegative){
-                mostNegative = matriz[0][c];
+
+        for (int c = 1; c < cols-1-artificials; ++c){ //Pivot according to M
+            if (M[c] < 0 && M[c] < mostNegative){
+                mostNegative = M[c];
                 piv.y = c;
             }
         }
+        if (mostNegative == 0.1){ //No -M found
+            for (int c = 1; c < cols-1-artificials; ++c){
+                if (matriz[0][c] < 0 && matriz[0][c] < mostNegative){
+                    mostNegative = matriz[0][c];
+                    piv.y = c;
+                }
+            }
+        }
+
+
+
     } else { //Minimize
         double mostPositive = -0.1;
-        for (int c = 1; c < cols-1; ++c){
-            if (matriz[0][c] > 0 && matriz[0][c] > mostPositive){
-                mostPositive = matriz[0][c];
+
+        for (int c = 1; c < cols-1-artificials; ++c){ //Pivot according to M
+            if (M[c] > 0 && M[c] > mostPositive){
+                mostPositive = M[c];
                 piv.y = c;
+            }
+        }
+        if (mostPositive == -0.1){ //No -M found
+            for (int c = 1; c < cols-1-artificials; ++c){
+                if (matriz[0][c] > 0 && matriz[0][c] > mostPositive){
+                    mostPositive = matriz[0][c];
+                    piv.y = c;
+                }
             }
         }
     }
 
     if (piv.y != -1){
-        piv.x = fractions(matriz, M, cols, rows, piv.y, tableData);
+        piv.x = fractions(matriz, M, cols, rows, piv.y, &piv, tableData);
     }
 
     return piv;
 }
 
-int pivot(double** matriz, double* M, int cols, int rows, int maximize, TableData* tableData){
+int pivot(double** matriz, double* M, int cols, int rows, int maximize, TableData* tableData, int artificials){
     //maximize defines if true maximizes the z function
 
-    Pivot piv = escogerPivote(matriz, M, cols, rows, maximize, tableData);
+    Pivot piv = escogerPivote(matriz, M, cols, rows, maximize, tableData, artificials);
 
     tableData->x_pivot = piv.x;
     tableData->y_pivot = piv.y;
@@ -442,11 +483,14 @@ int pivot(double** matriz, double* M, int cols, int rows, int maximize, TableDat
     for (int r = 0; r < rows; ++r){
         if (r != piv.x && matriz[r][piv.y] != 0){
 
-
             double k = matriz[r][piv.y] * -1;
-
             for (int c = 0; c < cols; ++c){
                 matriz[r][c] += k * matriz[piv.x][c];
+            }
+
+            double mk = M[piv.y] * -1;
+            for (int c = 0; c < cols; ++c){
+                M[c] += mk * matriz[piv.x][c];
             }
 
         }
@@ -465,7 +509,7 @@ void solucionesMultiples(FILE* f, double** matriz, double* M, int cols, int rows
     piv.y = -columnaPivoteNegativa;
     TableData* tableData = malloc(sizeof(TableData));
     tableData->fractions = malloc(sizeof(double)*(rows-1));
-    piv.x = fractions(matriz, M, cols, rows, piv.y, tableData);
+    piv.x = fractions(matriz, M, cols, rows, piv.y, &piv, tableData);
     free(tableData->fractions);
     free(tableData);
 
@@ -489,22 +533,20 @@ void normalizeMatriz(FILE* f, double** matriz, double* M, int amountOfVariables,
 
     double sign = maximize ? -1 : 1;
 
-    for (int pivot = cols - artificials - 1; pivot < cols - 1; ++pivot){
+    for (int col = cols - artificials - 1; col < cols-1; ++col){ //Column of the restriction
 
         int row = -1;
         for (int r = 0; r < rows; ++r){ //Row corresponding to that restriction
-            if (fabs(matriz[r][pivot] - 1) < eps){
+            if (fabs(matriz[r][col] - 1) < eps){
                 row = r;
                 break;
             }
         }
 
         for (int var = 1; var < cols; ++var){
-            M[var] += matriz[0][var] * sign;
+            M[var] += matriz[row][var] * sign;
         }
     }
-
-    printf("Holi, normalize\n");
 }
 
 
@@ -738,7 +780,11 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         }
     }
     for (int col = cols-2; col > cols-2-artificials; col--){
-        M[col] = 1; //Assign 1M to cost (first row)
+        if (maximize){
+            M[col] = 1; //Assign 1M to cost (first row)
+        } else {
+            M[col] = -1; //Assign 1M to cost (first row)
+        }
     }
 
     printf("Rows:%d  Cols:%d\n", rows, cols);
@@ -782,26 +828,36 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         }
     }*/
 
-    printf("Porlomenoshastaquideberiaservir\n");
-
     documentStart(f);
 
     introduction(f);
 
     problem(f, matriz, M, problemName, variableNames, amountOfVariables, saveMatrixes, restrictions, // [0:<, 1:=, 2:>]
     cols, rows, maximize);
-    printf("PROBLEM ES UNA BASURA\n");
 
+    printf("MVector BeforeStore: ");
+    for (int x = 0; x < cols; ++x){
+        printf("%.2f ", x, M[x]);
+    }
+    printf("\n");
     fprintf(f, "\\section{Initial Matrix with M cost}");
     storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
 
-    printf("Hola, voy a intentar normalizar (el primer store btw)\n");
     normalizeMatriz(f, matriz, M, amountOfVariables, restrictions, cols, rows, artificials, maximize);
 
+    printf("MVector AfterNormalize: ");
+    for (int x = 0; x < cols; ++x){
+        printf("%.2f ", x, M[x]);
+    }
+    printf("\n");
     fprintf(f, "\\section{Initial Normalized Matrix}");
     storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
+    printf("MVector Final: ");
+    for (int x = 0; x < cols; ++x){
+        printf("%.2f ", x, M[x]);
+    }
+    printf("\n");
 
-    printf("STORE SI SIRVE TODO ES MENTIRA\n");
     fflush(f);
 
     int status = 0; //En ejecucion
@@ -815,12 +871,20 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
     while (status == 0){
 
+        printf("Pivoteo\n");
+        printf("MVector: ");
+        for (int x = 0; x < cols; ++x){
+            printf("%.2f ", x, M[x]);
+        }
+        printf("\n");
+        fflush(f);
+
         for (int row = 0; row < rows-1; ++row){
             tableData->fractions[row] = INVALID_FRACTION;
         }
         tableData->pivot = INVALID_FRACTION;
 
-        status = pivot(matriz, M, cols, rows, maximize, tableData);
+        status = pivot(matriz, M, cols, rows, maximize, tableData, artificials);
 
         if (saveMatrixes && status == 0){
             fprintf(f, "\\subsection{Pivot Table}");
@@ -849,20 +913,45 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
     }
 
-    if (status == 2){
+
+
+    int nonFeasible = 0;
+    for (int c = 0; c < cols; ++c){ //Check for M values in the matrix
+        if (!(fabs(M[c]) < eps)){
+            nonFeasible = 1;
+        }
+    }
+
+
+
+
+    if (nonFeasible){ // Non feasible - Matrix has M values
+
+        fprintf(f, "\\section{Result Analysis}");
+
+        //Reporte no factible
+        fprintf(f, "\\subsection{Non feasible problems}\n");
+        fprintf(f, "Sometimes the simplex algorithm may be faced with a non feasible problem, as a result of the model used. In the simplex table this is represented by coeficients of M different than zero in the first row.\\\\\n");
+
+        //Last table
+        storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
+
+    
+
+    } else if (status == 2){
 
         fprintf(f, "\\section{Result Analysis}");
 
         //Reporte no acotado
         int unboundedColumn = tableData->y_pivot;
         fprintf(f, "\\subsection{Unbounded problems}\n");
-        fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling. In the simplex table is represented by a column full of negatives\\\\\n");
+        fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling. In the simplex table this is represented by a column full of negatives.\\\\\n");
         fprintf(f, "In this case it is found in the column %d where there are no valid fractions:", unboundedColumn);
-
-        
 
         //Last table
         storeIntermediateMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows, tableData);
+
+
     
     } else if (status < 0){
 
@@ -1015,9 +1104,197 @@ void test1(){
     cols, rows, maximize);
 }
 
+void test2(){
+
+
+    int maximize = 1; //Maximizar
+
+    int rows = 4;
+    int cols = 8;
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; //<
+    restrictions[1] = 0; //<
+    restrictions[2] = 2; //>
+
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1";
+    variableNames[1] = "x2";
+    variableNames[2] = "s1";
+    variableNames[3] = "s2";
+    variableNames[4] = "e1";
+    variableNames[5] = "a1";
+
+
+    matriz[0][0] = 1;
+    matriz[0][1] = -10000;
+    matriz[0][2] = -3000;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+
+    matriz[1][0] = 0;
+    matriz[1][1] = 1;
+    matriz[1][2] = 1;
+    matriz[1][3] = 1;
+    matriz[1][4] = 0;
+    matriz[1][5] = 0;
+    matriz[1][6] = 0;
+    matriz[1][7] = 7;
+
+    matriz[2][0] = 0;
+    matriz[2][1] = 10;
+    matriz[2][2] = 4;
+    matriz[2][3] = 0;
+    matriz[2][4] = 1;
+    matriz[2][5] = 0;
+    matriz[2][6] = 0;
+    matriz[2][7] = 40;
+
+    matriz[3][0] = 0;
+    matriz[3][1] = 0;
+    matriz[3][2] = 1;
+    matriz[3][3] = 0;
+    matriz[3][4] = 0;
+    matriz[3][5] = -1;
+    matriz[3][6] = 1;
+    matriz[3][7] = 3;
+
+    if (!maximize){ //Invert first row (except Z and B)
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    
+
+
+
+    printf("Holi, compile UwU\n");
+
+    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+    cols, rows, maximize);
+}
+
+
+void test3(){
+
+
+    int maximize = 1; //Maximizar
+
+    int rows = 5;
+    int cols = 10;
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; //<
+    restrictions[1] = 0; //<
+    restrictions[2] = 2; //>
+    restrictions[3] = 2; //>
+
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1";
+    variableNames[1] = "x2";
+    variableNames[2] = "s1";
+    variableNames[3] = "s2";
+    variableNames[4] = "e1";
+    variableNames[5] = "e2";
+    variableNames[6] = "a1";
+    variableNames[7] = "a2";
+
+
+    matriz[0][0] = 1;
+    matriz[0][1] = -300;
+    matriz[0][2] = -200;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+    matriz[0][8] = 0;
+    matriz[0][9] = 0;
+
+    matriz[1][0] = 0;
+    matriz[1][1] = 1.0/40.0;
+    matriz[1][2] = 1.0/60.0;
+    matriz[1][3] = 1;
+    matriz[1][4] = 0;
+    matriz[1][5] = 0;
+    matriz[1][6] = 0;
+    matriz[1][7] = 0;
+    matriz[1][8] = 0;
+    matriz[1][9] = 1;
+
+    matriz[2][0] = 0;
+    matriz[2][1] = 0.02;
+    matriz[2][2] = 0.02;
+    matriz[2][3] = 0;
+    matriz[2][4] = 1;
+    matriz[2][5] = 0;
+    matriz[2][6] = 0;
+    matriz[2][7] = 0;
+    matriz[2][9] = 1;
+
+    matriz[3][0] = 0;
+    matriz[3][1] = 1;
+    matriz[3][2] = 0;
+    matriz[3][3] = 0;
+    matriz[3][4] = 0;
+    matriz[3][5] = -1;
+    matriz[3][6] = 0;
+    matriz[3][7] = 1;
+    matriz[3][8] = 0;
+    matriz[3][9] = 30;
+
+    matriz[4][0] = 0;
+    matriz[4][1] = 0;
+    matriz[4][2] = 1;
+    matriz[4][3] = 0;
+    matriz[4][4] = 0;
+    matriz[4][5] = 0;
+    matriz[4][6] = -1;
+    matriz[4][7] = 0;
+    matriz[4][8] = 1;
+    matriz[4][9] = 20;
+
+    if (!maximize){ //Invert first row (except Z and B)
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    
+    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+    cols, rows, maximize);
+}
+ 
+
+
+
+
+
 int main(){
 
-    test1();
+    test3();
 
     return 0;
 }
