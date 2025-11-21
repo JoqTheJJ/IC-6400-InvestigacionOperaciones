@@ -902,8 +902,6 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
     while (status == 0){
 
-        usleep(200000);
-
         for (int row = 0; row < rows-1; ++row){
             tableData->fractions[row] = INVALID_FRACTION;
         }
@@ -939,18 +937,11 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     }
 
 
-    printf("MVector Final: ");
-    for (int x = 0; x < cols; ++x){
-        printf("%.2f ", x, M[x]);
-    }
-    printf("\n");
 
 
     int nonFeasible = 0;
-    for (int c = 0; c < cols - artificials - 1; ++c){ //Check for M values in the matrix
-        printf("Revisando [%d]\n", c);
+    for (int c = 0; c < cols - artificials - 1; ++c){ //Check for M values in the matri
         if (fabs(M[c]) > eps){
-            printf("ESTA AQUI >>> %d <<<\n", c);
             nonFeasible = 1;
         }
     }
