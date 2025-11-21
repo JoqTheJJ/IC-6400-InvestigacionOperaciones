@@ -777,12 +777,16 @@ void extractSolutions(FILE* f, double** solucionOriginal, double** matriz, doubl
 /* ################################## MAIN ################################## */
 
 
-void compileTex(){
+void compileTex(char* problemName){
     printf("->] Compiling...\n");
-    int responseCode = system("pdflatex -file-line-error -interaction=batchmode -halt-on-error simplex.tex >/dev/null 2>&1");
+    char command[300];
+    sprintf(command, "pdflatex -file-line-error -interaction=batchmode -halt-on-error %s.tex >/dev/null 2>&1", problemName);
+    int responseCode = system(command);
     if (responseCode == 0){
         printf("->] Latex compiled without problems\n");
-        system("evince --presentation simplex.pdf &");
+        char pdfCommand[300];
+        sprintf(pdfCommand, "evince --presentation %s.pdf &", problemName);
+        system(pdfCommand);
     } else {
         printf("->] Error in LaTex compilation, check simplex.log for details\n");
         printf("> Terminating program...\n");
@@ -798,7 +802,11 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         M[c] = 0;
     }
 
-    FILE* f = fopen("simplex.tex", "w");
+    //FILE* f = fopen("simplex.tex", "w");
+    char texFileName[256];
+    sprintf(texFileName, "%s.tex", problemName);
+
+    FILE* f = fopen(texFileName, "w");
 
     if (!f){
         printf("Could not write file\n");
@@ -883,7 +891,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
     } else {
 
-        fprintf(f, "\\section{Initial Matrix with M cost}");
+        fprintf(f, "\\section{Initial Matrix }");
         fprintf(f, "The initial simplex table is shown below.\\\\\n\n");
         storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
 
@@ -1042,7 +1050,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     free(tableData);
 
     documentEnd(f);
-    compileTex();
+    compileTex(problemName);
 }
 
 void test1(){
@@ -1507,13 +1515,13 @@ void test5(){
 
 
 
-int main(){
+// int main(){
 
-    test1();
-    test2();
-    test3();
-    test4();
-    test5();
+//     test1();
+//     test2();
+//     test3();
+//     test4();
+//     test5();
 
-    return 0;
-}
+//     return 0;
+// }
