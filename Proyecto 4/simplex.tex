@@ -75,7 +75,9 @@ $x2 \cdot 0.000000 + x1 \cdot 1.000000 \geq 30.000000$
 
 $x2 \cdot 1.000000 + x1 \cdot 0.000000 \geq 20.000000$
 
-\section{Initial Matrix with M cost}\begin{adjustbox}{max width=\textwidth}
+\section{Initial Matrix with M cost}The initial simplex table is shown below, where the cost of M is represented in the first row. This cost is added to the objective function to penalize the presence of artificial variables in the basis.\\
+
+\begin{adjustbox}{max width=\textwidth}
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
         \hline
         Z  & $x2$ & $x1$ & $s1$ & $s2$ & $e1$ & $e2$ & $a1$ & $a2$ & b\\
@@ -95,7 +97,8 @@ $x2 \cdot 1.000000 + x1 \cdot 0.000000 \geq 20.000000$
 \end{adjustbox}
 
 
-\section{Initial Normalized Matrix}\begin{adjustbox}{max width=\textwidth}
+\section{Initial Normalized Matrix}
+\begin{adjustbox}{max width=\textwidth}
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
         \hline
         Z  & $x2$ & $x1$ & $s1$ & $s2$ & $e1$ & $e2$ & $a1$ & $a2$ & b\\
@@ -158,6 +161,7 @@ $x2 \cdot 1.000000 + x1 \cdot 0.000000 \geq 20.000000$
 
 \section{Result Analysis}\subsection{Non feasible problems}
 Sometimes the simplex algorithm may be faced with a non feasible problem, as a result of the model used. In the simplex table this is represented by coeficients of M different than zero in the first row.\\
+
 \begin{adjustbox}{max width=\textwidth}
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
         \hline

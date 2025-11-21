@@ -819,6 +819,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         }
     }
 
+    /*
     printf("Rows:%d  Cols:%d\n", rows, cols);
     printf("MVector: ");
     for (int x = 0; x < cols; ++x){
@@ -833,6 +834,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         }
         printf("\n");
     }
+    */
 
 
     if (!maximize){ //Invert first row (except Z and B)
@@ -867,30 +869,27 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     problem(f, matriz, M, problemName, variableNames, amountOfVariables, saveMatrixes, restrictions, // [0:<, 1:=, 2:>]
     cols, rows, maximize);
 
-    printf("MVector BeforeStore: ");
-    for (int x = 0; x < cols; ++x){
-        printf("%.2f ", x, M[x]);
-    }
-    printf("\n");
-    fprintf(f, "\\section{Initial Matrix with M cost}");
-    storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
 
-    normalizeMatriz(f, matriz, M, amountOfVariables, restrictions, cols, rows, artificials, maximize);
+    if (artificials > 0){
 
-    printf("MVector AfterNormalize: ");
-    for (int x = 0; x < cols; ++x){
-        printf("%.2f ", x, M[x]);
-    }
-    printf("\n");
-    fprintf(f, "\\section{Initial Normalized Matrix}");
-    storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
-    printf("MVector Final: ");
-    for (int x = 0; x < cols; ++x){
-        printf("%.2f ", x, M[x]);
-    }
-    printf("\n");
+        fprintf(f, "\\section{Initial Matrix with M cost}");
+        fprintf(f, "The initial simplex table is shown below, where the cost of M is represented in the first row. This cost is added to the objective function to penalize the presence of artificial variables in the basis.\\\\\n\n");
+        storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
 
-    fflush(f);
+        normalizeMatriz(f, matriz, M, amountOfVariables, restrictions, cols, rows, artificials, maximize);
+
+        fprintf(f, "\\section{Initial Normalized Matrix}\n");
+        storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
+
+    } else {
+
+        fprintf(f, "\\section{Initial Matrix with M cost}");
+        fprintf(f, "The initial simplex table is shown below.\\\\\n\n");
+        storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
+
+    }
+    
+
 
     int status = 0; //En ejecucion
     int degenerate = 0;
@@ -902,14 +901,6 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     }
 
     while (status == 0){
-
-        printf("Pivoteo\n");
-        printf("MVector: ");
-        for (int x = 0; x < cols; ++x){
-            printf("%.2f ", x, M[x]);
-        }
-        printf("\n");
-        fflush(f);
 
         for (int row = 0; row < rows-1; ++row){
             tableData->fractions[row] = INVALID_FRACTION;
@@ -963,7 +954,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
         //Reporte no factible
         fprintf(f, "\\subsection{Non feasible problems}\n");
-        fprintf(f, "Sometimes the simplex algorithm may be faced with a non feasible problem, as a result of the model used. In the simplex table this is represented by coeficients of M different than zero in the first row.\\\\\n");
+        fprintf(f, "Sometimes the simplex algorithm may be faced with a non feasible problem, as a result of the model used. In the simplex table this is represented by coeficients of M different than zero in the first row.\\\\\n\n");
 
         //Last table
         storeMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows);
@@ -978,7 +969,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         int unboundedColumn = tableData->y_pivot;
         fprintf(f, "\\subsection{Unbounded problems}\n");
         fprintf(f, "Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling. In the simplex table this is represented by a column full of negatives.\\\\\n");
-        fprintf(f, "In this case it is found in the column %d where there are no valid fractions:", unboundedColumn);
+        fprintf(f, "In this case it is found in the column %d where there are no valid fractions:\\\\\n", unboundedColumn);
 
         //Last table
         storeIntermediateMatriz(f, matriz, M, variableNames, amountOfVariables, restrictions, cols, rows, tableData);
@@ -995,7 +986,7 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
         fprintf(f, "\\subsection{Explanation}\n");
         fprintf(f, "It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\\\\n");
         fprintf(f, "This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\\\\n");
-        fprintf(f, "Here is where it happens in this problem: \n");
+        fprintf(f, "Here is where it happens in this problem: \n\n");
 
         
         double** solucionOriginal = malloc(sizeof(double*) * rows);
@@ -1130,8 +1121,6 @@ void test1(){
 
 
 
-    printf("Holi, compile UwU\n");
-
     runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
     cols, rows, maximize);
 }
@@ -1212,8 +1201,6 @@ void test2(){
     
 
 
-
-    printf("Holi, compile UwU\n");
 
     runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
     cols, rows, maximize);
@@ -1518,10 +1505,10 @@ void test5(){
  
 
 
-/*
+
 int main(){
 
     test5();
 
     return 0;
-}*/
+}
