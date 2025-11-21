@@ -380,17 +380,34 @@ Pivot escogerPivote(double** matriz, double* M, int cols, int rows, int maximize
     piv.x = -1;
     piv.y = -1;
 
+    int* draws = malloc(sizeof(int) * cols);
+    int draw = 1;
     if (maximize){ //Maximize
         double mostNegative = 0.1;
 
         for (int c = 1; c < cols-1-artificials; ++c){ //Pivot according to M
             if (M[c] < 0 && M[c] < mostNegative){
                 mostNegative = M[c];
+                draw = 1;
+                draws[draw-1] = c;
+                piv.y = c;
+
+            } else if (M[c] < 0 && fabs(M[c] - mostNegative) < eps) { //M draw
+                draws[draw] = c;
+                draw++;
                 piv.y = c;
             }
         }
         if (mostNegative == 0.1){ //No -M found
             for (int c = 1; c < cols-1-artificials; ++c){
+                if (matriz[0][c] < 0 && matriz[0][c] < mostNegative){
+                    mostNegative = matriz[0][c];
+                    piv.y = c;
+                }
+            }
+        } else if (draw > 1){ //Draw of M(s)
+            for (int d = 0; d < draw; ++d){
+                int c = draws[d];
                 if (matriz[0][c] < 0 && matriz[0][c] < mostNegative){
                     mostNegative = matriz[0][c];
                     piv.y = c;
@@ -406,6 +423,12 @@ Pivot escogerPivote(double** matriz, double* M, int cols, int rows, int maximize
         for (int c = 1; c < cols-1-artificials; ++c){ //Pivot according to M
             if (M[c] > 0 && M[c] > mostPositive){
                 mostPositive = M[c];
+                draw = 1;
+                draws[draw-1] = c;
+                piv.y = c;
+            } else if (M[c] > 0 && fabs(M[c] - mostPositive) < eps) { //M draw
+                draws[draw] = c;
+                draw++;
                 piv.y = c;
             }
         }
@@ -416,9 +439,18 @@ Pivot escogerPivote(double** matriz, double* M, int cols, int rows, int maximize
                     piv.y = c;
                 }
             }
+        } else if (draw > 1){ //Draw of M(s)
+            for (int d = 0; d < draw; ++d){
+                int c = draws[d];
+                if (matriz[0][c] > 0 && matriz[0][c] > mostPositive){
+                    mostPositive = matriz[0][c];
+                    piv.y = c;
+                }
+            }
         }
     }
 
+    free(draws);
     if (piv.y != -1){
         piv.x = fractions(matriz, M, cols, rows, piv.y, &piv, tableData);
     }
@@ -1187,7 +1219,6 @@ void test2(){
     cols, rows, maximize);
 }
 
-
 void test3(){
 
 
@@ -1286,15 +1317,211 @@ void test3(){
     runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
     cols, rows, maximize);
 }
+
+void test4(){
+
+
+    int maximize = 1; //Maximizar
+
+    int rows = 5;
+    int cols = 10;
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; //<
+    restrictions[1] = 0; //<
+    restrictions[2] = 2; //>
+    restrictions[3] = 2; //>
+
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1";
+    variableNames[1] = "x2";
+    variableNames[2] = "s1";
+    variableNames[3] = "s2";
+    variableNames[4] = "e1";
+    variableNames[5] = "e2";
+    variableNames[6] = "a1";
+    variableNames[7] = "a2";
+
+
+    matriz[0][0] = 1;
+    matriz[0][1] = -200;
+    matriz[0][2] = -300;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+    matriz[0][8] = 0;
+    matriz[0][9] = 0;
+
+    matriz[1][0] = 0;
+    matriz[1][1] = 0.03;
+    matriz[1][2] = 0.02;
+    matriz[1][3] = 1;
+    matriz[1][4] = 0;
+    matriz[1][5] = 0;
+    matriz[1][6] = 0;
+    matriz[1][7] = 0;
+    matriz[1][8] = 0;
+    matriz[1][9] = 1;
+
+    matriz[2][0] = 0;
+    matriz[2][1] = 0.02;
+    matriz[2][2] = 0.02;
+    matriz[2][3] = 0;
+    matriz[2][4] = 1;
+    matriz[2][5] = 0;
+    matriz[2][6] = 0;
+    matriz[2][7] = 0;
+    matriz[2][9] = 1;
+
+    matriz[3][0] = 0;
+    matriz[3][1] = 1;
+    matriz[3][2] = 0;
+    matriz[3][3] = 0;
+    matriz[3][4] = 0;
+    matriz[3][5] = -1;
+    matriz[3][6] = 0;
+    matriz[3][7] = 1;
+    matriz[3][8] = 0;
+    matriz[3][9] = 30;
+
+    matriz[4][0] = 0;
+    matriz[4][1] = 0;
+    matriz[4][2] = 1;
+    matriz[4][3] = 0;
+    matriz[4][4] = 0;
+    matriz[4][5] = 0;
+    matriz[4][6] = -1;
+    matriz[4][7] = 0;
+    matriz[4][8] = 1;
+    matriz[4][9] = 20;
+
+    if (!maximize){ //Invert first row (except Z and B)
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    
+    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+    cols, rows, maximize);
+}
+
+void test5(){
+
+
+    int maximize = 1; //Maximizar
+
+    int rows = 5;
+    int cols = 10;
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; //<
+    restrictions[1] = 0; //<
+    restrictions[2] = 2; //>
+    restrictions[3] = 2; //>
+
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[1] = "x1";
+    variableNames[0] = "x2";
+    variableNames[2] = "s1";
+    variableNames[3] = "s2";
+    variableNames[4] = "e1";
+    variableNames[5] = "e2";
+    variableNames[6] = "a1";
+    variableNames[7] = "a2";
+
+
+    matriz[0][0] = 1;
+    matriz[0][2] = -300;
+    matriz[0][1] = -200;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+    matriz[0][8] = 0;
+    matriz[0][9] = 0;
+
+    matriz[1][0] = 0;
+    matriz[1][2] = 0.03;
+    matriz[1][1] = 0.02;
+    matriz[1][3] = 1;
+    matriz[1][4] = 0;
+    matriz[1][5] = 0;
+    matriz[1][6] = 0;
+    matriz[1][7] = 0;
+    matriz[1][8] = 0;
+    matriz[1][9] = 1;
+
+    matriz[2][0] = 0;
+    matriz[2][2] = 0.02;
+    matriz[2][1] = 0.02;
+    matriz[2][3] = 0;
+    matriz[2][4] = 1;
+    matriz[2][5] = 0;
+    matriz[2][6] = 0;
+    matriz[2][7] = 0;
+    matriz[2][9] = 1;
+
+    matriz[3][0] = 0;
+    matriz[3][2] = 1;
+    matriz[3][1] = 0;
+    matriz[3][3] = 0;
+    matriz[3][4] = 0;
+    matriz[3][5] = -1;
+    matriz[3][6] = 0;
+    matriz[3][7] = 1;
+    matriz[3][8] = 0;
+    matriz[3][9] = 30;
+
+    matriz[4][0] = 0;
+    matriz[4][2] = 0;
+    matriz[4][1] = 1;
+    matriz[4][3] = 0;
+    matriz[4][4] = 0;
+    matriz[4][5] = 0;
+    matriz[4][6] = -1;
+    matriz[4][7] = 0;
+    matriz[4][8] = 1;
+    matriz[4][9] = 20;
+
+    if (!maximize){ //Invert first row (except Z and B)
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    
+    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+    cols, rows, maximize);
+}
  
 
 
-
-
-
+/*
 int main(){
 
-    test3();
+    test5();
 
     return 0;
-}
+}*/
