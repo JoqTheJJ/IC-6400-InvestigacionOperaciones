@@ -222,7 +222,7 @@ void storeMatriz(FILE* f, double** matriz, double* M, char** varNames, int amoun
     fprintf(f, "        %.3f", matriz[0][0]);
     for (int col = 1; col < cols; col++){
 
-        if (fabs(M[col])){
+        if (fabs(M[col]) > eps){
             fprintf(f, "& %.3f + %.1fM ", matriz[0][col], M[col]);
         } else {
             fprintf(f, "& %.3f", matriz[0][col]);
@@ -279,7 +279,7 @@ void storeIntermediateMatriz(FILE* f, double** matriz, double* M, char** varName
     fprintf(f, "        $%.3f$", matriz[0][0]);
     for (int col = 1; col < cols; col++){
 
-        if (fabs(M[col])){
+        if (fabs(M[col]) > eps){
             if (y == col){
                 fprintf(f, "& \\cellcolor{LightPink}$%.3f + %.1fM$ ", matriz[0][col], M[col]);
             } else {
@@ -400,7 +400,7 @@ Pivot escogerPivote(double** matriz, double* M, int cols, int rows, int maximize
         }
         if (mostNegative == 0.1){ //No -M found
             for (int c = 1; c < cols-1-artificials; ++c){
-                if (matriz[0][c] < 0 && matriz[0][c] < mostNegative){
+                if (matriz[0][c] < 0 && fabs(M[c]) < eps && matriz[0][c] < mostNegative){
                     mostNegative = matriz[0][c];
                     piv.y = c;
                 }
@@ -434,7 +434,7 @@ Pivot escogerPivote(double** matriz, double* M, int cols, int rows, int maximize
         }
         if (mostPositive == -0.1){ //No -M found
             for (int c = 1; c < cols-1-artificials; ++c){
-                if (matriz[0][c] > 0 && matriz[0][c] > mostPositive){
+                if (matriz[0][c] > 0 && fabs(M[c]) < eps && matriz[0][c] > mostPositive){
                     mostPositive = matriz[0][c];
                     piv.y = c;
                 }
@@ -902,6 +902,8 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
 
     while (status == 0){
 
+        usleep(200000);
+
         for (int row = 0; row < rows-1; ++row){
             tableData->fractions[row] = INVALID_FRACTION;
         }
@@ -937,10 +939,18 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     }
 
 
+    printf("MVector Final: ");
+    for (int x = 0; x < cols; ++x){
+        printf("%.2f ", x, M[x]);
+    }
+    printf("\n");
+
 
     int nonFeasible = 0;
-    for (int c = 0; c < cols; ++c){ //Check for M values in the matrix
-        if (!(fabs(M[c]) < eps)){
+    for (int c = 0; c < cols - artificials - 1; ++c){ //Check for M values in the matrix
+        printf("Revisando [%d]\n", c);
+        if (fabs(M[c]) > eps){
+            printf("ESTA AQUI >>> %d <<<\n", c);
             nonFeasible = 1;
         }
     }
@@ -1508,6 +1518,10 @@ void test5(){
 
 int main(){
 
+    test1();
+    test2();
+    test3();
+    test4();
     test5();
 
     return 0;
