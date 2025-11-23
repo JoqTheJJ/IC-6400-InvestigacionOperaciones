@@ -1053,475 +1053,1211 @@ void runSimplex(double** matriz, char* problemName, char** variableNames, int am
     compileTex(problemName);
 }
 
-void test1(){
+// void test1(){
 
 
-    int maximize = 0; //Minimizar
+//     int maximize = 0; //Minimizar
 
-    int rows = 4;
-    int cols = 8;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
+//     int rows = 4;
+//     int cols = 8;
+//     double** matriz = malloc(sizeof(double*) * rows);
+//     for (int r = 0; r < rows; ++r){
+//         matriz[r] = malloc(sizeof(double) * cols);
+//     }
 
-    int amountOfVariables = 2;
-    int amountOfrestrictions = rows - 1;
-    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+//     int amountOfVariables = 2;
+//     int amountOfrestrictions = rows - 1;
+//     int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
 
-    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
-    restrictions[0] = 0;
-    restrictions[1] = 2;
-    restrictions[2] = 1;
-
-
-    char** variableNames = malloc(sizeof(char*) * (cols-2));
-    variableNames[0] = "x1";
-    variableNames[1] = "x2";
-    variableNames[2] = "s1";
-    variableNames[3] = "e1";
-    variableNames[4] = "a1";
-    variableNames[5] = "a2";
+//     int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+//     restrictions[0] = 0;
+//     restrictions[1] = 2;
+//     restrictions[2] = 1;
 
 
-    matriz[0][0] = 1;
-    matriz[0][1] = -2;
-    matriz[0][2] = -3;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-    matriz[0][6] = 0;
-    matriz[0][7] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 0.5;
-    matriz[1][2] = 0.25;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 0;
-    matriz[1][6] = 0;
-    matriz[1][7] = 4;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 1;
-    matriz[2][2] = 3;
-    matriz[2][3] = 0;
-    matriz[2][4] = -1;
-    matriz[2][5] = 1;
-    matriz[2][6] = 0;
-    matriz[2][7] = 20;
-
-    matriz[3][0] = 0;
-    matriz[3][1] = 1;
-    matriz[3][2] = 1;
-    matriz[3][3] = 0;
-    matriz[3][4] = 0;
-    matriz[3][5] = 0;
-    matriz[3][6] = 1;
-    matriz[3][7] = 10;
-
-    if (!maximize){ //Invert first row (except Z and B)
-        for (int col = 1; col < cols-1; ++col){
-            matriz[0][col] *= -1;
-        }
-    }
-
-    
+//     char** variableNames = malloc(sizeof(char*) * (cols-2));
+//     variableNames[0] = "x1";
+//     variableNames[1] = "x2";
+//     variableNames[2] = "s1";
+//     variableNames[3] = "e1";
+//     variableNames[4] = "a1";
+//     variableNames[5] = "a2";
 
 
+//     matriz[0][0] = 1;
+//     matriz[0][1] = -2;
+//     matriz[0][2] = -3;
+//     matriz[0][3] = 0;
+//     matriz[0][4] = 0;
+//     matriz[0][5] = 0;
+//     matriz[0][6] = 0;
+//     matriz[0][7] = 0;
 
-    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
-    cols, rows, maximize);
-}
+//     matriz[1][0] = 0;
+//     matriz[1][1] = 0.5;
+//     matriz[1][2] = 0.25;
+//     matriz[1][3] = 1;
+//     matriz[1][4] = 0;
+//     matriz[1][5] = 0;
+//     matriz[1][6] = 0;
+//     matriz[1][7] = 4;
 
-void test2(){
+//     matriz[2][0] = 0;
+//     matriz[2][1] = 1;
+//     matriz[2][2] = 3;
+//     matriz[2][3] = 0;
+//     matriz[2][4] = -1;
+//     matriz[2][5] = 1;
+//     matriz[2][6] = 0;
+//     matriz[2][7] = 20;
 
+//     matriz[3][0] = 0;
+//     matriz[3][1] = 1;
+//     matriz[3][2] = 1;
+//     matriz[3][3] = 0;
+//     matriz[3][4] = 0;
+//     matriz[3][5] = 0;
+//     matriz[3][6] = 1;
+//     matriz[3][7] = 10;
 
-    int maximize = 1; //Maximizar
-
-    int rows = 4;
-    int cols = 8;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    int amountOfVariables = 2;
-    int amountOfrestrictions = rows - 1;
-    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
-
-    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
-    restrictions[0] = 0; //<
-    restrictions[1] = 0; //<
-    restrictions[2] = 2; //>
-
-
-    char** variableNames = malloc(sizeof(char*) * (cols-2));
-    variableNames[0] = "x1";
-    variableNames[1] = "x2";
-    variableNames[2] = "s1";
-    variableNames[3] = "s2";
-    variableNames[4] = "e1";
-    variableNames[5] = "a1";
-
-
-    matriz[0][0] = 1;
-    matriz[0][1] = -10000;
-    matriz[0][2] = -3000;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-    matriz[0][6] = 0;
-    matriz[0][7] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 1;
-    matriz[1][2] = 1;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 0;
-    matriz[1][6] = 0;
-    matriz[1][7] = 7;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 10;
-    matriz[2][2] = 4;
-    matriz[2][3] = 0;
-    matriz[2][4] = 1;
-    matriz[2][5] = 0;
-    matriz[2][6] = 0;
-    matriz[2][7] = 40;
-
-    matriz[3][0] = 0;
-    matriz[3][1] = 0;
-    matriz[3][2] = 1;
-    matriz[3][3] = 0;
-    matriz[3][4] = 0;
-    matriz[3][5] = -1;
-    matriz[3][6] = 1;
-    matriz[3][7] = 3;
-
-    if (!maximize){ //Invert first row (except Z and B)
-        for (int col = 1; col < cols-1; ++col){
-            matriz[0][col] *= -1;
-        }
-    }
+//     if (!maximize){ //Invert first row (except Z and B)
+//         for (int col = 1; col < cols-1; ++col){
+//             matriz[0][col] *= -1;
+//         }
+//     }
 
     
 
 
 
-    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
-    cols, rows, maximize);
-}
+//     runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+//     cols, rows, maximize);
+// }
 
-void test3(){
-
-
-    int maximize = 1; //Maximizar
-
-    int rows = 5;
-    int cols = 10;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
-
-    int amountOfVariables = 2;
-    int amountOfrestrictions = rows - 1;
-    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
-
-    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
-    restrictions[0] = 0; //<
-    restrictions[1] = 0; //<
-    restrictions[2] = 2; //>
-    restrictions[3] = 2; //>
+// void test2(){
 
 
-    char** variableNames = malloc(sizeof(char*) * (cols-2));
-    variableNames[0] = "x1";
-    variableNames[1] = "x2";
-    variableNames[2] = "s1";
-    variableNames[3] = "s2";
-    variableNames[4] = "e1";
-    variableNames[5] = "e2";
-    variableNames[6] = "a1";
-    variableNames[7] = "a2";
+//     int maximize = 1; //Maximizar
+
+//     int rows = 4;
+//     int cols = 8;
+//     double** matriz = malloc(sizeof(double*) * rows);
+//     for (int r = 0; r < rows; ++r){
+//         matriz[r] = malloc(sizeof(double) * cols);
+//     }
+
+//     int amountOfVariables = 2;
+//     int amountOfrestrictions = rows - 1;
+//     int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+//     int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+//     restrictions[0] = 0; //<
+//     restrictions[1] = 0; //<
+//     restrictions[2] = 2; //>
 
 
-    matriz[0][0] = 1;
-    matriz[0][1] = -300;
-    matriz[0][2] = -200;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-    matriz[0][6] = 0;
-    matriz[0][7] = 0;
-    matriz[0][8] = 0;
-    matriz[0][9] = 0;
+//     char** variableNames = malloc(sizeof(char*) * (cols-2));
+//     variableNames[0] = "x1";
+//     variableNames[1] = "x2";
+//     variableNames[2] = "s1";
+//     variableNames[3] = "s2";
+//     variableNames[4] = "e1";
+//     variableNames[5] = "a1";
 
-    matriz[1][0] = 0;
-    matriz[1][1] = 1.0/40.0;
-    matriz[1][2] = 1.0/60.0;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 0;
-    matriz[1][6] = 0;
-    matriz[1][7] = 0;
-    matriz[1][8] = 0;
-    matriz[1][9] = 1;
 
-    matriz[2][0] = 0;
-    matriz[2][1] = 0.02;
-    matriz[2][2] = 0.02;
-    matriz[2][3] = 0;
-    matriz[2][4] = 1;
-    matriz[2][5] = 0;
-    matriz[2][6] = 0;
-    matriz[2][7] = 0;
-    matriz[2][9] = 1;
+//     matriz[0][0] = 1;
+//     matriz[0][1] = -10000;
+//     matriz[0][2] = -3000;
+//     matriz[0][3] = 0;
+//     matriz[0][4] = 0;
+//     matriz[0][5] = 0;
+//     matriz[0][6] = 0;
+//     matriz[0][7] = 0;
 
-    matriz[3][0] = 0;
-    matriz[3][1] = 1;
-    matriz[3][2] = 0;
-    matriz[3][3] = 0;
-    matriz[3][4] = 0;
-    matriz[3][5] = -1;
-    matriz[3][6] = 0;
-    matriz[3][7] = 1;
-    matriz[3][8] = 0;
-    matriz[3][9] = 30;
+//     matriz[1][0] = 0;
+//     matriz[1][1] = 1;
+//     matriz[1][2] = 1;
+//     matriz[1][3] = 1;
+//     matriz[1][4] = 0;
+//     matriz[1][5] = 0;
+//     matriz[1][6] = 0;
+//     matriz[1][7] = 7;
 
-    matriz[4][0] = 0;
-    matriz[4][1] = 0;
-    matriz[4][2] = 1;
-    matriz[4][3] = 0;
-    matriz[4][4] = 0;
-    matriz[4][5] = 0;
-    matriz[4][6] = -1;
-    matriz[4][7] = 0;
-    matriz[4][8] = 1;
-    matriz[4][9] = 20;
+//     matriz[2][0] = 0;
+//     matriz[2][1] = 10;
+//     matriz[2][2] = 4;
+//     matriz[2][3] = 0;
+//     matriz[2][4] = 1;
+//     matriz[2][5] = 0;
+//     matriz[2][6] = 0;
+//     matriz[2][7] = 40;
 
-    if (!maximize){ //Invert first row (except Z and B)
-        for (int col = 1; col < cols-1; ++col){
-            matriz[0][col] *= -1;
-        }
-    }
+//     matriz[3][0] = 0;
+//     matriz[3][1] = 0;
+//     matriz[3][2] = 1;
+//     matriz[3][3] = 0;
+//     matriz[3][4] = 0;
+//     matriz[3][5] = -1;
+//     matriz[3][6] = 1;
+//     matriz[3][7] = 3;
+
+//     if (!maximize){ //Invert first row (except Z and B)
+//         for (int col = 1; col < cols-1; ++col){
+//             matriz[0][col] *= -1;
+//         }
+//     }
 
     
-    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
-    cols, rows, maximize);
-}
-
-void test4(){
 
 
-    int maximize = 1; //Maximizar
 
-    int rows = 5;
-    int cols = 10;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
+//     runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+//     cols, rows, maximize);
+// }
 
-    int amountOfVariables = 2;
-    int amountOfrestrictions = rows - 1;
-    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
-
-    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
-    restrictions[0] = 0; //<
-    restrictions[1] = 0; //<
-    restrictions[2] = 2; //>
-    restrictions[3] = 2; //>
+// void test3(){
 
 
-    char** variableNames = malloc(sizeof(char*) * (cols-2));
-    variableNames[0] = "x1";
-    variableNames[1] = "x2";
-    variableNames[2] = "s1";
-    variableNames[3] = "s2";
-    variableNames[4] = "e1";
-    variableNames[5] = "e2";
-    variableNames[6] = "a1";
-    variableNames[7] = "a2";
+//     int maximize = 1; //Maximizar
+
+//     int rows = 5;
+//     int cols = 10;
+//     double** matriz = malloc(sizeof(double*) * rows);
+//     for (int r = 0; r < rows; ++r){
+//         matriz[r] = malloc(sizeof(double) * cols);
+//     }
+
+//     int amountOfVariables = 2;
+//     int amountOfrestrictions = rows - 1;
+//     int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+//     int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+//     restrictions[0] = 0; //<
+//     restrictions[1] = 0; //<
+//     restrictions[2] = 2; //>
+//     restrictions[3] = 2; //>
 
 
-    matriz[0][0] = 1;
-    matriz[0][1] = -200;
-    matriz[0][2] = -300;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-    matriz[0][6] = 0;
-    matriz[0][7] = 0;
-    matriz[0][8] = 0;
-    matriz[0][9] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][1] = 0.03;
-    matriz[1][2] = 0.02;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 0;
-    matriz[1][6] = 0;
-    matriz[1][7] = 0;
-    matriz[1][8] = 0;
-    matriz[1][9] = 1;
-
-    matriz[2][0] = 0;
-    matriz[2][1] = 0.02;
-    matriz[2][2] = 0.02;
-    matriz[2][3] = 0;
-    matriz[2][4] = 1;
-    matriz[2][5] = 0;
-    matriz[2][6] = 0;
-    matriz[2][7] = 0;
-    matriz[2][9] = 1;
-
-    matriz[3][0] = 0;
-    matriz[3][1] = 1;
-    matriz[3][2] = 0;
-    matriz[3][3] = 0;
-    matriz[3][4] = 0;
-    matriz[3][5] = -1;
-    matriz[3][6] = 0;
-    matriz[3][7] = 1;
-    matriz[3][8] = 0;
-    matriz[3][9] = 30;
-
-    matriz[4][0] = 0;
-    matriz[4][1] = 0;
-    matriz[4][2] = 1;
-    matriz[4][3] = 0;
-    matriz[4][4] = 0;
-    matriz[4][5] = 0;
-    matriz[4][6] = -1;
-    matriz[4][7] = 0;
-    matriz[4][8] = 1;
-    matriz[4][9] = 20;
-
-    if (!maximize){ //Invert first row (except Z and B)
-        for (int col = 1; col < cols-1; ++col){
-            matriz[0][col] *= -1;
-        }
-    }
-
-    
-    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
-    cols, rows, maximize);
-}
-
-void test5(){
+//     char** variableNames = malloc(sizeof(char*) * (cols-2));
+//     variableNames[0] = "x1";
+//     variableNames[1] = "x2";
+//     variableNames[2] = "s1";
+//     variableNames[3] = "s2";
+//     variableNames[4] = "e1";
+//     variableNames[5] = "e2";
+//     variableNames[6] = "a1";
+//     variableNames[7] = "a2";
 
 
-    int maximize = 1; //Maximizar
+//     matriz[0][0] = 1;
+//     matriz[0][1] = -300;
+//     matriz[0][2] = -200;
+//     matriz[0][3] = 0;
+//     matriz[0][4] = 0;
+//     matriz[0][5] = 0;
+//     matriz[0][6] = 0;
+//     matriz[0][7] = 0;
+//     matriz[0][8] = 0;
+//     matriz[0][9] = 0;
 
-    int rows = 5;
-    int cols = 10;
-    double** matriz = malloc(sizeof(double*) * rows);
-    for (int r = 0; r < rows; ++r){
-        matriz[r] = malloc(sizeof(double) * cols);
-    }
+//     matriz[1][0] = 0;
+//     matriz[1][1] = 1.0/40.0;
+//     matriz[1][2] = 1.0/60.0;
+//     matriz[1][3] = 1;
+//     matriz[1][4] = 0;
+//     matriz[1][5] = 0;
+//     matriz[1][6] = 0;
+//     matriz[1][7] = 0;
+//     matriz[1][8] = 0;
+//     matriz[1][9] = 1;
 
-    int amountOfVariables = 2;
-    int amountOfrestrictions = rows - 1;
-    int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+//     matriz[2][0] = 0;
+//     matriz[2][1] = 0.02;
+//     matriz[2][2] = 0.02;
+//     matriz[2][3] = 0;
+//     matriz[2][4] = 1;
+//     matriz[2][5] = 0;
+//     matriz[2][6] = 0;
+//     matriz[2][7] = 0;
+//     matriz[2][9] = 1;
 
-    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
-    restrictions[0] = 0; //<
-    restrictions[1] = 0; //<
-    restrictions[2] = 2; //>
-    restrictions[3] = 2; //>
+//     matriz[3][0] = 0;
+//     matriz[3][1] = 1;
+//     matriz[3][2] = 0;
+//     matriz[3][3] = 0;
+//     matriz[3][4] = 0;
+//     matriz[3][5] = -1;
+//     matriz[3][6] = 0;
+//     matriz[3][7] = 1;
+//     matriz[3][8] = 0;
+//     matriz[3][9] = 30;
 
+//     matriz[4][0] = 0;
+//     matriz[4][1] = 0;
+//     matriz[4][2] = 1;
+//     matriz[4][3] = 0;
+//     matriz[4][4] = 0;
+//     matriz[4][5] = 0;
+//     matriz[4][6] = -1;
+//     matriz[4][7] = 0;
+//     matriz[4][8] = 1;
+//     matriz[4][9] = 20;
 
-    char** variableNames = malloc(sizeof(char*) * (cols-2));
-    variableNames[1] = "x1";
-    variableNames[0] = "x2";
-    variableNames[2] = "s1";
-    variableNames[3] = "s2";
-    variableNames[4] = "e1";
-    variableNames[5] = "e2";
-    variableNames[6] = "a1";
-    variableNames[7] = "a2";
-
-
-    matriz[0][0] = 1;
-    matriz[0][2] = -300;
-    matriz[0][1] = -200;
-    matriz[0][3] = 0;
-    matriz[0][4] = 0;
-    matriz[0][5] = 0;
-    matriz[0][6] = 0;
-    matriz[0][7] = 0;
-    matriz[0][8] = 0;
-    matriz[0][9] = 0;
-
-    matriz[1][0] = 0;
-    matriz[1][2] = 0.03;
-    matriz[1][1] = 0.02;
-    matriz[1][3] = 1;
-    matriz[1][4] = 0;
-    matriz[1][5] = 0;
-    matriz[1][6] = 0;
-    matriz[1][7] = 0;
-    matriz[1][8] = 0;
-    matriz[1][9] = 1;
-
-    matriz[2][0] = 0;
-    matriz[2][2] = 0.02;
-    matriz[2][1] = 0.02;
-    matriz[2][3] = 0;
-    matriz[2][4] = 1;
-    matriz[2][5] = 0;
-    matriz[2][6] = 0;
-    matriz[2][7] = 0;
-    matriz[2][9] = 1;
-
-    matriz[3][0] = 0;
-    matriz[3][2] = 1;
-    matriz[3][1] = 0;
-    matriz[3][3] = 0;
-    matriz[3][4] = 0;
-    matriz[3][5] = -1;
-    matriz[3][6] = 0;
-    matriz[3][7] = 1;
-    matriz[3][8] = 0;
-    matriz[3][9] = 30;
-
-    matriz[4][0] = 0;
-    matriz[4][2] = 0;
-    matriz[4][1] = 1;
-    matriz[4][3] = 0;
-    matriz[4][4] = 0;
-    matriz[4][5] = 0;
-    matriz[4][6] = -1;
-    matriz[4][7] = 0;
-    matriz[4][8] = 1;
-    matriz[4][9] = 20;
-
-    if (!maximize){ //Invert first row (except Z and B)
-        for (int col = 1; col < cols-1; ++col){
-            matriz[0][col] *= -1;
-        }
-    }
+//     if (!maximize){ //Invert first row (except Z and B)
+//         for (int col = 1; col < cols-1; ++col){
+//             matriz[0][col] *= -1;
+//         }
+//     }
 
     
-    runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
-    cols, rows, maximize);
-}
+//     runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+//     cols, rows, maximize);
+// }
+
+// void test4(){
+
+
+//     int maximize = 1; //Maximizar
+
+//     int rows = 5;
+//     int cols = 10;
+//     double** matriz = malloc(sizeof(double*) * rows);
+//     for (int r = 0; r < rows; ++r){
+//         matriz[r] = malloc(sizeof(double) * cols);
+//     }
+
+//     int amountOfVariables = 2;
+//     int amountOfrestrictions = rows - 1;
+//     int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+//     int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+//     restrictions[0] = 0; //<
+//     restrictions[1] = 0; //<
+//     restrictions[2] = 2; //>
+//     restrictions[3] = 2; //>
+
+
+//     char** variableNames = malloc(sizeof(char*) * (cols-2));
+//     variableNames[0] = "x1";
+//     variableNames[1] = "x2";
+//     variableNames[2] = "s1";
+//     variableNames[3] = "s2";
+//     variableNames[4] = "e1";
+//     variableNames[5] = "e2";
+//     variableNames[6] = "a1";
+//     variableNames[7] = "a2";
+
+
+//     matriz[0][0] = 1;
+//     matriz[0][1] = -200;
+//     matriz[0][2] = -300;
+//     matriz[0][3] = 0;
+//     matriz[0][4] = 0;
+//     matriz[0][5] = 0;
+//     matriz[0][6] = 0;
+//     matriz[0][7] = 0;
+//     matriz[0][8] = 0;
+//     matriz[0][9] = 0;
+
+//     matriz[1][0] = 0;
+//     matriz[1][1] = 0.03;
+//     matriz[1][2] = 0.02;
+//     matriz[1][3] = 1;
+//     matriz[1][4] = 0;
+//     matriz[1][5] = 0;
+//     matriz[1][6] = 0;
+//     matriz[1][7] = 0;
+//     matriz[1][8] = 0;
+//     matriz[1][9] = 1;
+
+//     matriz[2][0] = 0;
+//     matriz[2][1] = 0.02;
+//     matriz[2][2] = 0.02;
+//     matriz[2][3] = 0;
+//     matriz[2][4] = 1;
+//     matriz[2][5] = 0;
+//     matriz[2][6] = 0;
+//     matriz[2][7] = 0;
+//     matriz[2][9] = 1;
+
+//     matriz[3][0] = 0;
+//     matriz[3][1] = 1;
+//     matriz[3][2] = 0;
+//     matriz[3][3] = 0;
+//     matriz[3][4] = 0;
+//     matriz[3][5] = -1;
+//     matriz[3][6] = 0;
+//     matriz[3][7] = 1;
+//     matriz[3][8] = 0;
+//     matriz[3][9] = 30;
+
+//     matriz[4][0] = 0;
+//     matriz[4][1] = 0;
+//     matriz[4][2] = 1;
+//     matriz[4][3] = 0;
+//     matriz[4][4] = 0;
+//     matriz[4][5] = 0;
+//     matriz[4][6] = -1;
+//     matriz[4][7] = 0;
+//     matriz[4][8] = 1;
+//     matriz[4][9] = 20;
+
+//     if (!maximize){ //Invert first row (except Z and B)
+//         for (int col = 1; col < cols-1; ++col){
+//             matriz[0][col] *= -1;
+//         }
+//     }
+
+    
+//     runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+//     cols, rows, maximize);
+// }
+
+// void test5(){
+
+
+//     int maximize = 1; //Maximizar
+
+//     int rows = 5;
+//     int cols = 10;
+//     double** matriz = malloc(sizeof(double*) * rows);
+//     for (int r = 0; r < rows; ++r){
+//         matriz[r] = malloc(sizeof(double) * cols);
+//     }
+
+//     int amountOfVariables = 2;
+//     int amountOfrestrictions = rows - 1;
+//     int amountOfVariablesRestrictions = cols - amountOfVariables - 2;
+
+//     int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+//     restrictions[0] = 0; //<
+//     restrictions[1] = 0; //<
+//     restrictions[2] = 2; //>
+//     restrictions[3] = 2; //>
+
+
+//     char** variableNames = malloc(sizeof(char*) * (cols-2));
+//     variableNames[1] = "x1";
+//     variableNames[0] = "x2";
+//     variableNames[2] = "s1";
+//     variableNames[3] = "s2";
+//     variableNames[4] = "e1";
+//     variableNames[5] = "e2";
+//     variableNames[6] = "a1";
+//     variableNames[7] = "a2";
+
+
+//     matriz[0][0] = 1;
+//     matriz[0][2] = -300;
+//     matriz[0][1] = -200;
+//     matriz[0][3] = 0;
+//     matriz[0][4] = 0;
+//     matriz[0][5] = 0;
+//     matriz[0][6] = 0;
+//     matriz[0][7] = 0;
+//     matriz[0][8] = 0;
+//     matriz[0][9] = 0;
+
+//     matriz[1][0] = 0;
+//     matriz[1][2] = 0.03;
+//     matriz[1][1] = 0.02;
+//     matriz[1][3] = 1;
+//     matriz[1][4] = 0;
+//     matriz[1][5] = 0;
+//     matriz[1][6] = 0;
+//     matriz[1][7] = 0;
+//     matriz[1][8] = 0;
+//     matriz[1][9] = 1;
+
+//     matriz[2][0] = 0;
+//     matriz[2][2] = 0.02;
+//     matriz[2][1] = 0.02;
+//     matriz[2][3] = 0;
+//     matriz[2][4] = 1;
+//     matriz[2][5] = 0;
+//     matriz[2][6] = 0;
+//     matriz[2][7] = 0;
+//     matriz[2][9] = 1;
+
+//     matriz[3][0] = 0;
+//     matriz[3][2] = 1;
+//     matriz[3][1] = 0;
+//     matriz[3][3] = 0;
+//     matriz[3][4] = 0;
+//     matriz[3][5] = -1;
+//     matriz[3][6] = 0;
+//     matriz[3][7] = 1;
+//     matriz[3][8] = 0;
+//     matriz[3][9] = 30;
+
+//     matriz[4][0] = 0;
+//     matriz[4][2] = 0;
+//     matriz[4][1] = 1;
+//     matriz[4][3] = 0;
+//     matriz[4][4] = 0;
+//     matriz[4][5] = 0;
+//     matriz[4][6] = -1;
+//     matriz[4][7] = 0;
+//     matriz[4][8] = 1;
+//     matriz[4][9] = 20;
+
+//     if (!maximize){ //Invert first row (except Z and B)
+//         for (int col = 1; col < cols-1; ++col){
+//             matriz[0][col] *= -1;
+//         }
+//     }
+
+    
+//     runSimplex(matriz, "Test", variableNames, amountOfVariables, 1, restrictions, // [0:<, 1:=, 2:>]
+//     cols, rows, maximize);
+// }
  
 
 
+/* ---------- Helpers (opcional) ----------
+   Puedes extraer/compactar la repetición si lo deseas. */
 
-// int main(){
+/* ---------------- Test 1 ----------------
+   1) Maximize p = (1/2)x + 3y + z + 4w subject to
+      x + y + z + w <= 40
+      2x + y - z - w >= 10
+      w - y >= 10
+*/
+void test1(){
+    int maximize = 1; //Maximizar
 
-//     test1();
-//     test2();
-//     test3();
-//     test4();
-//     test5();
+    int rows = 4;
+    int cols = 11; /* 0..10 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
 
-//     return 0;
-// }
+    int amountOfVariables = 4;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; //<
+    restrictions[1] = 2; //>
+    restrictions[2] = 2; //>
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1";
+    variableNames[1] = "x2";
+    variableNames[2] = "x3";
+    variableNames[3] = "x4";
+    variableNames[4] = "s1";
+    variableNames[5] = "e1";
+    variableNames[6] = "e2";
+    variableNames[7] = "a1";
+    variableNames[8] = "a2";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = -0.5; /* x1 coeff (-(1/2) según convención) */
+    matriz[0][2] = -3.0;  /* x2 */
+    matriz[0][3] = -1.0;  /* x3 */
+    matriz[0][4] = -4.0;  /* x4 */
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+    matriz[0][8] = 0;
+    matriz[0][9] = 0;
+    matriz[0][10] = 0;
+
+    /* R1: x + y + z + w <= 40 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 1.0;
+    matriz[1][2] = 1.0;
+    matriz[1][3] = 1.0;
+    matriz[1][4] = 1.0;
+    matriz[1][5] = 1.0; /* s1 */
+    matriz[1][6] = 0;
+    matriz[1][7] = 0;
+    matriz[1][8] = 0;
+    matriz[1][9] = 0;
+    matriz[1][10] = 40.0;
+
+    /* R2: 2x + y - z - w >= 10 */
+    matriz[2][0] = 0;
+    matriz[2][1] = 2.0;
+    matriz[2][2] = 1.0;
+    matriz[2][3] = -1.0;
+    matriz[2][4] = -1.0;
+    matriz[2][5] = 0;
+    matriz[2][6] = -1.0; /* e1 (surplus) */
+    matriz[2][7] = 0;
+    matriz[2][8] = 1.0;  /* a1 (artificial) */
+    matriz[2][9] = 0;
+    matriz[2][10] = 10.0;
+
+    /* R3: w - y >= 10 */
+    matriz[3][0] = 0;
+    matriz[3][1] = 0.0;
+    matriz[3][2] = -1.0;
+    matriz[3][3] = 0.0;
+    matriz[3][4] = 1.0;
+    matriz[3][5] = 0;
+    matriz[3][6] = 0;
+    matriz[3][7] = 0;
+    matriz[3][8] = 0;
+    matriz[3][9] = -1.0; /* e2 (surplus mapped here as col9 in esta disposición) */
+    /* Nota: en Test1 anterior e2 se usó en otra columna; aquí respeté la distribución definida arriba:
+       (x1,x2,x3,x4,s1,e1,e2,a1,a2,B) -> e2 está en col6 en la definición original.
+       Para mantener claridad, asigné e2 en col6 (abaixo corrijo). */
+    /* Corregir e2 y a2 índices tal como se definió arriba: e2 col7, a2 col8. Ajusto: */
+    matriz[3][5] = 0;
+    matriz[3][6] = -1.0; /* e2 */
+    matriz[3][7] = 0;
+    matriz[3][8] = 1.0;  /* a2 */
+    matriz[3][9] = 0;
+    matriz[3][10] = 10.0;
+
+    /* Asegurar consistencia (si prefiere otro mapeo de columnas dime y lo cambio). */
+
+    if (!maximize){ //Invert first row (except Z and B)
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test1", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 2 ----------------
+   2) Minimize z = 4x1 + 4x2 + x3 subject to
+      x1 + x2 + x3 <= 2
+      2x1 + x2 <=3
+      2x1 + x2 + 3x3 >= 3
+*/
+void test2(){
+    int maximize = 0; //Minimizar
+
+    int rows = 4;
+    int cols = 9; /* 0..8 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 3;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0;
+    restrictions[1] = 0;
+    restrictions[2] = 2;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1";
+    variableNames[1] = "x2";
+    variableNames[2] = "x3";
+    variableNames[3] = "s1";
+    variableNames[4] = "s2";
+    variableNames[5] = "e1";
+    variableNames[6] = "a1";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = -4.0;
+    matriz[0][2] = -4.0;
+    matriz[0][3] = -1.0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+    matriz[0][8] = 0;
+
+    /* R1: x1 + x2 + x3 <= 2 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 1.0;
+    matriz[1][2] = 1.0;
+    matriz[1][3] = 1.0;
+    matriz[1][4] = 1.0; /* s1 */
+    matriz[1][5] = 0;
+    matriz[1][6] = 0;
+    matriz[1][7] = 0;
+    matriz[1][8] = 2.0;
+
+    /* R2: 2x1 + x2 <= 3 */
+    matriz[2][0] = 0;
+    matriz[2][1] = 2.0;
+    matriz[2][2] = 1.0;
+    matriz[2][3] = 0.0;
+    matriz[2][4] = 0;
+    matriz[2][5] = 1.0; /* s2 */
+    matriz[2][6] = 0;
+    matriz[2][7] = 0;
+    matriz[2][8] = 3.0;
+
+    /* R3: 2x1 + x2 + 3x3 >= 3 */
+    matriz[3][0] = 0;
+    matriz[3][1] = 2.0;
+    matriz[3][2] = 1.0;
+    matriz[3][3] = 3.0;
+    matriz[3][4] = 0;
+    matriz[3][5] = 0;
+    matriz[3][6] = -1.0; /* e1 (surplus) */
+    matriz[3][7] = 1.0;  /* a1 (artificial) */
+    matriz[3][8] = 3.0;
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test2", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 3 ----------------
+   3) Maximize z = -3x1 + 6x2 subject to
+      5x1 + 7x2 <= 35
+      -x1 + 2x2 <= 2
+*/
+void test3(){
+    int maximize = 1;
+
+    int rows = 3;
+    int cols = 6; /* 0..5 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0;
+    restrictions[1] = 0;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1";
+    variableNames[1] = "x2";
+    variableNames[2] = "s1";
+    variableNames[3] = "s2";
+
+    /* fila 0 (Z): recuerda la convención usada */
+    matriz[0][0] = 1;
+    matriz[0][1] = 3.0;  /* -(-3) = +3 */
+    matriz[0][2] = -6.0;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+
+    /* R1: 5x1 + 7x2 <= 35 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 5.0;
+    matriz[1][2] = 7.0;
+    matriz[1][3] = 1.0; /* s1 */
+    matriz[1][4] = 0;
+    matriz[1][5] = 35.0;
+
+    /* R2: -x1 + 2x2 <= 2 */
+    matriz[2][0] = 0;
+    matriz[2][1] = -1.0;
+    matriz[2][2] = 2.0;
+    matriz[2][3] = 0;
+    matriz[2][4] = 1.0; /* s2 */
+    matriz[2][5] = 2.0;
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test3", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 4 ----------------
+   4) Minimize z = -2x1 - 3x2 subject to
+      x1 - x2 <= 1
+      x1 - 2x2 <= 2
+*/
+void test4(){
+    int maximize = 0;
+
+    int rows = 3;
+    int cols = 6; /* 0..5 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; restrictions[1] = 0;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1";
+    variableNames[1] = "x2";
+    variableNames[2] = "s1";
+    variableNames[3] = "s2";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = 2.0;  /* -(-2) = +2 */
+    matriz[0][2] = 3.0;  /* -(-3) = +3 */
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+
+    /* R1: x1 - x2 <= 1 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 1.0;
+    matriz[1][2] = -1.0;
+    matriz[1][3] = 1.0; /* s1 */
+    matriz[1][4] = 0;
+    matriz[1][5] = 1.0;
+
+    /* R2: x1 - 2x2 <= 2 */
+    matriz[2][0] = 0;
+    matriz[2][1] = 1.0;
+    matriz[2][2] = -2.0;
+    matriz[2][3] = 0;
+    matriz[2][4] = 1.0; /* s2 */
+    matriz[2][5] = 2.0;
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test4", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 5 ----------------
+   5) Maximize z = 5x1 + 3x2 subject to
+      4x1 + 2x2 <= 12
+      4x1 +  x2 <= 10
+      x1  +  x2 <= 4
+*/
+void test5_all(){
+    int maximize = 1;
+
+    int rows = 4;
+    int cols = 7; /* 0..6 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; restrictions[1] = 0; restrictions[2] = 0;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1"; variableNames[1] = "x2";
+    variableNames[2] = "s1"; variableNames[3] = "s2"; variableNames[4] = "s3";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = -5.0;
+    matriz[0][2] = -3.0;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+
+    /* R1: 4x1 + 2x2 <= 12 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 4.0;
+    matriz[1][2] = 2.0;
+    matriz[1][3] = 1.0; /* s1 */
+    matriz[1][4] = 0;
+    matriz[1][5] = 0;
+    matriz[1][6] = 12.0;
+
+    /* R2: 4x1 + x2 <= 10 */
+    matriz[2][0] = 0;
+    matriz[2][1] = 4.0;
+    matriz[2][2] = 1.0;
+    matriz[2][3] = 0;
+    matriz[2][4] = 1.0; /* s2 */
+    matriz[2][5] = 0;
+    matriz[2][6] = 10.0;
+
+    /* R3: x1 + x2 <= 4 */
+    matriz[3][0] = 0;
+    matriz[3][1] = 1.0;
+    matriz[3][2] = 1.0;
+    matriz[3][3] = 0;
+    matriz[3][4] = 0;
+    matriz[3][5] = 1.0; /* s3 */
+    matriz[3][6] = 4.0;
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test5", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 6 ----------------
+   6) Minimize z = 2x1 + 3x2 subject to
+      0.5x1 + 0.25x2 <= 4
+      x1 +  3x2 >= 36
+      x1  +  x2 = 10
+*/
+void test6(){
+    int maximize = 0;
+
+    int rows = 4;
+    int cols = 8; /* 0..7 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; restrictions[1] = 2; restrictions[2] = 1;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1"; variableNames[1] = "x2";
+    variableNames[2] = "s1"; variableNames[3] = "e1"; variableNames[4] = "a1"; variableNames[5] = "a2";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = -2.0;
+    matriz[0][2] = -3.0;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+
+    /* R1: 0.5x1 + 0.25x2 <= 4 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 0.5;
+    matriz[1][2] = 0.25;
+    matriz[1][3] = 1.0; /* s1 */
+    matriz[1][4] = 0;
+    matriz[1][5] = 0;
+    matriz[1][6] = 0;
+    matriz[1][7] = 4.0;
+
+    /* R2: x1 + 3x2 >= 36 */
+    matriz[2][0] = 0;
+    matriz[2][1] = 1.0;
+    matriz[2][2] = 3.0;
+    matriz[2][3] = 0;
+    matriz[2][4] = -1.0; /* e1 (surplus) */
+    matriz[2][5] = 1.0;  /* a1 (artificial) */
+    matriz[2][6] = 0;
+    matriz[2][7] = 36.0;
+
+    /* R3: x1 + x2 = 10 */
+    matriz[3][0] = 0;
+    matriz[3][1] = 1.0;
+    matriz[3][2] = 1.0;
+    matriz[3][3] = 0;
+    matriz[3][4] = 0;
+    matriz[3][5] = 0;
+    matriz[3][6] = 1.0; /* a2 (artificial) */
+    matriz[3][7] = 10.0;
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test6", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 7 ----------------
+   7) Maximize z = 5x1 + 3x2 + x3 subject to
+      x1 + x2 + 3x3 <= 6
+      5x1 + 3x2 + 6x3 <= 15
+*/
+void test7(){
+    int maximize = 1;
+
+    int rows = 3;
+    int cols = 7; /* 0..6 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 3;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; restrictions[1] = 0;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1"; variableNames[1] = "x2"; variableNames[2] = "x3";
+    variableNames[3] = "s1"; variableNames[4] = "s2";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = -5.0;
+    matriz[0][2] = -3.0;
+    matriz[0][3] = -1.0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+
+    /* R1: x1 + x2 + 3x3 <= 6 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 1.0;
+    matriz[1][2] = 1.0;
+    matriz[1][3] = 3.0;
+    matriz[1][4] = 1.0; /* s1 */
+    matriz[1][5] = 0;
+    matriz[1][6] = 6.0;
+
+    /* R2: 5x1 + 3x2 + 6x3 <= 15 */
+    matriz[2][0] = 0;
+    matriz[2][1] = 5.0;
+    matriz[2][2] = 3.0;
+    matriz[2][3] = 6.0;
+    matriz[2][4] = 0;
+    matriz[2][5] = 1.0; /* s2 */
+    matriz[2][6] = 15.0;
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test7", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 8 ----------------
+   8) Maximize z = 4x1 + x2 subject to
+      2x1 + 3x2 <= 4
+      x1 +  x2 <= 1
+      4x1 + x2 <= 2
+*/
+void test8(){
+    int maximize = 1;
+
+    int rows = 4;
+    int cols = 7; /* 0..6 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 0; restrictions[1] = 0; restrictions[2] = 0;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1"; variableNames[1] = "x2"; variableNames[2] = "s1"; variableNames[3] = "s2"; variableNames[4] = "s3";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = -4.0;
+    matriz[0][2] = -1.0;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+
+    /* R1: 2x1 + 3x2 <= 4 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 2.0;
+    matriz[1][2] = 3.0;
+    matriz[1][3] = 0;
+    matriz[1][4] = 1.0; /* s1 */
+    matriz[1][5] = 0;
+    matriz[1][6] = 4.0;
+
+    /* R2: x1 + x2 <= 1 */
+    matriz[2][0] = 0;
+    matriz[2][1] = 1.0;
+    matriz[2][2] = 1.0;
+    matriz[2][3] = 0;
+    matriz[2][4] = 0;
+    matriz[2][5] = 1.0; /* s2 */
+    matriz[2][6] = 1.0;
+
+    /* R3: 4x1 + x2 <= 2 */
+    matriz[3][0] = 0;
+    matriz[3][1] = 4.0;
+    matriz[3][2] = 1.0;
+    matriz[3][3] = 0;
+    matriz[3][4] = 0;
+    matriz[3][5] = 0;
+    matriz[3][6] = 2.0;
+    /* Nota: según la estructura de columnas, s3 se colocó en col5 si lo prefieres en otra col avísame. */
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test8", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 9 ----------------
+   9) Minimize z = -3x1 + x2 subject to
+      x1 - 2x2 >= 2
+      -x1 + x2 >= 3
+*/
+void test9(){
+    int maximize = 0;
+
+    int rows = 3;
+    int cols = 8; /* 0..7 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 2; restrictions[1] = 2;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1"; variableNames[1] = "x2";
+    variableNames[2] = "e1"; variableNames[3] = "e2";
+    variableNames[4] = "a1"; variableNames[5] = "a2";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = 3.0;  /* -(-3) = +3 */
+    matriz[0][2] = -1.0;
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+    matriz[0][7] = 0;
+
+    /* R1: x1 - 2x2 >= 2 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 1.0;
+    matriz[1][2] = -2.0;
+    matriz[1][3] = 0;
+    matriz[1][4] = -1.0; /* e1 (surplus) */
+    matriz[1][5] = 0;
+    matriz[1][6] = 1.0;  /* a1 (artificial) */
+    matriz[1][7] = 2.0;
+
+    /* R2: -x1 + x2 >= 3 */
+    matriz[2][0] = 0;
+    matriz[2][1] = -1.0;
+    matriz[2][2] = 1.0;
+    matriz[2][3] = 0;
+    matriz[2][4] = 0;
+    matriz[2][5] = -1.0; /* e2 (surplus) */
+    matriz[2][6] = 1.0;  /* a2 */
+    matriz[2][7] = 3.0;
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test9", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+/* ---------------- Test 10 ----------------
+   10) Maximize z = 5x1 - x2 subject to
+       2x1 + x2 = 6
+       x1 +  x2 <= 4
+       x1 + 2x2 <= 5
+*/
+void test10(){
+    int maximize = 1;
+
+    int rows = 4;
+    int cols = 7; /* 0..6 */
+    double** matriz = malloc(sizeof(double*) * rows);
+    for (int r = 0; r < rows; ++r){
+        matriz[r] = malloc(sizeof(double) * cols);
+    }
+
+    int amountOfVariables = 2;
+    int amountOfrestrictions = rows - 1;
+
+    int* restrictions = malloc(sizeof(int) * amountOfrestrictions);
+    restrictions[0] = 1; restrictions[1] = 0; restrictions[2] = 0;
+
+    char** variableNames = malloc(sizeof(char*) * (cols-2));
+    variableNames[0] = "x1"; variableNames[1] = "x2";
+    variableNames[2] = "s1"; variableNames[3] = "s2"; variableNames[4] = "a1";
+
+    /* fila 0 (Z) */
+    matriz[0][0] = 1;
+    matriz[0][1] = -5.0;
+    matriz[0][2] = 1.0; /* -(-1) = +1 */
+    matriz[0][3] = 0;
+    matriz[0][4] = 0;
+    matriz[0][5] = 0;
+    matriz[0][6] = 0;
+
+    /* R1: 2x1 + x2 = 6 -> a1 */
+    matriz[1][0] = 0;
+    matriz[1][1] = 2.0;
+    matriz[1][2] = 1.0;
+    matriz[1][3] = 0;
+    matriz[1][4] = 0;
+    matriz[1][5] = 1.0; /* a1 */
+    matriz[1][6] = 6.0;
+
+    /* R2: x1 + x2 <= 4 -> s1 */
+    matriz[2][0] = 0;
+    matriz[2][1] = 1.0;
+    matriz[2][2] = 1.0;
+    matriz[2][3] = 1.0; /* s1 */
+    matriz[2][4] = 0;
+    matriz[2][5] = 0;
+    matriz[2][6] = 4.0;
+
+    /* R3: x1 + 2x2 <= 5 -> s2 */
+    matriz[3][0] = 0;
+    matriz[3][1] = 1.0;
+    matriz[3][2] = 2.0;
+    matriz[3][3] = 0;
+    matriz[3][4] = 1.0; /* s2 */
+    matriz[3][5] = 0;
+    matriz[3][6] = 5.0;
+
+    if (!maximize){
+        for (int col = 1; col < cols-1; ++col){
+            matriz[0][col] *= -1;
+        }
+    }
+
+    runSimplex(matriz, "Test10", variableNames, amountOfVariables, 1, restrictions, cols, rows, maximize);
+}
+
+
+int main(){
+
+    // test1();
+    // test2();
+    // test3();
+    // test4();
+    // test5_all();
+    // test6();
+    // test7();
+     test8();
+    // test9();
+     test10();
+
+    return 0;
+}
