@@ -1,0 +1,18 @@
+# SIMPLEX-UI v1
+Name: BebiCo
+Sense: MIN
+Variables: 2
+Constraints: 3
+IntermediateTables: 1
+
+[Objective]
+names: x₁ x₂
+coeffs:  2  3
+
+[Constraints]
+       x₁ x₂   | op | rhs
+R1    0.5 0.25 | ≤ | 4
+R2     1  3 | ≥ | 20
+R3     1  1 | = | 10
+
+# End
