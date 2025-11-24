@@ -1187,7 +1187,7 @@ static gboolean build_simplex_payload(SimplexUI *ui,
     *maximize_out = is_max;
 
     // 4) OBJECTIVE row
-    const double BIG_M = 1e6;  // choose a suitably large constant
+    const double BIG_M = 0;  // choose a suitably large constant
 
     M[0][z_col] = 1.0;
 
