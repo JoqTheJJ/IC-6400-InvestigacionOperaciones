@@ -1,0 +1,198 @@
+\documentclass{article}
+
+\PassOptionsToPackage{table,svgnames}{xcolor}\usepackage{graphicx}
+\usepackage{tikz-network}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
+\usepackage{adjustbox}
+\usepackage{amsmath}
+
+\begin{document}
+\begin{titlepage}
+    \centering
+    % Logo
+    \includegraphics[width=0.6\textwidth]{logo-tec.png}\par\vspace{1cm}
+
+    % University and course
+    {\large Computer Science\par}
+    {\large Operations Research\par}
+    \vspace{2cm}
+
+    % Title
+    {\large Simplex Algoritm\par}
+    \vspace{2cm}
+
+    % Group and professor
+    {\large Group 40\par}
+    {\large Professor: Francisco Torres Rojas\par}
+    \vspace{3cm}
+
+    % Student info
+    {\large Carmen Hidalgo Paz\par}
+    {\large Id: 2020030538\par}
+    \vspace{1cm}
+    {\large Melissa Carvajal Charpentier\par}
+    {\large Id: 2022197088\par}
+    \vspace{1cm}
+    {\large Josué Soto González\par}
+    {\large Id: 2023207915\par}
+    \vspace{1cm}
+
+    % Date
+    {\large November 12 2025\par}
+\end{titlepage}
+\definecolor{KirbyPink}{HTML}{D74894}
+\definecolor{LightPink}{HTML}{FFBFBF}
+
+\newpage
+
+
+\section{The Simplex Algorithm}
+The simplex algorithm, developed by George Dantzig in 1947, arises from the need to solve linear programming problems.m
+This problem was fundamentally proposed by Kantorovich and Koopman, who developed the optimal location problem and the problem of resources.
+The Simplex method optimizes an objective function subject to linear constraints, using an iterative process to improve the value of the objective function until the optimal solution is reached. Its ability to solve complex problems and its use in various applications make it an essential tool in the optimization of resources and strategic decisions in industry, economics, and operations research.\\
+Given the time of its development, it was essentially thought to be solved by hand; however, now there are digital tools that allow the process to be automated. 
+\subsection{George Dantzig}
+The American mathematician was born in 1914 and died in 2005. In addition to being the creator of the Simplex algorithm, he was head of the Scientific Computing of Operations Research (SCOOP), where he promoted linear programming for strategic purposes during World War II.
+\begin{center}
+\includegraphics[width=0.25\textwidth]{R.jpg}
+\end{center}
+\section{Problem: Test7}
+The problem inputted by the user is called \textquotedblleft Test7\textquotedblright and consists of maximizing the following fuction:
+
+$Z = x1 \cdot 5.000000 + x2 \cdot 3.000000 + x3 \cdot 1.000000$
+
+
+Subject to:
+
+
+$x1 \cdot 1.000000 + x2 \cdot 1.000000 + x3 \cdot 3.000000 \leq 6.000000$
+
+$x1 \cdot 5.000000 + x2 \cdot 3.000000 + x3 \cdot 6.000000 \leq 15.000000$
+
+\section{Initial Matrix }The initial simplex table is shown below.\\
+
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x1$ & $x2$ & $x3$ & $s1$ & $s2$ & b\\
+        \hline
+        \hline
+        0.000& -5.000& -3.000& -1.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 1.000& 1.000& 3.000& 1.000& 0.000& 6.000\\
+        \hline
+        0.000& 5.000& 3.000& 6.000& 0.000& 1.000& 15.000\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}The intermediate tables are shown below. A column is added to show the fractions of each row. The selected column to enter the basis is colored in pink while the pivot and selected fraction value are colored in a darker shade of pink.\\
+\subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x1$ & $x2$ & $x3$ & $s1$ & $s2$ & b & Fractions\\
+        \hline
+        \hline
+        $0.000$& 0.000& 0.000& 5.000& 0.000& 1.000& 15.000\\
+        \hline
+        0.000& \cellcolor{LightPink}$0.000$ & 0.400& 1.800& 1.000& -0.200& 3.000& $6.000$ \\
+        \hline
+        0.000& \cellcolor{KirbyPink}$1.000$ & 0.600& 1.200& 0.000& 0.200& 3.000& \cellcolor{KirbyPink}$3.000$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Multiple Solutions}\subsection{Explanation}
+It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\
+This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\
+Here is where it happens in this problem: 
+
+\subsection{First solution table}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x1$ & $x2$ & $x3$ & $s1$ & $s2$ & b\\
+        \hline
+        \hline
+        0.000& 0.000& 0.000& 5.000& 0.000& 1.000& 15.000\\
+        \hline
+        0.000& 0.000& 0.400& 1.800& 1.000& -0.200& 3.000\\
+        \hline
+        0.000& 1.000& 0.600& 1.200& 0.000& 0.200& 3.000\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\subsection{Second solution table}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x1$ & $x2$ & $x3$ & $s1$ & $s2$ & b\\
+        \hline
+        \hline
+        0.000& -0.000& 0.000& 5.000& 0.000& 1.000& 15.000\\
+        \hline
+        0.000& -0.667& 0.000& 1.000& 1.000& -0.333& 1.000\\
+        \hline
+        0.000& 1.667& 1.000& 2.000& 0.000& 0.333& 5.000\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\subsection{Equation and Solutions}
+\textbf{Ecuation} 
+$$
+\alpha \cdot 
+\begin{bmatrix}
+x1 = 3.00 \\ x2 = 0.00 \\ x3 = 0.00 \\ \end{bmatrix}
++ (1 - \alpha) \cdot 
+\begin{bmatrix}
+x1 = 0.00 \\ x2 = 5.00 \\ x3 = 0.00 \\  \end{bmatrix}
+$$
+\textbf{Other solutions} 
+$$\alpha = 0.25 \Rightarrow 
+\begin{bmatrix}
+x1 = 0.75 \\ x2 = 3.75 \\ x3 = 0.00 \\ 
+\end{bmatrix}
+$$
+
+$$\alpha = 0.50 \Rightarrow 
+\begin{bmatrix}
+x1 = 1.50 \\ x2 = 2.50 \\ x3 = 0.00 \\ 
+\end{bmatrix}
+$$
+
+$$\alpha = 0.75 \Rightarrow 
+\begin{bmatrix}
+x1 = 2.25 \\ x2 = 1.25 \\ x3 = 0.00 \\ 
+\end{bmatrix}
+$$
+
+\subsection{Optimal Solutions}
+The final result of maximizing  the given function is 15.000 as a result of setting the variables to the values: 
+
+\begin{itemize}
+\item $x1 = 3.000$
+\item $x2 = 0.000$
+\item $x3 = 0.000$
+\item $s1 = 3.000$
+\item $s2 = 0.000$
+\end{itemize}
+Another possible result of maximizing  the given function with the same value is a result of setting the variables to the values: 
+
+\begin{itemize}
+\item $x1 = 0.000$
+\item $x2 = 5.000$
+\item $x3 = 0.000$
+\item $s1 = 1.000$
+\item $s2 = 0.000$
+\end{itemize}
+
+
+\end{document}

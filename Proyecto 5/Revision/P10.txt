@@ -1,0 +1,17 @@
+# SIMPLEX-UI v1
+Name: P10
+Sense: MIN
+Variables: 2
+Constraints: 2
+IntermediateTables: 0
+
+[Objective]
+names: x₁ x₂
+coeffs: -1 -2
+
+[Constraints]
+       x₁ x₂   | op | rhs
+R1     2  1 | ≤ | 5
+R2     1  1 | ≤ | 3
+
+# End

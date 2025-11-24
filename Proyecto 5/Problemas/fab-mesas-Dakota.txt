@@ -1,0 +1,19 @@
+# SIMPLEX-UI v1
+Name: Fábrica de Mesas Dakota
+Sense: MAX
+Variables: 3
+Constraints: 4
+IntermediateTables: 1
+
+[Objective]
+names: escritorios mesas sillas
+coeffs:          60    30     20
+
+[Constraints]
+       escritorios mesas sillas   | op | rhs
+R1              8     6      1 | ≤ | 48
+R2              4     2    1.5 | ≤ | 20
+R3              2   1.5    0.5 | ≤ | 8
+R4              0     1      0 | ≤ | 5
+
+# End

@@ -1,0 +1,18 @@
+# SIMPLEX-UI v1
+Name: Fábrica de Puertas y Ventanas
+Sense: MAX
+Variables: 2
+Constraints: 3
+IntermediateTables: 0
+
+[Objective]
+names: x₁ x₂
+coeffs:  3  5
+
+[Constraints]
+       x₁ x₂   | op | rhs
+R1     1  0 | ≤ | 4
+R2     0  2 | ≤ | 12
+R3     3  2 | ≤ | 18
+
+# End

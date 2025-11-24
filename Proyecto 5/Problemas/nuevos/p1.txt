@@ -1,0 +1,17 @@
+# SIMPLEX-UI v1
+Name: hola
+Sense: MIN
+Variables: 2
+Constraints: 2
+IntermediateTables: 0
+
+[Objective]
+names: x₁ x₂
+coeffs:  1  2
+
+[Constraints]
+       x₁ x₂   | op | rhs
+R1     3  4 | = | 10
+R2     1  2 | ≥ | 20
+
+# End

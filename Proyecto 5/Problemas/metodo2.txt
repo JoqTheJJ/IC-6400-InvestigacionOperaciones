@@ -1,0 +1,17 @@
+# SIMPLEX-UI v1
+Name: Metodo 2
+Sense: MIN
+Variables: 2
+Constraints: 2
+IntermediateTables: 1
+
+[Objective]
+names: a b 
+coeffs: 2 -3
+
+[Constraints]
+       a b    | op | rhs
+R1    1  1 | ≤ | 4
+R2    1 -1 | ≤ | 6
+
+# End

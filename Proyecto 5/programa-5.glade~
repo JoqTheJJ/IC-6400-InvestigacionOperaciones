@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0 -->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkAdjustment" id="adjustment-restrictions">
+    <property name="lower">2</property>
+    <property name="upper">15</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment-variables">
+    <property name="lower">2</property>
+    <property name="upper">15</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkWindow" id="program-5">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkPaned" id="panel">
+        <property name="visible">True</property>
+        <property name="can-focus">True</property>
+        <property name="position">800</property>
+        <child>
+          <object class="GtkScrolledWindow" id="scroll">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">False</property>
+            <property name="shrink">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="title">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="margin-bottom">3</property>
+                <property name="label" translatable="yes">The SIMPLEX Algorithm</property>
+                <attributes>
+                  <attribute name="font-desc" value="Serif Bold 13"/>
+                  <attribute name="foreground" value="#000000000000"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="info">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">- This program will then create a LATEX document with all the tables
+calculated to get to the result.
+DIRECTIONS:
+- Enter the name of your problem. Then, enter how many variables
+you wish to have (2 to 15) and how many constraints you wish to
+implement (2 to 15). Then. choose if you want to minimize or
+maximize.
+- When entering your constraints, make sure to choose the correct
+relational operator. The right side numbers have to be real numbers
+greater than or equal to 0. If the cell becomes red, you've entered
+the wrong value.
+- Keep in mind that all variables will have the constraint of being equal
+to or greater than 0 as well.</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 7"/>
+                </attributes>
+                <style>
+                  <class name="chalk-board"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="instruction-nodes1">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">    Insert the name of your problem:    </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="name-problem">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Enter the name of the problem</property>
+                <property name="halign">center</property>
+                <style>
+                  <class name="board-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="instruction-variables">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">    Insert the amount of variables wanted (2 to 15):    </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="amount-variables">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Choose a number between 2 and 15  for the amount of variables wanted</property>
+                <property name="halign">center</property>
+                <property name="adjustment">adjustment-variables</property>
+                <property name="value">2</property>
+                <style>
+                  <class name="board-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="instruction-restrictions">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">    Insert the amount of constraints wanted (2 to 15):    </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="amount-restrictions">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Choose a number between 2 and 15  for the amount of constraints  wanted</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">2</property>
+                <property name="text" translatable="yes">2</property>
+                <property name="adjustment">adjustment-restrictions</property>
+                <property name="value">2</property>
+                <style>
+                  <class name="board-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="maximize">
+                <property name="label" translatable="yes">Maximize</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Choose if you want to maximize</property>
+                <property name="halign">center</property>
+                <property name="active">True</property>
+                <property name="draw-indicator">True</property>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="minimize">
+                <property name="label" translatable="yes">Minimize</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Choose if you want to minimize</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">2</property>
+                <property name="active">True</property>
+                <property name="draw-indicator">True</property>
+                <property name="group">maximize</property>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="intermediate-tables">
+                <property name="label" translatable="yes">Check if you want intermediate tables</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Check if you want the intermediate tables to be shown in the LATEX file</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">2</property>
+                <property name="draw-indicator">True</property>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">11</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="upload">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">                           Upload a .txt file:                           </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">13</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFileChooserButton" id="file-chosen">
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="tooltip-text" translatable="yes">Choose a .txt file that will be shown in the interface</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">3</property>
+                <property name="title" translatable="yes"/>
+                <style>
+                  <class name="board-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">14</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="file-saved">
+                <property name="label" translatable="yes">Save current work in .txt file</property>
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to save the current problem</property>
+                <property name="halign">center</property>
+                <style>
+                  <class name="board-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">16</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="create-file">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">     Press the button to create the LATEX file:     </property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
+                <style>
+                  <class name="instructions"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">17</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="latex-file">
+                <property name="label" translatable="yes">Create LATEX file</property>
+                <property name="width-request">257</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to create .tex file with the SIMPLEX Algorithm applied</property>
+                <property name="halign">center</property>
+                <style>
+                  <class name="board-color"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">18</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="exit">
+                <property name="label" translatable="yes">Press button to exit this program</property>
+                <property name="height-request">40</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Press button to exit the program</property>
+                <property name="halign">center</property>
+                <property name="margin-top">3</property>
+                <style>
+                  <class name="chalk"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">19</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">True</property>
+            <property name="shrink">True</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="bg-1"/>
+    </style>
+  </object>
+</interface>
