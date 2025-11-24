@@ -1366,7 +1366,7 @@ static void on_latex_file_clicked(GtkButton *btn, gpointer user_data) {
     }
 
     // Print everything being sent
-    print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
+    //print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
     // Call Simplex routine
     runSimplex(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
 
