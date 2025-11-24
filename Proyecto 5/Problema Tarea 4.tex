@@ -1,0 +1,535 @@
+\documentclass{article}
+
+\PassOptionsToPackage{table,svgnames}{xcolor}\usepackage{graphicx}
+\usepackage{tikz-network}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
+\usepackage{adjustbox}
+\usepackage{amsmath}
+
+\begin{document}
+\begin{titlepage}
+    \centering
+    % Logo
+    \includegraphics[width=0.6\textwidth]{logo-tec.png}\par\vspace{1cm}
+
+    % University and course
+    {\large Computer Science\par}
+    {\large Operations Research\par}
+    \vspace{2cm}
+
+    % Title
+    {\large Simplex Algoritm\par}
+    \vspace{2cm}
+
+    % Group and professor
+    {\large Group 40\par}
+    {\large Professor: Francisco Torres Rojas\par}
+    \vspace{3cm}
+
+    % Student info
+    {\large Carmen Hidalgo Paz\par}
+    {\large Id: 2020030538\par}
+    \vspace{1cm}
+    {\large Melissa Carvajal Charpentier\par}
+    {\large Id: 2022197088\par}
+    \vspace{1cm}
+    {\large Josué Soto González\par}
+    {\large Id: 2023207915\par}
+    \vspace{1cm}
+
+    % Date
+    {\large November 12 2025\par}
+\end{titlepage}
+\definecolor{KirbyPink}{HTML}{D74894}
+\definecolor{LightPink}{HTML}{FFBFBF}
+
+\newpage
+
+
+\section{The Simplex Algorithm}
+The simplex algorithm, developed by George Dantzig in 1947, arises from the need to solve linear programming problems.m
+This problem was fundamentally proposed by Kantorovich and Koopman, who developed the optimal location problem and the problem of resources.
+The Simplex method optimizes an objective function subject to linear constraints, using an iterative process to improve the value of the objective function until the optimal solution is reached. Its ability to solve complex problems and its use in various applications make it an essential tool in the optimization of resources and strategic decisions in industry, economics, and operations research.\\
+Given the time of its development, it was essentially thought to be solved by hand; however, now there are digital tools that allow the process to be automated. 
+\subsection{George Dantzig}
+The American mathematician was born in 1914 and died in 2005. In addition to being the creator of the Simplex algorithm, he was head of the Scientific Computing of Operations Research (SCOOP), where he promoted linear programming for strategic purposes during World War II.
+\begin{center}
+\includegraphics[width=0.25\textwidth]{R.jpg}
+\end{center}
+\section{Problem: Problema Tarea 4}
+The problem inputted by the user is called \textquotedblleft Problema Tarea 4\textquotedblright and consists of minimizing the following fuction:
+
+$Z = x_1 \cdot 0.000000 + x_2 \cdot 0.000000 + x_3 \cdot 0.000000 + x_4 \cdot 0.000000 + x_5 \cdot 0.000000 + x_6 \cdot 0.000000 + x_7 \cdot 1.000000$
+
+
+Subject to:
+
+
+$x_1 \cdot 5.000000 + x_2 \cdot 0.000000 + x_3 \cdot 9.000000 + x_4 \cdot 0.000000 + x_5 \cdot 12.000000 + x_6 \cdot 9.000000 + x_7 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 9.000000 + x_2 \cdot 12.000000 + x_3 \cdot 0.000000 + x_4 \cdot 17.000000 + x_5 \cdot 5.000000 + x_6 \cdot 30.000000 + x_7 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 12.000000 + x_2 \cdot 17.000000 + x_3 \cdot 5.000000 + x_4 \cdot 0.000000 + x_5 \cdot 0.000000 + x_6 \cdot 17.000000 + x_7 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 17.000000 + x_2 \cdot 30.000000 + x_3 \cdot 9.000000 + x_4 \cdot 9.000000 + x_5 \cdot 9.000000 + x_6 \cdot 12.000000 + x_7 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 30.000000 + x_2 \cdot 17.000000 + x_3 \cdot 0.000000 + x_4 \cdot 17.000000 + x_5 \cdot 9.000000 + x_6 \cdot 0.000000 + x_7 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 1.000000 + x_2 \cdot 1.000000 + x_3 \cdot 1.000000 + x_4 \cdot 1.000000 + x_5 \cdot 1.000000 + x_6 \cdot 1.000000 + x_7 \cdot 0.000000 \geq 1.000000$
+
+\section{Initial Matrix with M cost}The initial simplex table is shown below, where the cost of M is represented in the first row. This cost is added to the objective function to penalize the presence of artificial variables in the basis.\\
+
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b\\
+        \hline
+        \hline
+        1.000& -0.000& -0.000& -0.000& -0.000& -0.000& -0.000& -1.000& -0.000& -0.000& -0.000& -0.000& -0.000& -0.000 + -1.0M & 0.000\\
+        \hline
+        0.000& 5.000& 0.000& 9.000& 0.000& 12.000& 9.000& -1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 9.000& 12.000& 0.000& 17.000& 5.000& 30.000& -1.000& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 12.000& 17.000& 5.000& 0.000& 0.000& 17.000& -1.000& 0.000& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 17.000& 30.000& 9.000& 9.000& 9.000& 12.000& -1.000& 0.000& 0.000& 0.000& 1.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 30.000& 17.000& 0.000& 17.000& 9.000& 0.000& -1.000& 0.000& 0.000& 0.000& 0.000& 1.000& 0.000& 0.000\\
+        \hline
+        0.000& 1.000& 1.000& 1.000& 1.000& 1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000& 0.000& 1.000& 1.000\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Initial Normalized Matrix}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b\\
+        \hline
+        \hline
+        1.000& -0.000 + 1.0M & -0.000 + 1.0M & -0.000 + 1.0M & -0.000 + 1.0M & -0.000 + 1.0M & -0.000 + 1.0M & -1.000& -0.000& -0.000& -0.000& -0.000& -0.000& -0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 5.000& 0.000& 9.000& 0.000& 12.000& 9.000& -1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 9.000& 12.000& 0.000& 17.000& 5.000& 30.000& -1.000& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 12.000& 17.000& 5.000& 0.000& 0.000& 17.000& -1.000& 0.000& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 17.000& 30.000& 9.000& 9.000& 9.000& 12.000& -1.000& 0.000& 0.000& 0.000& 1.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 30.000& 17.000& 0.000& 17.000& 9.000& 0.000& -1.000& 0.000& 0.000& 0.000& 0.000& 1.000& 0.000& 0.000\\
+        \hline
+        0.000& 1.000& 1.000& 1.000& 1.000& 1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000& 0.000& 1.000& 1.000\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}The intermediate tables are shown below. A column is added to show the fractions of each row. The selected column to enter the basis is colored in pink while the pivot and selected fraction value are colored in a darker shade of pink.\\
+\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -0.000 + 0.4M & -0.000 + 1.0M & -0.000& -0.000 + 1.0M & -0.000 + -0.3M & -0.000& -1.000 + 0.1M & -0.000 + -0.1M & -0.000& -0.000& -0.000& -0.000& -0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 0.556& 0.000& 1.000& 0.000& 1.333& \cellcolor{KirbyPink}$1.000$ & -0.111& 0.111& 0.000& 0.000& 0.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& -7.667& 12.000& -30.000& 17.000& -35.000& \cellcolor{LightPink}$0.000$ & 2.333& -3.333& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 2.556& 17.000& -12.000& 0.000& -22.667& \cellcolor{LightPink}$0.000$ & 0.889& -1.889& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 10.333& 30.000& -3.000& 9.000& -7.000& \cellcolor{LightPink}$0.000$ & 0.333& -1.333& 0.000& 0.000& 1.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 30.000& 17.000& 0.000& 17.000& 9.000& \cellcolor{LightPink}$0.000$ & -1.000& 0.000& 0.000& 0.000& 0.000& 1.000& 0.000& 0.000& $-nan$ \\
+        \hline
+        0.000& 0.444& 1.000& 0.000& 1.000& -0.333& \cellcolor{LightPink}$0.000$ & 0.111& -0.111& 0.000& 0.000& 0.000& 0.000& 1.000& 1.000& $1.000$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -0.000 + 0.9M & -0.000 + 0.3M & -0.000 + 1.8M & -0.000& -0.000 + 1.7M & -0.000& -1.000 + -0.0M & -0.000 + 0.1M & -0.000 + -0.1M & -0.000& -0.000& -0.000& -0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 0.556& 0.000& 1.000& \cellcolor{LightPink}$0.000$ & 1.333& 1.000& -0.111& 0.111& 0.000& 0.000& 0.000& 0.000& 0.000& 0.000& $-nan$ \\
+        \hline
+        0.000& -0.451& 0.706& -1.765& \cellcolor{KirbyPink}$1.000$ & -2.059& 0.000& 0.137& -0.196& 0.059& 0.000& 0.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& 2.556& 17.000& -12.000& \cellcolor{LightPink}$0.000$ & -22.667& 0.000& 0.889& -1.889& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000& $-nan$ \\
+        \hline
+        0.000& 14.392& 23.647& 12.882& \cellcolor{LightPink}$0.000$ & 11.529& 0.000& -0.902& 0.431& -0.529& 0.000& 1.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 37.667& 5.000& 30.000& \cellcolor{LightPink}$0.000$ & 44.000& 0.000& -3.333& 3.333& -1.000& 0.000& 0.000& 1.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 0.895& 0.294& 1.765& \cellcolor{LightPink}$0.000$ & 1.725& 0.000& -0.026& 0.085& -0.059& 0.000& 0.000& 0.000& 1.000& 1.000& $1.000$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -0.000 + -0.1M & -0.000 + 0.3M & -0.000& -0.000& -0.000 + -0.6M & -0.000 + -1.8M & -1.000 + 0.2M & -0.000 + -0.1M & -0.000 + -0.1M & -0.000& -0.000& -0.000& -0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 0.556& 0.000& \cellcolor{KirbyPink}$1.000$ & 0.000& 1.333& 1.000& -0.111& 0.111& 0.000& 0.000& 0.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& 0.529& 0.706& \cellcolor{LightPink}$0.000$ & 1.000& 0.294& 1.765& -0.059& 0.000& 0.059& 0.000& 0.000& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 9.222& 17.000& \cellcolor{LightPink}$0.000$ & 0.000& -6.667& 12.000& -0.444& -0.556& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 7.235& 23.647& \cellcolor{LightPink}$0.000$ & 0.000& -5.647& -12.882& 0.529& -1.000& -0.529& 0.000& 1.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 21.000& 5.000& \cellcolor{LightPink}$0.000$ & 0.000& 4.000& -30.000& 0.000& 0.000& -1.000& 0.000& 0.000& 1.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& -0.085& 0.294& \cellcolor{LightPink}$0.000$ & 0.000& -0.627& -1.765& 0.170& -0.111& -0.059& 0.000& 0.000& 0.000& 1.000& 1.000& $0.567$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -0.000 + -0.3M & -0.000& -0.000& -0.000 + -0.4M & -0.000 + -0.7M & -0.000 + -2.5M & -1.000 + 0.2M & -0.000 + -0.1M & -0.000 + -0.1M & -0.000& -0.000& -0.000& -0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 0.556& \cellcolor{LightPink}$0.000$ & 1.000& 0.000& 1.333& 1.000& -0.111& 0.111& 0.000& 0.000& 0.000& 0.000& 0.000& 0.000& $-nan$ \\
+        \hline
+        0.000& 0.750& \cellcolor{KirbyPink}$1.000$ & 0.000& 1.417& 0.417& 2.500& -0.083& 0.000& 0.083& 0.000& 0.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& -3.528& \cellcolor{LightPink}$0.000$ & 0.000& -24.083& -13.750& -30.500& 0.972& -0.556& -1.417& 1.000& 0.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& -10.500& \cellcolor{LightPink}$0.000$ & 0.000& -33.500& -15.500& -72.000& 2.500& -1.000& -2.500& 0.000& 1.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 17.250& \cellcolor{LightPink}$0.000$ & 0.000& -7.083& 1.917& -42.500& 0.417& 0.000& -1.417& 0.000& 0.000& 1.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& -0.306& \cellcolor{LightPink}$0.000$ & 0.000& -0.417& -0.750& -2.500& 0.194& -0.111& -0.083& 0.000& 0.000& 0.000& 1.000& 1.000& $3.400$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -3.629 + 0.4M & 0.000& 0.000& -24.771 + 4.4M & -14.143 + 2.0M & -31.371 + 3.6M & 0.000& -0.571& -1.457 + 0.2M & 1.029 + -0.2M & 0.000& 0.000& 0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 0.152& 0.000& 1.000& -2.752& -0.238& -2.486& \cellcolor{LightPink}$0.000$ & 0.048& -0.162& 0.114& 0.000& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 0.448& 1.000& 0.000& -0.648& -0.762& -0.114& \cellcolor{LightPink}$0.000$ & -0.048& -0.038& 0.086& 0.000& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -3.629& 0.000& 0.000& -24.771& -14.143& -31.371& \cellcolor{KirbyPink}$1.000$ & -0.571& -1.457& 1.029& 0.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& -1.429& 0.000& 0.000& 28.429& 19.857& 6.429& \cellcolor{LightPink}$0.000$ & 0.429& 1.143& -2.571& 1.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 18.762& 0.000& 0.000& 3.238& 7.810& -29.429& \cellcolor{LightPink}$0.000$ & 0.238& -0.810& -0.429& 0.000& 1.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 0.400& 0.000& 0.000& 4.400& 2.000& 3.600& \cellcolor{LightPink}$0.000$ & 0.000& 0.200& -0.200& 0.000& 0.000& 1.000& 1.000& $5.143$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -4.873 + 0.6M & 0.000& 0.000& 0.000& 3.160 + -1.1M & -25.770 + 2.6M & 0.000& -0.198 + -0.1M & -0.461 + 0.0M & -1.212 + 0.2M & 0.871 + -0.2M & 0.000& 0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 0.014& 0.000& 1.000& \cellcolor{LightPink}$0.000$ & 1.684& -1.863& 0.000& 0.089& -0.051& -0.135& 0.097& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 0.415& 1.000& 0.000& \cellcolor{LightPink}$0.000$ & -0.310& 0.032& 0.000& -0.038& -0.012& 0.027& 0.023& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -4.873& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 3.160& -25.770& 1.000& -0.198& -0.461& -1.212& 0.871& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -0.050& 0.000& 0.000& \cellcolor{KirbyPink}$1.000$ & 0.698& 0.226& 0.000& 0.015& 0.040& -0.090& 0.035& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& 18.925& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 5.548& -30.161& 0.000& 0.189& -0.940& -0.136& -0.114& 1.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 0.621& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & -1.073& 2.605& 0.000& -0.066& 0.023& 0.198& -0.155& 0.000& 1.000& 1.000& $0.227$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& 327.719 + -33.0M & 801.281 + -81.0M & 0.000& 0.000& -244.875 + 24.0M & 0.000& 0.000& -30.531 + 3.0M & -10.125 + 1.0M & 20.531 + -2.0M & 19.125 + -2.0M & 0.000& 0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 24.062& 57.937& 1.000& 0.000& -16.250& \cellcolor{LightPink}$0.000$ & 0.000& -2.104& -0.750& 1.437& 1.417& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 12.906& 31.094& 0.000& 0.000& -9.625& \cellcolor{KirbyPink}$1.000$ & 0.000& -1.177& -0.375& 0.844& 0.708& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& 327.719& 801.281& 0.000& 0.000& -244.875& \cellcolor{LightPink}$0.000$ & 1.000& -30.531& -10.125& 20.531& 19.125& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -2.969& -7.031& 0.000& 1.000& 2.875& \cellcolor{LightPink}$0.000$ & 0.000& 0.281& 0.125& -0.281& -0.125& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 408.187& 937.812& 0.000& 0.000& -284.750& \cellcolor{LightPink}$0.000$ & 0.000& -35.312& -12.250& 25.312& 21.250& 1.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -33.000& -81.000& 0.000& 0.000& 24.000& \cellcolor{LightPink}$0.000$ & 0.000& 3.000& 1.000& -2.000& -2.000& 0.000& 1.000& 1.000& $0.384$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& 74.859 + -8.2M & 202.402 + -22.3M & 0.000& 85.174 + -8.3M & 0.000& 0.000& 0.000& -6.576 + 0.7M & 0.522 + -0.0M & -3.424 + 0.3M & 8.478 + -1.0M & 0.000& 0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 7.283& 18.196& 1.000& 5.652& \cellcolor{LightPink}$0.000$ & 0.000& 0.000& -0.514& -0.043& -0.152& 0.710& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 2.967& 7.554& 0.000& 3.348& \cellcolor{LightPink}$0.000$ & 1.000& 0.000& -0.236& 0.043& -0.098& 0.290& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 74.859& 202.402& 0.000& 85.174& \cellcolor{LightPink}$0.000$ & 0.000& 1.000& -6.576& 0.522& -3.424& 8.478& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -1.033& -2.446& 0.000& 0.348& \cellcolor{KirbyPink}$1.000$ & 0.000& 0.000& 0.098& 0.043& -0.098& -0.043& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& 114.152& 241.413& 0.000& 99.043& \cellcolor{LightPink}$0.000$ & 0.000& 0.000& -7.457& 0.130& -2.543& 8.870& 1.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -8.217& -22.304& 0.000& -8.348& \cellcolor{LightPink}$0.000$ & 0.000& 0.000& 0.652& -0.043& 0.348& -0.957& 0.000& 1.000& 1.000& $0.042$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& 5.444 + -1.3M & 38.000 + -6.0M & 0.000& 108.556 + -10.7M & 67.222 + -6.7M & 0.000& 0.000& 0.000& 3.444 + -0.3M & -10.000 + 1.0M & 5.556 + -0.7M & 0.000& 0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 1.852& 5.333& 1.000& 7.481& 5.259& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 0.185& -0.667& 0.481& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 0.481& 1.667& 0.000& 4.185& 2.407& 1.000& 0.000& \cellcolor{LightPink}$0.000$ & 0.148& -0.333& 0.185& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& 5.444& 38.000& 0.000& 108.556& 67.222& 0.000& 1.000& \cellcolor{LightPink}$0.000$ & 3.444& -10.000& 5.556& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -10.556& -25.000& 0.000& 3.556& 10.222& 0.000& 0.000& \cellcolor{KirbyPink}$1.000$ & 0.444& -1.000& -0.444& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& 35.444& 55.000& 0.000& 125.556& 76.222& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 3.444& -10.000& 5.556& 1.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -1.333& -6.000& 0.000& -10.667& -6.667& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & -0.333& 1.000& -0.667& 0.000& 1.000& 1.000& $1.533$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -7.889& -22.000& 0.000& 1.889& 0.556& 0.000& 0.000& 0.000& 0.111& 0.000& -1.111& 0.000& 10.000 + -1.0M & 10.000\\
+        \hline
+        0.000& 0.963& 1.333& 1.000& 0.370& 0.815& 0.000& 0.000& 0.000& -0.037& \cellcolor{LightPink}$0.000$ & 0.037& 0.000& 0.667& 0.667& $-0.000$ \\
+        \hline
+        0.000& 0.037& -0.333& 0.000& 0.630& 0.185& 1.000& 0.000& 0.000& 0.037& \cellcolor{LightPink}$0.000$ & -0.037& 0.000& 0.333& 0.333& $-0.000$ \\
+        \hline
+        0.000& -7.889& -22.000& 0.000& 1.889& 0.556& 0.000& 1.000& 0.000& 0.111& \cellcolor{LightPink}$0.000$ & -1.111& 0.000& 10.000& 10.000& $-0.000$ \\
+        \hline
+        0.000& -11.889& -31.000& 0.000& -7.111& 3.556& 0.000& 0.000& 1.000& 0.111& \cellcolor{LightPink}$0.000$ & -1.111& 0.000& 1.000& 1.000& $-0.000$ \\
+        \hline
+        0.000& 22.111& -5.000& 0.000& 18.889& 9.556& 0.000& 0.000& 0.000& 0.111& \cellcolor{LightPink}$0.000$ & -1.111& 1.000& 10.000& 10.000& $-0.000$ \\
+        \hline
+        0.000& -1.333& -6.000& 0.000& -10.667& -6.667& 0.000& 0.000& 0.000& -0.333& \cellcolor{KirbyPink}$1.000$ & -0.667& 0.000& 1.000& 1.000& \cellcolor{KirbyPink}$1.000$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -8.000& -21.000& 0.000& 0.000& 0.000& -3.000& 0.000& 0.000& 0.000& 0.000& -1.000& 0.000& 9.000 + -1.0M & 9.000\\
+        \hline
+        0.000& 0.941& 1.529& 1.000& \cellcolor{LightPink}$0.000$ & 0.706& -0.588& 0.000& 0.000& -0.059& 0.000& 0.059& 0.000& 0.471& 0.471& $1.800$ \\
+        \hline
+        0.000& 0.059& -0.529& 0.000& \cellcolor{KirbyPink}$1.000$ & 0.294& 1.588& 0.000& 0.000& 0.059& 0.000& -0.059& 0.000& 0.529& 0.529& \cellcolor{KirbyPink}$0.529$ \\
+        \hline
+        0.000& -8.000& -21.000& 0.000& \cellcolor{LightPink}$0.000$ & 0.000& -3.000& 1.000& 0.000& 0.000& 0.000& -1.000& 0.000& 9.000& 9.000& $5.294$ \\
+        \hline
+        0.000& -11.471& -34.765& 0.000& \cellcolor{LightPink}$0.000$ & 5.647& 11.294& 0.000& 1.000& 0.529& 0.000& -1.529& 0.000& 4.765& 4.765& $Invalid$ \\
+        \hline
+        0.000& 21.000& 5.000& 0.000& \cellcolor{LightPink}$0.000$ & 4.000& -30.000& 0.000& 0.000& -1.000& 0.000& -0.000& 1.000& 0.000& 0.000& $0.529$ \\
+        \hline
+        0.000& -0.706& -11.647& 0.000& \cellcolor{LightPink}$0.000$ & -3.529& 16.941& 0.000& 0.000& 0.294& 1.000& -1.294& 0.000& 6.647& 6.647& $Invalid$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -8.000& -21.000& 0.000& 0.000& 0.000& -3.000& 0.000& 0.000& 0.000& 0.000& -1.000& -0.000& 9.000 + -1.0M & 9.000\\
+        \hline
+        0.000& -2.765& 0.647& 1.000& 0.000& \cellcolor{LightPink}$0.000$ & 4.706& 0.000& 0.000& 0.118& 0.000& 0.059& -0.176& 0.471& 0.471& $0.667$ \\
+        \hline
+        0.000& -1.485& -0.897& 0.000& 1.000& \cellcolor{LightPink}$0.000$ & 3.794& 0.000& 0.000& 0.132& 0.000& -0.059& -0.074& 0.529& 0.529& $1.800$ \\
+        \hline
+        0.000& -8.000& -21.000& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & -3.000& 1.000& 0.000& 0.000& 0.000& -1.000& -0.000& 9.000& 9.000& $332232759396185.250$ \\
+        \hline
+        0.000& -41.118& -41.824& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 53.647& 0.000& 1.000& 1.941& 0.000& -1.529& -1.412& 4.765& 4.765& $0.844$ \\
+        \hline
+        0.000& 5.250& 1.250& 0.000& 0.000& \cellcolor{KirbyPink}$1.000$ & -7.500& 0.000& 0.000& -0.250& 0.000& -0.000& 0.250& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& 17.824& -7.235& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & -9.529& 0.000& 0.000& -0.588& 1.000& -1.294& 0.882& 6.647& 6.647& $Invalid$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -8.000& -21.000& 0.000& 0.000& 0.000& -3.000& 0.000& -0.000& 0.000& 0.000& -1.000& 0.000& 9.000 + -1.0M & 9.000\\
+        \hline
+        0.000& -0.273& 3.182& 1.000& 0.000& 0.000& 1.455& 0.000& -0.061& \cellcolor{LightPink}$0.000$ & 0.000& 0.152& -0.091& 0.182& 0.182& $4.000$ \\
+        \hline
+        0.000& 1.318& 1.955& 0.000& 1.000& 0.000& 0.136& 0.000& -0.068& \cellcolor{LightPink}$0.000$ & 0.000& 0.045& 0.023& 0.205& 0.205& $4.000$ \\
+        \hline
+        0.000& -8.000& -21.000& 0.000& 0.000& 0.000& -3.000& 1.000& -0.000& \cellcolor{LightPink}$0.000$ & 0.000& -1.000& 0.000& 9.000& 9.000& $778533428981214.000$ \\
+        \hline
+        0.000& -21.182& -21.545& 0.000& 0.000& 0.000& 27.636& 0.000& 0.515& \cellcolor{KirbyPink}$1.000$ & 0.000& -0.788& -0.727& 2.455& 2.455& \cellcolor{KirbyPink}$2.455$ \\
+        \hline
+        0.000& -0.045& -4.136& 0.000& 0.000& 1.000& -0.591& 0.000& 0.129& \cellcolor{LightPink}$-0.000$ & 0.000& -0.197& 0.068& 0.614& 0.614& $Invalid$ \\
+        \hline
+        0.000& 5.364& -19.909& 0.000& 0.000& 0.000& 6.727& 0.000& 0.303& \cellcolor{LightPink}$-0.000$ & 1.000& -1.758& 0.455& 8.091& 8.091& $Invalid$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -9.800& 0.000& 6.600& 0.000& 0.000& 6.600& 0.000& -0.400& 0.000& 0.000& 0.000& -0.600& 10.200 + -1.0M & 10.200\\
+        \hline
+        0.000& -1.800& 21.000& 6.600& 0.000& 0.000& 9.600& 0.000& -0.400& 0.000& 0.000& \cellcolor{KirbyPink}$1.000$ & -0.600& 1.200& 1.200& \cellcolor{KirbyPink}$1.200$ \\
+        \hline
+        0.000& 1.400& 1.000& -0.300& 1.000& 0.000& -0.300& 0.000& -0.050& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 0.050& 0.150& 0.150& $4.500$ \\
+        \hline
+        0.000& -9.800& 0.000& 6.600& 0.000& 0.000& 6.600& 1.000& -0.400& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & -0.600& 10.200& 10.200& $Invalid$ \\
+        \hline
+        0.000& -22.600& -5.000& 5.200& 0.000& 0.000& 35.200& 0.000& 0.200& 1.000& 0.000& \cellcolor{LightPink}$0.000$ & -1.200& 3.400& 3.400& $Invalid$ \\
+        \hline
+        0.000& -0.400& -0.000& 1.300& 0.000& 1.000& 1.300& 0.000& 0.050& -0.000& 0.000& \cellcolor{LightPink}$0.000$ & -0.050& 0.850& 0.850& $Invalid$ \\
+        \hline
+        0.000& 2.200& 17.000& 11.600& 0.000& 0.000& 23.600& 0.000& -0.400& 0.000& 1.000& \cellcolor{LightPink}$0.000$ & -0.600& 10.200& 10.200& $Invalid$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& 7.000& 12.000& 3.000& 12.000& 0.000& 3.000& 0.000& -1.000& 0.000& 0.000& 0.000& 0.000& 12.000 + -1.0M & 12.000\\
+        \hline
+        0.000& 15.000& 33.000& 3.000& 12.000& 0.000& 6.000& 0.000& -1.000& 0.000& 0.000& 1.000& \cellcolor{LightPink}$0.000$ & 3.000& 3.000& $Invalid$ \\
+        \hline
+        0.000& 28.000& 20.000& -6.000& 20.000& 0.000& -6.000& 0.000& -1.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$1.000$ & 3.000& 3.000& \cellcolor{KirbyPink}$3.000$ \\
+        \hline
+        0.000& 7.000& 12.000& 3.000& 12.000& 0.000& 3.000& 1.000& -1.000& 0.000& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 12.000& 12.000& $Invalid$ \\
+        \hline
+        0.000& 11.000& 19.000& -2.000& 24.000& 0.000& 28.000& 0.000& -1.000& 1.000& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 7.000& 7.000& $Invalid$ \\
+        \hline
+        0.000& 1.000& 1.000& 1.000& 1.000& 1.000& 1.000& 0.000& -0.000& -0.000& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 1.000& 1.000& $Invalid$ \\
+        \hline
+        0.000& 19.000& 29.000& 8.000& 12.000& 0.000& 20.000& 0.000& -1.000& 0.000& 1.000& 0.000& \cellcolor{LightPink}$0.000$ & 12.000& 12.000& $Invalid$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Degenerate Problem}Sometimes the simplex algorithm may be faced with a degenerate problem, indicated by the presence of variables inside the base that have a value of 0 which in turn makes objetive function not get closer to the objective. In the simplex table is represented by a column where the minimal value taken is 0.\\
+In this situation the program will take the first fraction that satisfies the restrictions. \\
+\section{Result Analysis}\subsection{Unbounded problems}
+Sometimes the simplex algorithm may be faced with an unbounded problem, as a result of poor constraint management at the time of modeling. In the simplex table this is represented by a column full of negatives.\\
+In this case it is found in the column 8 where there are no valid fractions:\\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $S_5$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& 7.000& 12.000& 3.000& 12.000& 0.000& 3.000& 0.000& -1.000& 0.000& 0.000& 0.000& 0.000& 12.000 + -1.0M & 12.000\\
+        \hline
+        0.000& 15.000& 33.000& 3.000& 12.000& 0.000& 6.000& 0.000& \cellcolor{LightPink}$-1.000$ & 0.000& 0.000& 1.000& 0.000& 3.000& 3.000& $Invalid$ \\
+        \hline
+        0.000& 28.000& 20.000& -6.000& 20.000& 0.000& -6.000& 0.000& \cellcolor{LightPink}$-1.000$ & 0.000& 0.000& 0.000& 1.000& 3.000& 3.000& $Invalid$ \\
+        \hline
+        0.000& 7.000& 12.000& 3.000& 12.000& 0.000& 3.000& 1.000& \cellcolor{LightPink}$-1.000$ & 0.000& 0.000& 0.000& 0.000& 12.000& 12.000& $Invalid$ \\
+        \hline
+        0.000& 11.000& 19.000& -2.000& 24.000& 0.000& 28.000& 0.000& \cellcolor{LightPink}$-1.000$ & 1.000& 0.000& 0.000& 0.000& 7.000& 7.000& $Invalid$ \\
+        \hline
+        0.000& 1.000& 1.000& 1.000& 1.000& 1.000& 1.000& 0.000& \cellcolor{LightPink}$-0.000$ & -0.000& 0.000& 0.000& 0.000& 1.000& 1.000& $Invalid$ \\
+        \hline
+        0.000& 19.000& 29.000& 8.000& 12.000& 0.000& 20.000& 0.000& \cellcolor{LightPink}$-1.000$ & 0.000& 1.000& 0.000& 0.000& 12.000& 12.000& $Invalid$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+
+
+\end{document}

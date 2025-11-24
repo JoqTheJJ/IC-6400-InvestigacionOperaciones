@@ -1,0 +1,20 @@
+# SIMPLEX-UI v1
+Name: Problema Tarea 3
+Sense: MIN
+Variables: 5
+Constraints: 5
+IntermediateTables: 1
+
+[Objective]
+names: x₁ x₂ x₃ x₄ x₅
+coeffs:  0  0  0  0  1
+
+[Constraints]
+       x₁ x₂ x₃ x₄ x₅   | op | rhs
+R1     4  6  1  4 -1 | ≤ | 0
+R2     2  4  4  7 -1 | ≤ | 0
+R3     7  4  4  0 -1 | ≤ | 0
+R4     4  1  8  4 -1 | ≤ | 0
+R5     1  1  1  1  0 | ≤ | 1
+
+# End

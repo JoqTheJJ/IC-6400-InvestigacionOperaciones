@@ -1,0 +1,355 @@
+\documentclass{article}
+
+\PassOptionsToPackage{table,svgnames}{xcolor}\usepackage{graphicx}
+\usepackage{tikz-network}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
+\usepackage{adjustbox}
+\usepackage{amsmath}
+
+\begin{document}
+\begin{titlepage}
+    \centering
+    % Logo
+    \includegraphics[width=0.6\textwidth]{logo-tec.png}\par\vspace{1cm}
+
+    % University and course
+    {\large Computer Science\par}
+    {\large Operations Research\par}
+    \vspace{2cm}
+
+    % Title
+    {\large Simplex Algoritm\par}
+    \vspace{2cm}
+
+    % Group and professor
+    {\large Group 40\par}
+    {\large Professor: Francisco Torres Rojas\par}
+    \vspace{3cm}
+
+    % Student info
+    {\large Carmen Hidalgo Paz\par}
+    {\large Id: 2020030538\par}
+    \vspace{1cm}
+    {\large Melissa Carvajal Charpentier\par}
+    {\large Id: 2022197088\par}
+    \vspace{1cm}
+    {\large Josué Soto González\par}
+    {\large Id: 2023207915\par}
+    \vspace{1cm}
+
+    % Date
+    {\large November 12 2025\par}
+\end{titlepage}
+\definecolor{KirbyPink}{HTML}{D74894}
+\definecolor{LightPink}{HTML}{FFBFBF}
+
+\newpage
+
+
+\section{The Simplex Algorithm}
+The simplex algorithm, developed by George Dantzig in 1947, arises from the need to solve linear programming problems.m
+This problem was fundamentally proposed by Kantorovich and Koopman, who developed the optimal location problem and the problem of resources.
+The Simplex method optimizes an objective function subject to linear constraints, using an iterative process to improve the value of the objective function until the optimal solution is reached. Its ability to solve complex problems and its use in various applications make it an essential tool in the optimization of resources and strategic decisions in industry, economics, and operations research.\\
+Given the time of its development, it was essentially thought to be solved by hand; however, now there are digital tools that allow the process to be automated. 
+\subsection{George Dantzig}
+The American mathematician was born in 1914 and died in 2005. In addition to being the creator of the Simplex algorithm, he was head of the Scientific Computing of Operations Research (SCOOP), where he promoted linear programming for strategic purposes during World War II.
+\begin{center}
+\includegraphics[width=0.25\textwidth]{R.jpg}
+\end{center}
+\section{Problem: Problema Tarea 3}
+The problem inputted by the user is called \textquotedblleft Problema Tarea 3\textquotedblright and consists of minimizing the following fuction:
+
+$Z = x_1 \cdot 0.000000 + x_2 \cdot 0.000000 + x_3 \cdot 0.000000 + x_4 \cdot 0.000000 + x_5 \cdot 1.000000$
+
+
+Subject to:
+
+
+$x_1 \cdot 4.000000 + x_2 \cdot 6.000000 + x_3 \cdot 1.000000 + x_4 \cdot 4.000000 + x_5 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 2.000000 + x_2 \cdot 4.000000 + x_3 \cdot 4.000000 + x_4 \cdot 7.000000 + x_5 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 7.000000 + x_2 \cdot 4.000000 + x_3 \cdot 4.000000 + x_4 \cdot 0.000000 + x_5 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 4.000000 + x_2 \cdot 1.000000 + x_3 \cdot 8.000000 + x_4 \cdot 4.000000 + x_5 \cdot -1.000000 \leq 0.000000$
+
+$x_1 \cdot 1.000000 + x_2 \cdot 1.000000 + x_3 \cdot 1.000000 + x_4 \cdot 1.000000 + x_5 \cdot 0.000000 \geq 1.000000$
+
+\section{Initial Matrix with M cost}The initial simplex table is shown below, where the cost of M is represented in the first row. This cost is added to the objective function to penalize the presence of artificial variables in the basis.\\
+
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b\\
+        \hline
+        \hline
+        1.000& -0.000& -0.000& -0.000& -0.000& -1.000& -0.000& -0.000& -0.000& -0.000& -0.000 + -1.0M & 0.000\\
+        \hline
+        0.000& 4.000& 6.000& 1.000& 4.000& -1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 2.000& 4.000& 4.000& 7.000& -1.000& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 7.000& 4.000& 4.000& 0.000& -1.000& 0.000& 0.000& 1.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 4.000& 1.000& 8.000& 4.000& -1.000& 0.000& 0.000& 0.000& 1.000& 0.000& 0.000\\
+        \hline
+        0.000& 1.000& 1.000& 1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000& 1.000& 1.000\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Initial Normalized Matrix}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b\\
+        \hline
+        \hline
+        1.000& -0.000 + 1.0M & -0.000 + 1.0M & -0.000 + 1.0M & -0.000 + 1.0M & -1.000& -0.000& -0.000& -0.000& -0.000& -0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 4.000& 6.000& 1.000& 4.000& -1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 2.000& 4.000& 4.000& 7.000& -1.000& 0.000& 1.000& 0.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 7.000& 4.000& 4.000& 0.000& -1.000& 0.000& 0.000& 1.000& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 4.000& 1.000& 8.000& 4.000& -1.000& 0.000& 0.000& 0.000& 1.000& 0.000& 0.000\\
+        \hline
+        0.000& 1.000& 1.000& 1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000& 1.000& 1.000\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}The intermediate tables are shown below. A column is added to show the fractions of each row. The selected column to enter the basis is colored in pink while the pivot and selected fraction value are colored in a darker shade of pink.\\
+\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -0.000& -0.000 + -0.5M & -0.000 + 0.8M & -0.000& -1.000 + 0.2M & -0.000 + -0.2M & -0.000& -0.000& -0.000& -0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 1.000& 1.500& 0.250& \cellcolor{KirbyPink}$1.000$ & -0.250& 0.250& 0.000& 0.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& -5.000& -6.500& 2.250& \cellcolor{LightPink}$0.000$ & 0.750& -1.750& 1.000& 0.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 7.000& 4.000& 4.000& \cellcolor{LightPink}$0.000$ & -1.000& 0.000& 0.000& 1.000& 0.000& 0.000& 0.000& $-nan$ \\
+        \hline
+        0.000& 0.000& -5.000& 7.000& \cellcolor{LightPink}$0.000$ & 0.000& -1.000& 0.000& 0.000& 1.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 0.000& -0.500& 0.750& \cellcolor{LightPink}$0.000$ & 0.250& -0.250& 0.000& 0.000& 0.000& 1.000& 1.000& $1.000$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -0.000 + -3.0M & -0.000 + -5.0M & -0.000& -0.000 + -3.0M & -1.000 + 1.0M & -0.000 + -1.0M & -0.000& -0.000& -0.000& -0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& 4.000& 6.000& \cellcolor{KirbyPink}$1.000$ & 4.000& -1.000& 1.000& 0.000& 0.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& -14.000& -20.000& \cellcolor{LightPink}$0.000$ & -9.000& 3.000& -4.000& 1.000& 0.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& -9.000& -20.000& \cellcolor{LightPink}$0.000$ & -16.000& 3.000& -4.000& 0.000& 1.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& -28.000& -47.000& \cellcolor{LightPink}$0.000$ & -28.000& 7.000& -8.000& 0.000& 0.000& 1.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& -3.000& -5.000& \cellcolor{LightPink}$0.000$ & -3.000& 1.000& -1.000& 0.000& 0.000& 0.000& 1.000& 1.000& $1.333$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& -4.667 + 1.7M & -6.667 + 1.7M & 0.000& -3.000& 0.000& -1.333 + 0.3M & 0.333 + -0.3M & 0.000& 0.000& 0.000& 0.000 + 1.0M \\
+        \hline
+        0.000& -0.667& -0.667& 1.000& 1.000& \cellcolor{LightPink}$0.000$ & -0.333& 0.333& 0.000& 0.000& 0.000& 0.000& $-0.000$ \\
+        \hline
+        0.000& -4.667& -6.667& 0.000& -3.000& \cellcolor{KirbyPink}$1.000$ & -1.333& 0.333& 0.000& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& 5.000& 0.000& 0.000& -7.000& \cellcolor{LightPink}$0.000$ & 0.000& -1.000& 1.000& 0.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 4.667& -0.333& 0.000& -7.000& \cellcolor{LightPink}$0.000$ & 1.333& -2.333& 0.000& 1.000& 0.000& 0.000& $0.000$ \\
+        \hline
+        0.000& 1.667& 1.667& 0.000& 0.000& \cellcolor{LightPink}$0.000$ & 0.333& -0.333& 0.000& 0.000& 1.000& 1.000& $1.000$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& 2.000& 0.000& 0.000& -3.000& 0.000& 0.000& -1.000& 0.000& 0.000& 4.000 + -1.0M & 4.000\\
+        \hline
+        0.000& 0.000& \cellcolor{LightPink}$0.000$ & 1.000& 1.000& 0.000& -0.200& 0.200& 0.000& 0.000& 0.400& 0.400& $-0.000$ \\
+        \hline
+        0.000& 2.000& \cellcolor{LightPink}$0.000$ & 0.000& -3.000& 1.000& 0.000& -1.000& 0.000& 0.000& 4.000& 4.000& $-0.000$ \\
+        \hline
+        0.000& 5.000& \cellcolor{LightPink}$0.000$ & 0.000& -7.000& 0.000& 0.000& -1.000& 1.000& 0.000& 0.000& 0.000& $-nan$ \\
+        \hline
+        0.000& 5.000& \cellcolor{LightPink}$0.000$ & 0.000& -7.000& 0.000& 1.400& -2.400& 0.000& 1.000& 0.200& 0.200& $-0.000$ \\
+        \hline
+        0.000& 1.000& \cellcolor{KirbyPink}$1.000$ & 0.000& 0.000& 0.000& 0.200& -0.200& 0.000& 0.000& 0.600& 0.600& \cellcolor{KirbyPink}$0.600$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b & Fractions\\
+        \hline
+        \hline
+        $1.000$& 0.000& 0.000& 0.000& -0.200& 0.000& 0.000& -0.600& -0.400& 0.000& 4.000 + -1.0M & 4.000\\
+        \hline
+        0.000& \cellcolor{LightPink}$0.000$ & 0.000& 1.000& 1.000& 0.000& -0.200& 0.200& 0.000& 0.000& 0.400& 0.400& $Invalid$ \\
+        \hline
+        0.000& \cellcolor{LightPink}$0.000$ & 0.000& 0.000& -0.200& 1.000& 0.000& -0.600& -0.400& 0.000& 4.000& 4.000& $2.000$ \\
+        \hline
+        0.000& \cellcolor{KirbyPink}$1.000$ & 0.000& 0.000& -1.400& 0.000& 0.000& -0.200& 0.200& 0.000& 0.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
+        \hline
+        0.000& \cellcolor{LightPink}$0.000$ & 0.000& 0.000& 0.000& 0.000& 1.400& -1.400& -1.000& 1.000& 0.200& 0.200& $0.040$ \\
+        \hline
+        0.000& \cellcolor{LightPink}$0.000$ & 1.000& 0.000& 1.400& 0.000& 0.200& 0.000& -0.200& 0.000& 0.600& 0.600& $0.600$ \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\section{Intermediate Matrixes}\section{Degenerate Problem}Sometimes the simplex algorithm may be faced with a degenerate problem, indicated by the presence of variables inside the base that have a value of 0 which in turn makes objetive function not get closer to the objective. In the simplex table is represented by a column where the minimal value taken is 0.\\
+In this situation the program will take the first fraction that satisfies the restrictions. \\
+\section{Multiple Solutions}\subsection{Explanation}
+It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\
+This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\
+Here is where it happens in this problem: 
+
+\subsection{First solution table}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b\\
+        \hline
+        \hline
+        1.000& 0.000& 0.000& 0.000& -0.200& 0.000& 0.000& -0.600& -0.400& 0.000& 4.000 + -1.0M & 4.000\\
+        \hline
+        0.000& 0.000& 0.000& 1.000& 1.000& 0.000& -0.200& 0.200& 0.000& 0.000& 0.400& 0.400\\
+        \hline
+        0.000& 0.000& 0.000& 0.000& -0.200& 1.000& 0.000& -0.600& -0.400& 0.000& 4.000& 4.000\\
+        \hline
+        0.000& 1.000& 0.000& 0.000& -1.400& 0.000& 0.000& -0.200& 0.200& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 0.000& 0.000& 0.000& 0.000& 0.000& 1.400& -1.400& -1.000& 1.000& 0.200& 0.200\\
+        \hline
+        0.000& 0.000& 1.000& 0.000& 1.400& 0.000& 0.200& 0.000& -0.200& 0.000& 0.600& 0.600\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\subsection{Second solution table}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $S_1$ & $S_2$ & $S_3$ & $S_4$ & $a_1$ & b\\
+        \hline
+        \hline
+        1.000& 0.000& 0.000& 0.000& -0.200& 0.000& 0.000& -0.600& -0.400& 0.000& 4.000 + -1.0M & 4.000\\
+        \hline
+        0.000& 0.000& 0.000& 1.000& 1.000& 0.000& 0.000& -0.000& -0.143& 0.143& 0.429& 0.429\\
+        \hline
+        0.000& 0.000& 0.000& 0.000& -0.200& 1.000& 0.000& -0.600& -0.400& 0.000& 4.000& 4.000\\
+        \hline
+        0.000& 1.000& 0.000& 0.000& -1.400& 0.000& 0.000& -0.200& 0.200& 0.000& 0.000& 0.000\\
+        \hline
+        0.000& 0.000& 0.000& 0.000& 0.000& 0.000& 1.000& -1.000& -0.714& 0.714& 0.143& 0.143\\
+        \hline
+        0.000& 0.000& 1.000& 0.000& 1.400& 0.000& 0.000& 0.200& -0.057& -0.143& 0.571& 0.571\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\subsection{Equation and Solutions}
+\textbf{Ecuation} 
+$$
+\alpha \cdot 
+\begin{bmatrix}
+x_1 = 0.00 \\ x_2 = 0.60 \\ x_3 = 0.40 \\ x_4 = 0.00 \\ x_5 = 4.00 \\ \end{bmatrix}
++ (1 - \alpha) \cdot 
+\begin{bmatrix}
+x_1 = 0.00 \\ x_2 = 0.57 \\ x_3 = 0.43 \\ x_4 = 0.00 \\ x_5 = 4.00 \\  \end{bmatrix}
+$$
+\textbf{Other solutions} 
+$$\alpha = 0.25 \Rightarrow 
+\begin{bmatrix}
+x_1 = 0.00 \\ x_2 = 0.58 \\ x_3 = 0.42 \\ x_4 = 0.00 \\ x_5 = 4.00 \\ 
+\end{bmatrix}
+$$
+
+$$\alpha = 0.50 \Rightarrow 
+\begin{bmatrix}
+x_1 = 0.00 \\ x_2 = 0.59 \\ x_3 = 0.41 \\ x_4 = 0.00 \\ x_5 = 4.00 \\ 
+\end{bmatrix}
+$$
+
+$$\alpha = 0.75 \Rightarrow 
+\begin{bmatrix}
+x_1 = 0.00 \\ x_2 = 0.59 \\ x_3 = 0.41 \\ x_4 = 0.00 \\ x_5 = 4.00 \\ 
+\end{bmatrix}
+$$
+
+\subsection{Optimal Solutions}
+The final result of minimizing  the given function is 4.000 as a result of setting the variables to the values: 
+
+\begin{itemize}
+\item $x_1 = 0.000$
+\item $x_2 = 0.600$
+\item $x_3 = 0.400$
+\item $x_4 = 0.000$
+\item $x_5 = 4.000$
+\item $S_1 = 0.000$
+\item $S_2 = 0.000$
+\item $S_3 = 0.000$
+\item $S_4 = 0.200$
+\item $a_1 = 0.000$
+\end{itemize}
+Another possible result of minimizing  the given function with the same value is a result of setting the variables to the values: 
+
+\begin{itemize}
+\item $x_1 = 0.000$
+\item $x_2 = 0.571$
+\item $x_3 = 0.429$
+\item $x_4 = 0.000$
+\item $x_5 = 4.000$
+\item $S_1 = 0.143$
+\item $S_2 = 0.000$
+\item $S_3 = 0.000$
+\item $S_4 = 0.000$
+\item $a_1 = 0.000$
+\end{itemize}
+
+
+\end{document}
