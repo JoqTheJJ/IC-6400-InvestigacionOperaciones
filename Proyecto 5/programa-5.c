@@ -1298,10 +1298,10 @@ static gboolean build_simplex_payload(SimplexUI *ui,
 static void print_simplex_matrix(double **A, int rows, int cols, const char **vnames) {
     printf("\n===== SIMPLEX MATRIX (%d x %d) =====\n", rows, cols);
 
-    // Header row: Z, then *all* variable columns, then RHS
+    // Header row: Z, then all variable columns, then RHS
     printf("%10s", "Z");
 
-    int total_named = cols - 2;   // all x, S, a columns
+    int total_named = cols - 2;   // all x, s, e, a columns
     for (int j = 0; j < total_named; ++j) {
         const char *name = (vnames && vnames[j]) ? vnames[j] : "x";
         printf(" %8s", name);
@@ -1369,7 +1369,7 @@ static void on_latex_file_clicked(GtkButton *btn, gpointer user_data) {
     print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
 
     // Call Simplex routine
-    //runSimplex(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
+    runSimplex(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
 
     // Cleanup
     free_dmatrix(A);
