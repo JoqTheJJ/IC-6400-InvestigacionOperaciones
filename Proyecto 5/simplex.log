@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.21)  23 NOV 2025 15:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.21)  23 NOV 2025 20:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**Test9.tex
-(./Test9.tex
+**simplex.tex
+(./simplex.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -707,77 +707,40 @@ ations.softclip.code.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfcontrib/pgflibraryfillbe
 tween.code.tex)))
 (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/libs/tikzlibrarypgfplots.de
-corations.softclip.code.tex)) (/usr/share/texlive/texmf-dist/tex/latex/adjustbo
-x/adjustbox.sty
-Package: adjustbox 2022/10/17 v1.3a Adjusting TeX boxes (trim, clip, ...)
-(/usr/share/texlive/texmf-dist/tex/latex/adjustbox/adjcalc.sty
-Package: adjcalc 2012/05/16 v1.1 Provides advanced setlength with multiple back
--ends (calc, etex, pgfmath)
-) (/usr/share/texlive/texmf-dist/tex/latex/adjustbox/trimclip.sty
-Package: trimclip 2020/08/19 v1.2 Trim and clip general TeX material
-(/usr/share/texlive/texmf-dist/tex/latex/collectbox/collectbox.sty
-Package: collectbox 2022/10/17 v0.4c Collect macro arguments as boxes
-\collectedbox=\box69
-)
-\tc@llx=\dimen281
-\tc@lly=\dimen282
-\tc@urx=\dimen283
-\tc@ury=\dimen284
-Package trimclip Info: Using driver 'tc-pdftex.def'.
-(/usr/share/texlive/texmf-dist/tex/latex/adjustbox/tc-pdftex.def
-File: tc-pdftex.def 2019/01/04 v2.2 Clipping driver for pdftex
-))
-\adjbox@Width=\dimen285
-\adjbox@Height=\dimen286
-\adjbox@Depth=\dimen287
-\adjbox@Totalheight=\dimen288
-\adjbox@pwidth=\dimen289
-\adjbox@pheight=\dimen290
-\adjbox@pdepth=\dimen291
-\adjbox@ptotalheight=\dimen292
-(/usr/share/texlive/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
-Package: ifoddpage 2022/10/18 v1.2 Conditionals for odd/even page detection
-\c@checkoddpage=\count353
-) (/usr/share/texlive/texmf-dist/tex/latex/varwidth/varwidth.sty
-Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
-\@vwid@box=\box70
-\sift@deathcycles=\count354
-\@vwid@loff=\dimen293
-\@vwid@roff=\dimen294
-)) (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+corations.softclip.code.tex)) (/usr/share/texlive/texmf-dist/tex/latex/l3backen
+d/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count355
-\l__pdf_internal_box=\box71
-)
-No file Test9.aux.
-\openout1 = `Test9.aux'.
+\l__color_backend_stack_int=\count353
+\l__pdf_internal_box=\box69
+) (./simplex.aux)
+\openout1 = `simplex.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count356
-\scratchdimen=\dimen295
-\scratchbox=\box72
-\nofMPsegments=\count357
-\nofMParguments=\count358
+\scratchcounter=\count354
+\scratchdimen=\dimen281
+\scratchbox=\box70
+\nofMPsegments=\count355
+\nofMParguments=\count356
 \everyMPshowfont=\toks67
-\MPscratchCnt=\count359
-\MPscratchDim=\dimen296
-\MPnumerator=\count360
-\makeMPintoPDFobject=\count361
+\MPscratchCnt=\count357
+\MPscratchDim=\dimen282
+\MPnumerator=\count358
+\makeMPintoPDFobject=\count359
 \everyMPtoPDFconversion=\toks68
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -791,12 +754,12 @@ e
 Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
 ick labels; missing features). Consider writing \pgfplotsset{compat=1.18} into 
 your preamble.
- on input line 11.
+ on input line 10.
 
 <logo-tec.png, id=4, 362.35374pt x 80.3pt>
 File: logo-tec.png Graphic file (type png)
 <use logo-tec.png>
-Package pdftex.def Info: logo-tec.png  used on input line 15.
+Package pdftex.def Info: logo-tec.png  used on input line 14.
 (pdftex.def)             Requested size: 207.0021pt x 45.87315pt.
 [1
 
@@ -804,46 +767,18 @@ Package pdftex.def Info: logo-tec.png  used on input line 15.
 <R.jpg, id=13, 180.675pt x 275.0275pt>
 File: R.jpg Graphic file (type jpg)
 <use R.jpg>
-Package pdftex.def Info: R.jpg  used on input line 59.
+Package pdftex.def Info: R.jpg  used on input line 58.
 (pdftex.def)             Requested size: 86.25pt x 131.28989pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 74--75
-
- []
-
-[1 <./R.jpg (PNG copy)>]
-Underfull \hbox (badness 10000) in paragraph at lines 109--110
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 127--128
-
- []
-
-[2] (./Test9.aux)
- ***********
-LaTeX2e <2023-11-01> patch level 1
-L3 programming layer <2024-01-22>
- ***********
- ) 
+./simplex.tex:63: Double subscript.
+l.63 ...dot 60.000000 + x_2 \cdot 30.000000 + S_x_
+                                                  1 \cdot 20.000000$ 
 Here is how much of TeX's memory you used:
- 28992 strings out of 474222
- 724236 string characters out of 5748733
- 1945975 words of memory out of 5000000
- 50746 multiletter control sequences out of 15000+600000
+ 28100 strings out of 474222
+ 707678 string characters out of 5748733
+ 1925975 words of memory out of 5000000
+ 49878 multiletter control sequences out of 15000+600000
  559733 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 113i,9n,126p,733b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on Test9.pdf (3 pages, 155824 bytes).
-PDF statistics:
- 46 PDF objects out of 1000 (max. 8388607)
- 27 compressed objects within 1 object stream
- 0 named destinations out of 1000 (max. 500000)
- 23 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 113i,5n,126p,735b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
+./simplex.tex:63:  ==> Fatal error occurred, no output PDF file produced!

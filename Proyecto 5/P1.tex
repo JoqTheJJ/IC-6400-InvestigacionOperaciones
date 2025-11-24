@@ -58,36 +58,36 @@ The American mathematician was born in 1914 and died in 2005. In addition to bei
 \begin{center}
 \includegraphics[width=0.25\textwidth]{R.jpg}
 \end{center}
-\section{Problem: Test5}
-The problem inputted by the user is called \textquotedblleft Test5\textquotedblright and consists of maximizing the following fuction:
+\section{Problem: P1}
+The problem inputted by the user is called \textquotedblleft P1\textquotedblright and consists of maximizing the following fuction:
 
-$Z = x1 \cdot 5.000000 + x2 \cdot 3.000000$
+$Z = x_1 \cdot 4.000000 + x_2 \cdot 1.000000$
 
 
 Subject to:
 
 
-$x1 \cdot 4.000000 + x2 \cdot 2.000000 \leq 12.000000$
+$x_1 \cdot 2.000000 + x_2 \cdot 3.000000 \leq 4.000000$
 
-$x1 \cdot 4.000000 + x2 \cdot 1.000000 \leq 10.000000$
+$x_1 \cdot 1.000000 + x_2 \cdot 1.000000 \leq 1.000000$
 
-$x1 \cdot 1.000000 + x2 \cdot 1.000000 \leq 4.000000$
+$x_1 \cdot 4.000000 + x_2 \cdot 1.000000 \leq 2.000000$
 
 \section{Initial Matrix }The initial simplex table is shown below.\\
 
 \begin{adjustbox}{max width=\textwidth}
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Z  & $x1$ & $x2$ & $s1$ & $s2$ & $s3$ & b\\
+        Z  & $x_1$ & $x_2$ & $S_1$ & $S_2$ & $S_3$ & b\\
         \hline
         \hline
-        0.000& -5.000& -3.000& 0.000& 0.000& 0.000& 0.000\\
+        1.000& -4.000& -1.000& 0.000& 0.000& 0.000& 0.000\\
         \hline
-        0.000& 4.000& 2.000& 1.000& 0.000& 0.000& 12.000\\
+        0.000& 2.000& 3.000& 1.000& 0.000& 0.000& 4.000\\
         \hline
-        0.000& 4.000& 1.000& 0.000& 1.000& 0.000& 10.000\\
+        0.000& 1.000& 1.000& 0.000& 1.000& 0.000& 1.000\\
         \hline
-        0.000& 1.000& 1.000& 0.000& 0.000& 1.000& 4.000\\
+        0.000& 4.000& 1.000& 0.000& 0.000& 1.000& 2.000\\
         \hline
     \end{tabular}
 \end{adjustbox}
@@ -97,98 +97,111 @@ $x1 \cdot 1.000000 + x2 \cdot 1.000000 \leq 4.000000$
 \subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
         \hline
-        Z  & $x1$ & $x2$ & $s1$ & $s2$ & $s3$ & b & Fractions\\
+        Z  & $x_1$ & $x_2$ & $S_1$ & $S_2$ & $S_3$ & b & Fractions\\
         \hline
         \hline
-        $0.000$& 0.000& -1.750& 0.000& 1.250& 0.000& 12.500\\
+        $1.000$& 0.000& 0.000& 0.000& 0.000& 1.000& 2.000\\
         \hline
-        0.000& \cellcolor{LightPink}$0.000$ & 1.000& 1.000& -1.000& 0.000& 2.000& $3.000$ \\
+        0.000& \cellcolor{LightPink}$0.000$ & 2.500& 1.000& 0.000& -0.500& 3.000& $2.000$ \\
         \hline
-        0.000& \cellcolor{KirbyPink}$1.000$ & 0.250& 0.000& 0.250& 0.000& 2.500& \cellcolor{KirbyPink}$2.500$ \\
+        0.000& \cellcolor{LightPink}$0.000$ & 0.750& 0.000& 1.000& -0.250& 0.500& $1.000$ \\
         \hline
-        0.000& \cellcolor{LightPink}$0.000$ & 0.750& 0.000& -0.250& 1.000& 1.500& $4.000$ \\
-        \hline
-    \end{tabular}
-\end{adjustbox}
-
-
-\subsection{Pivot Table}\begin{adjustbox}{max width=\textwidth}
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-        \hline
-        Z  & $x1$ & $x2$ & $s1$ & $s2$ & $s3$ & b & Fractions\\
-        \hline
-        \hline
-        $0.000$& 0.000& 0.000& 1.750& -0.500& 0.000& 16.000\\
-        \hline
-        0.000& 0.000& \cellcolor{KirbyPink}$1.000$ & 1.000& -1.000& 0.000& 2.000& \cellcolor{KirbyPink}$2.000$ \\
-        \hline
-        0.000& 1.000& \cellcolor{LightPink}$0.000$ & -0.250& 0.500& 0.000& 2.000& $10.000$ \\
-        \hline
-        0.000& 0.000& \cellcolor{LightPink}$0.000$ & -0.750& 0.500& 1.000& 0.000& $2.000$ \\
+        0.000& \cellcolor{KirbyPink}$1.000$ & 0.250& 0.000& 0.000& 0.250& 0.500& \cellcolor{KirbyPink}$0.500$ \\
         \hline
     \end{tabular}
 \end{adjustbox}
 
 
-\section{Degenerate Table}In this intermediate step, the problem degenerates. The basic variable with a value of zero is detailed below: \\
-\begin{adjustbox}{max width=\textwidth}
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-        \hline
-        Z  & $x1$ & $x2$ & $s1$ & $s2$ & $s3$ & b & Fractions\\
-        \hline
-        \hline
-        $0.000$& 0.000& 0.000& 1.000& 0.000& 1.000& 16.000\\
-        \hline
-        0.000& 0.000& 1.000& -0.500& \cellcolor{LightPink}$0.000$ & 2.000& 2.000& $Invalid$ \\
-        \hline
-        0.000& 1.000& 0.000& 0.500& \cellcolor{LightPink}$0.000$ & -1.000& 2.000& $4.000$ \\
-        \hline
-        0.000& 0.000& 0.000& -1.500& \cellcolor{KirbyPink}$1.000$ & 2.000& 0.000& \cellcolor{KirbyPink}$0.000$ \\
-        \hline
-    \end{tabular}
-\end{adjustbox}
+\section{Multiple Solutions}\subsection{Explanation}
+It happens when an infinite number of solutions can be found to the same problem, through a particular formula.\\
+This phenomenon is not typical of all the problems that the simplex algorithm encounters, it is only when a non-basic variable has a value of 0. This means that it can be manipulated to find more solutions, without affecting the gain.\\
+Here is where it happens in this problem: 
 
-
-\section{Intermediate Matrixes}\section{Degenerate Problem}Sometimes the simplex algorithm may be faced with a degenerate problem, indicated by the presence of variables inside the base that have a value of 0 which in turn makes objetive function not get closer to the objective. In the simplex table is represented by a column where the minimal value taken is 0.\\
-In this situation the program will take the first fraction that satisfies the restrictions. \\
-\section{Unique Solution}\subsection{Explanation}
-In this case, the problem has a single optimal solution that satisfies the established constraints.\\
-\subsection{Solution table}
+\subsection{First solution table}
 \begin{adjustbox}{max width=\textwidth}
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Z  & $x1$ & $x2$ & $s1$ & $s2$ & $s3$ & b\\
+        Z  & $x_1$ & $x_2$ & $S_1$ & $S_2$ & $S_3$ & b\\
         \hline
         \hline
-        0.000& 0.000& 0.000& 1.000& 0.000& 1.000& 16.000\\
+        1.000& 0.000& 0.000& 0.000& 0.000& 1.000& 2.000\\
         \hline
-        0.000& 0.000& 1.000& -0.500& 0.000& 2.000& 2.000\\
+        0.000& 0.000& 2.500& 1.000& 0.000& -0.500& 3.000\\
         \hline
-        0.000& 1.000& 0.000& 0.500& 0.000& -1.000& 2.000\\
+        0.000& 0.000& 0.750& 0.000& 1.000& -0.250& 0.500\\
         \hline
-        0.000& 0.000& 0.000& -1.500& 1.000& 2.000& 0.000\\
+        0.000& 1.000& 0.250& 0.000& 0.000& 0.250& 0.500\\
         \hline
     \end{tabular}
 \end{adjustbox}
 
 
-\subsection{Unique Solution}
-\textbf{Solution} 
+\subsection{Second solution table}
+\begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Z  & $x_1$ & $x_2$ & $S_1$ & $S_2$ & $S_3$ & b\\
+        \hline
+        \hline
+        1.000& 0.000& 0.000& 0.000& 0.000& 1.000& 2.000\\
+        \hline
+        0.000& 0.000& 0.000& 1.000& -3.333& 0.333& 1.333\\
+        \hline
+        0.000& 0.000& 1.000& 0.000& 1.333& -0.333& 0.667\\
+        \hline
+        0.000& 1.000& 0.000& 0.000& -0.333& 0.333& 0.333\\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+
+\subsection{Equation and Solutions}
+\textbf{Ecuation} 
 $$
+\alpha \cdot 
 \begin{bmatrix}
-x1 = 2.00 \\ x2 = 2.00 \\ 
+x_1 = 0.50 \\ x_2 = 0.00 \\ \end{bmatrix}
++ (1 - \alpha) \cdot 
+\begin{bmatrix}
+x_1 = 0.33 \\ x_2 = 0.67 \\  \end{bmatrix}
+$$
+\textbf{Other solutions} 
+$$\alpha = 0.25 \Rightarrow 
+\begin{bmatrix}
+x_1 = 0.38 \\ x_2 = 0.50 \\ 
 \end{bmatrix}
 $$
 
-\subsection{Optimal Solution}
-The final result of maximizing  the given function is 16.000 as a result of setting the variables to the values: 
+$$\alpha = 0.50 \Rightarrow 
+\begin{bmatrix}
+x_1 = 0.42 \\ x_2 = 0.33 \\ 
+\end{bmatrix}
+$$
+
+$$\alpha = 0.75 \Rightarrow 
+\begin{bmatrix}
+x_1 = 0.46 \\ x_2 = 0.17 \\ 
+\end{bmatrix}
+$$
+
+\subsection{Optimal Solutions}
+The final result of maximizing  the given function is 2.000 as a result of setting the variables to the values: 
 
 \begin{itemize}
-\item $x1 = 2.000$
-\item $x2 = 2.000$
-\item $s1 = 0.000$
-\item $s2 = 0.000$
-\item $s3 = 0.000$
+\item $x_1 = 0.500$
+\item $x_2 = 0.000$
+\item $S_1 = 3.000$
+\item $S_2 = 0.500$
+\item $S_3 = 0.000$
+\end{itemize}
+Another possible result of maximizing  the given function with the same value is a result of setting the variables to the values: 
+
+\begin{itemize}
+\item $x_1 = 0.333$
+\item $x_2 = 0.667$
+\item $S_1 = 1.333$
+\item $S_2 = 0.000$
+\item $S_3 = 0.000$
 \end{itemize}
 
 

@@ -14,7 +14,7 @@
 #include <cairo.h>
 #include <math.h>
 #include <glib/gstdio.h>
-#include  "proyecto5.c"
+#include  "simplex.c"
 
 // - - - - - TABLE IN THE INTERFACE - - - - -
 // Structure to be able to create a dynamic matrix
@@ -1365,22 +1365,52 @@ static void on_latex_file_clicked(GtkButton *btn, gpointer user_data) {
         return;
     }
 
-    // Print everything being sent
+    // // Print everything being sent
+    // print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
+    // printf("AAAAAAAAAAAAAAAAAAAAAAA \n");
+    // // Call Simplex routine
+    // runSimplex(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
+
+    // // Cleanup
+    // free_dmatrix(A);
+
+    // int total_names = cols - 2;  // all variable columns (x, S, a)
+    // for (int j = 0; j < total_names; ++j)
+    //     g_free(vnames[j]);
+    // g_free(vnames);
+
+    // g_free(ops);
+    // g_free(pname);
+
+        // Print everything being sent
     print_simplex_payload(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
+    fflush(stdout);
+
+    // Debug addresses / sanity checks
+    printf("DBG: pointers: A=%p A[0]=%p pname=%p vnames=%p ops=%p\n",
+           (void*)A, (A? (void*)A[0] : NULL), (void*)pname, (void*)vnames, (void*)ops);
+    printf("DBG: sizes: nvars=%d cols=%d rows=%d total_names=%d\n",
+           nvars, cols, rows, cols - 2);
+    if (!A || !pname || !vnames || !ops) {
+        printf("DBG: One of the pointers is NULL. Aborting call.\n");
+        fflush(stdout);
+        goto cleanup_after_payload;
+    }
+    for (int i = 0; i < cols - 1; ++i) {
+        // try reading first row elements (safe-ish)
+        printf("DBG: A[0][%d]=%.6g\n", i, A[0][i]);
+    }
+    fflush(stdout);
+
+    printf("AAAAAAAAAAAAAAAAAAAAAAA (about to call runSimplex)\n");
+    fflush(stdout);
 
     // Call Simplex routine
     runSimplex(A, pname, vnames, nvars, saveInter, ops, cols, rows, maximize);
 
-    // Cleanup
-    free_dmatrix(A);
+cleanup_after_payload:
+    ;
 
-    int total_names = cols - 2;  // all variable columns (x, S, a)
-    for (int j = 0; j < total_names; ++j)
-        g_free(vnames[j]);
-    g_free(vnames);
-
-    g_free(ops);
-    g_free(pname);
 }
 
 // - - - - - END OF CREATING MATRIX FOR CODE - - - - -

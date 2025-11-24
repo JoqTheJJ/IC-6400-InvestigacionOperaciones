@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.21)  23 NOV 2025 16:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.21)  23 NOV 2025 20:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**Test5.tex
-(./Test5.tex
+**P3.tex
+(./P3.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -749,8 +749,8 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count355
 \l__pdf_internal_box=\box71
 )
-No file Test5.aux.
-\openout1 = `Test5.aux'.
+No file P3.aux.
+\openout1 = `P3.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
 LaTeX Font Info:    ... okay on input line 11.
@@ -807,51 +807,39 @@ File: R.jpg Graphic file (type jpg)
 Package pdftex.def Info: R.jpg  used on input line 59.
 (pdftex.def)             Requested size: 86.25pt x 131.28989pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 76--77
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
 
  []
 
 [1 <./R.jpg (PNG copy)>]
-Underfull \hbox (badness 10000) in paragraph at lines 96--97
+Underfull \hbox (badness 10000) in paragraph at lines 92--93
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 152--154
-
- []
-
-[2]
-Underfull \hbox (badness 10000) in paragraph at lines 155--156
-
- []
-
-[3{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] (./Test5.aux)
+[2] (./P3.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 29002 strings out of 474222
- 724425 string characters out of 5748733
- 1947975 words of memory out of 5000000
- 50753 multiletter control sequences out of 15000+600000
- 560376 words of font info for 44 fonts, out of 8000000 for 9000
+ 28992 strings out of 474222
+ 724209 string characters out of 5748733
+ 1933975 words of memory out of 5000000
+ 50746 multiletter control sequences out of 15000+600000
+ 559733 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 113i,9n,126p,733b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/public/cm-su
-per/sfrm1000.pfb>
-Output written on Test5.pdf (4 pages, 181005 bytes).
+ 113i,9n,126p,730b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on P3.pdf (3 pages, 160624 bytes).
 PDF statistics:
- 65 PDF objects out of 1000 (max. 8388607)
- 39 compressed objects within 1 object stream
+ 51 PDF objects out of 1000 (max. 8388607)
+ 30 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  23 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -18,6 +18,10 @@ clean:
 run:
 	./programa-5
 
+runn:
+	env -i DISPLAY=$$DISPLAY XAUTHORITY=$${XAUTHORITY:-$$HOME/.Xauthority} PATH=/usr/bin:/bin LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 ./programa-5
+
+
 test:
 	rm -f $(EXE)
 	gcc -o simplex simplex.c

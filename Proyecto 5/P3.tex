@@ -58,28 +58,28 @@ The American mathematician was born in 1914 and died in 2005. In addition to bei
 \begin{center}
 \includegraphics[width=0.25\textwidth]{R.jpg}
 \end{center}
-\section{Problem: Test4}
-The problem inputted by the user is called \textquotedblleft Test4\textquotedblright and consists of minimizing the following fuction:
+\section{Problem: P3}
+The problem inputted by the user is called \textquotedblleft P3\textquotedblright and consists of minimizing the following fuction:
 
-$Z = x1 \cdot -2.000000 + x2 \cdot -3.000000$
+$Z = x_1 \cdot -2.000000 + x_2 \cdot -3.000000$
 
 
 Subject to:
 
 
-$x1 \cdot 1.000000 + x2 \cdot -1.000000 \leq 1.000000$
+$x_1 \cdot 1.000000 + x_2 \cdot -1.000000 \leq 1.000000$
 
-$x1 \cdot 1.000000 + x2 \cdot -2.000000 \leq 2.000000$
+$x_1 \cdot 1.000000 + x_2 \cdot -2.000000 \leq 2.000000$
 
 \section{Initial Matrix }The initial simplex table is shown below.\\
 
 \begin{adjustbox}{max width=\textwidth}
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
-        Z  & $x1$ & $x2$ & $s1$ & $s2$ & b\\
+        Z  & $x_1$ & $x_2$ & $S_1$ & $S_2$ & b\\
         \hline
         \hline
-        0.000& 2.000& 3.000& 0.000& 0.000& 0.000\\
+        1.000& 2.000& 3.000& -0.000& -0.000& 0.000\\
         \hline
         0.000& 1.000& -1.000& 1.000& 0.000& 1.000\\
         \hline
@@ -96,10 +96,10 @@ In this case it is found in the column 2 where there are no valid fractions:\\
 \begin{adjustbox}{max width=\textwidth}
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Z  & $x1$ & $x2$ & $s1$ & $s2$ & b & Fractions\\
+        Z  & $x_1$ & $x_2$ & $S_1$ & $S_2$ & b & Fractions\\
         \hline
         \hline
-        $0.000$& 2.000& 3.000& 0.000& 0.000& 0.000\\
+        $1.000$& 2.000& 3.000& -0.000& -0.000& 0.000\\
         \hline
         0.000& 1.000& \cellcolor{LightPink}$-1.000$ & 1.000& 0.000& 1.000& $Invalid$ \\
         \hline
