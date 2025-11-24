@@ -796,7 +796,6 @@ void compileTex(char* problemName){
 void runSimplex(double** matriz, char* problemName, char** variableNames, int amountOfVariables, int saveMatrixes, int* restrictions, // [0:<, 1:=, 2:>]
     int cols, int rows, int maximize){
 
-    printf("AAAAAAAAAAAAAAAAAAAAAAA \n");
     // Malloc M Vector (First row)
     double* M = malloc(sizeof(double) * cols);
     for (int c = 0; c < cols; ++c){
